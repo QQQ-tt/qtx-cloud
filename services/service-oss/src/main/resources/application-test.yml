@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: service-oss
+  cloud:
+    nacos:
+      config:
+        group: DEFAULT_GROUP
+        server-addr: 172.16.6.77:8848
+        namespace: 520c7a82-ac10-4ea5-80b0-ea1488bb6b66
+      discovery:
+        server-addr: 172.16.6.77:8848
+        namespace: 520c7a82-ac10-4ea5-80b0-ea1488bb6b66
+  config:
+    import:
+      - optional:nacos:service-oss.yaml  # 监听 DEFAULT_GROUP:test.yml
+knife4j:
+  enable: true
