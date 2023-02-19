@@ -333,9 +333,9 @@ public enum DataEnums {
      */
     PARAMETER_IS_NULL("参数为空", 406),
     /**
-     *otherId不能为空
+     *otherInfo不能为空
      */
-    OTHER_ID_IS_NOT_NULL("otherId不能为空", 406),
+    OTHER_ID_IS_NOT_NULL("otherInfo不能为空", 406),
     /**
      * 文件所属阶段不匹配
      */
@@ -361,9 +361,9 @@ public enum DataEnums {
      */
     NUMBER_OF_EXAMS("考试次数用尽", 406),
     /**
-     * otherId不存在
+     * otherInfo不存在
      */
-    OTHER_ID_NOT_EXIST("otherId不存在", 205),
+    OTHER_ID_NOT_EXIST("otherInfo不存在", 205),
     /**
      * 主研角色不存在
      */
@@ -406,9 +406,9 @@ public enum DataEnums {
      */
     ACCEPT_NUMBER_IS_NULL("受理号为空请选择项目", 406),
     /**
-     * 该otherId无对应数据
+     * 该otherInfo无对应数据
      */
-    OTHER_ID_DATA_IS_NULL("该otherId无对应数据", 406),
+    OTHER_ID_DATA_IS_NULL("该otherInfo无对应数据", 406),
     /**
      * 该类型伦理表单字典为空，请前往配置中心配置
      */

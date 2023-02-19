@@ -1,7 +1,6 @@
 package qtx.cloud.gateway.filter;
 
 import com.alibaba.nacos.api.utils.StringUtils;
-import com.gcp.common.constant.StaticConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
@@ -20,6 +19,7 @@ import org.springframework.web.server.ServerWebExchange;
 import qtx.cloud.gateway.entity.AuthVO;
 import qtx.cloud.gateway.enums.AuthEnums;
 import qtx.cloud.gateway.utils.Method;
+import qtx.cloud.java.constant.StaticConstant;
 import reactor.core.publisher.Mono;
 
 import java.io.IOException;

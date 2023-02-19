@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.java.enums.DataEnums;
@@ -30,8 +31,9 @@ public class AuthFilter extends OncePerRequestFilter {
     private CommonMethod commonMethod;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain) throws ServletException, IOException {
         log.info("request:[method:{}, path:{}]", request.getMethod(), request.getRequestURI());
         log.info("request:[param:{}]", JSON.toJSONString(request.getParameterMap()));
         String userCode = request.getHeader(StaticConstant.USER);
