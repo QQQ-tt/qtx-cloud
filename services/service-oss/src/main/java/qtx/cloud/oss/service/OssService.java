@@ -18,24 +18,24 @@ public interface OssService {
      *
      * @param file        文件
      * @param otherInfo     其他id
-     * @param serviceType 文件类型
+     * @param business 文件类型
      * @param version     版本号
      * @param fileUuid    文件uuid
      * @return true or false
      */
-    boolean upload(MultipartFile file, String otherInfo, String serviceType, String version, String fileUuid);
+    boolean upload(MultipartFile file, String otherInfo, String business, String version, String fileUuid);
 
     /**
      * 文件上传
      *
      * @param files       文件
      * @param otherInfo   其他id
-     * @param serviceType 项目编号
+     * @param business 项目编号
      * @param version     版本号
      * @param fileUuid    文件uuid
      * @return true or false
      */
-    boolean uploads(MultipartFile[] files, String otherInfo, String serviceType, String version, String fileUuid);
+    boolean uploads(MultipartFile[] files, String otherInfo, String business, String version, String fileUuid);
 
 
     /**
@@ -44,12 +44,12 @@ public interface OssService {
      * @param file        文件
      * @param otherInfo   其他id
      * @param bucket      bucket名称
-     * @param serviceType 项目编号
+     * @param business 项目编号
      * @param version     版本号
      * @param fileUuid    文件uuid
      * @return true or false
      */
-    boolean uploadByBucket(MultipartFile file, String otherInfo, String bucket, String serviceType, String version,
+    boolean uploadByBucket(MultipartFile file, String otherInfo, String bucket, String business, String version,
                            String fileUuid);
 
     /**

@@ -1,7 +1,6 @@
 package qtx.cloud.oss.controller.api;
 
 import io.swagger.annotations.Api;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,8 +15,11 @@ import qtx.cloud.oss.service.OssService;
 @RestController
 @RequestMapping("/api/file")
 public class OssApiController {
-    @Autowired
-    private OssService service;
+    private final OssService service;
+
+    public OssApiController(OssService service) {
+        this.service = service;
+    }
 
     @GetMapping("/getUrl")
     public String getUrl(@RequestParam("fileObject") String fileObject) {

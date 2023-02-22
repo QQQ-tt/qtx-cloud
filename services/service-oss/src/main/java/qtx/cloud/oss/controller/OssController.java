@@ -30,10 +30,10 @@ public class OssController {
     @ApiOperation("上传")
     @PostMapping("/upload")
     public Result<Boolean> upload(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("otherInfo") String otherInfo,
-            @RequestParam("serviceType") String serviceType, String version, String fileUuid) {
-        return Result.success(service.upload(file, otherInfo, serviceType, version, fileUuid));
+            @RequestParam(value = "file", name = "文件") MultipartFile file,
+            @RequestParam(value = "otherInfo", name = "其他信息关联字段") String otherInfo,
+            @RequestParam(value = "business", name = "业务类型") String business, String version, String fileUuid) {
+        return Result.success(service.upload(file, otherInfo, business, version, fileUuid));
     }
 
     @ApiOperation("批量上传")
@@ -41,8 +41,8 @@ public class OssController {
     public Result<Boolean> upload(
             @RequestParam("files") MultipartFile[] files,
             @RequestParam("otherInfo") String otherInfo,
-            @RequestParam("serviceType") String serviceType, String version, String fileUuid) {
-        return Result.success(service.uploads(files, otherInfo, serviceType, version, fileUuid));
+            @RequestParam("business") String business, String version, String fileUuid) {
+        return Result.success(service.uploads(files, otherInfo, business, version, fileUuid));
     }
 
     @ApiOperation("上传到指定bucket")
@@ -51,8 +51,8 @@ public class OssController {
             @RequestParam("file") MultipartFile file,
             @RequestParam("otherInfo") String otherInfo,
             @RequestParam("bucket") String bucket,
-            @RequestParam("serviceType") String serviceType, String version, String fileUuid) {
-        return Result.success(service.uploadByBucket(file, otherInfo, bucket, serviceType, version, fileUuid));
+            @RequestParam("business") String business, String version, String fileUuid) {
+        return Result.success(service.uploadByBucket(file, otherInfo, bucket, business, version, fileUuid));
     }
 
     @ApiOperation("下载")

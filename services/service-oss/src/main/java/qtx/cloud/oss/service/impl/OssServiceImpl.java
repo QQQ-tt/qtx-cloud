@@ -43,18 +43,18 @@ public class OssServiceImpl implements OssService {
     }
 
     @Override
-    public boolean upload(MultipartFile file, String otherInfo, String serviceType, String version, String fileUuid) {
+    public boolean upload(MultipartFile file, String otherInfo, String business, String version, String fileUuid) {
         //文件名
         String oldFileName = file.getOriginalFilename();
         String newFileName = NumUtils.uuid() + "." + StringUtils.substringAfterLast(oldFileName, ".");
         //类型
         String contentType = file.getContentType();
         ObjectWriteResponse uploadFile = minioUtils.uploadFile(file, newFileName, contentType);
-        return saveFileInfo(otherInfo, serviceType, version, oldFileName, newFileName, uploadFile, fileUuid);
+        return saveFileInfo(otherInfo, business, version, oldFileName, newFileName, uploadFile, fileUuid);
     }
 
     @Override
-    public boolean uploads(MultipartFile[] files, String otherInfo, String serviceType, String version,
+    public boolean uploads(MultipartFile[] files, String otherInfo, String business, String version,
                            String fileUuid) {
         boolean flag = true;
         for (MultipartFile file : files) {
@@ -64,13 +64,13 @@ public class OssServiceImpl implements OssService {
             //类型
             String contentType = file.getContentType();
             ObjectWriteResponse uploadFile = minioUtils.uploadFile(file, newFileName, contentType);
-            flag = flag & saveFileInfo(otherInfo, serviceType, version, fileName, newFileName, uploadFile, fileUuid);
+            flag = flag & saveFileInfo(otherInfo, business, version, fileName, newFileName, uploadFile, fileUuid);
         }
         return flag;
     }
 
     @Override
-    public boolean uploadByBucket(MultipartFile file, String otherInfo, String bucket, String serviceType,
+    public boolean uploadByBucket(MultipartFile file, String otherInfo, String bucket, String business,
                                   String version, String fileUuid) {
         //文件名
         String fileName = file.getOriginalFilename();
@@ -78,7 +78,7 @@ public class OssServiceImpl implements OssService {
         //类型
         String contentType = file.getContentType();
         ObjectWriteResponse uploadFile = minioUtils.uploadFile(bucket, file, newFileName, contentType);
-        return saveFileInfo(otherInfo, serviceType, version, fileName, newFileName, uploadFile, fileUuid);
+        return saveFileInfo(otherInfo, business, version, fileName, newFileName, uploadFile, fileUuid);
     }
 
     @Override
@@ -154,7 +154,7 @@ public class OssServiceImpl implements OssService {
      * 保存文件信息
      *
      * @param otherInfo   其他信息id
-     * @param serviceType 服务类型
+     * @param business 服务类型
      * @param version     版本号
      * @param oldFileName 旧文件名称
      * @param newFileName 新文件名称
@@ -162,10 +162,10 @@ public class OssServiceImpl implements OssService {
      * @param fileUuid    文件uuid
      * @return true or false
      */
-    private boolean saveFileInfo(String otherInfo, String serviceType, String version, String oldFileName,
+    private boolean saveFileInfo(String otherInfo, String business, String version, String oldFileName,
                                  String newFileName, ObjectWriteResponse uploadFile, String fileUuid) {
 
-        if (!ServiceEnums.SERVICE_ENUMS.containsKey(serviceType)) {
+        if (!ServiceEnums.SERVICE_ENUMS.containsKey(business)) {
             throw new DataException(DataEnums.PLATFORM_IS_FAIL);
         }
         boolean empty = service.list(Wrappers.lambdaQuery(FileManagement.class)
@@ -186,7 +186,7 @@ public class OssServiceImpl implements OssService {
                 .fileNameOld(oldFileName)
                 .fileVersion(version)
                 .otherInfo(otherInfo)
-                .fileType(serviceType)
+                .fileType(business)
                 .fileObject(uploadFile.object())
                 .bucketName(uploadFile.bucket())
                 .fileUuid(fileUuid)
