@@ -11,6 +11,7 @@
 
     <artifactId>services</artifactId>
     <packaging>pom</packaging>
+
     <modules>
         <module>service-activity</module>
         <module>service-oss</module>
