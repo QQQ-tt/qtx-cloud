@@ -5,6 +5,7 @@ import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -115,6 +116,31 @@ public class ExcelTransfer<T> {
     }
 
     /**
+     * 下载excel，多实体，多sheet
+     *
+     * @param response http
+     * @param name     文件名称
+     * @param list  实体:数据
+     */
+    public void exportExcel(HttpServletResponse response, String name, List<ExcelVO> list) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .build()) {
+            AtomicInteger i = new AtomicInteger(0);
+            list.forEach(e -> {
+                WriteSheet writeSheet = EasyExcel.writerSheet(i.get(), e.getSheet()).head(e.getListsHead()).build();
+                i.getAndIncrement();
+                excelWriter.write(e.getListsData(), writeSheet);
+            });
+        }
+    }
+
+    /**
      * 下载excel
      *
      * @param response http
@@ -163,5 +189,13 @@ public class ExcelTransfer<T> {
         if (file == null || file.isEmpty()) {
             throw new DataException(DataEnums.DATA_IS_NULL);
         }
+    }
+
+    @Data
+    @Builder
+    static class ExcelVO {
+        private String sheet;
+        private List<List<String>> listsHead;
+        private List<List<Object>> listsData;
     }
 }
