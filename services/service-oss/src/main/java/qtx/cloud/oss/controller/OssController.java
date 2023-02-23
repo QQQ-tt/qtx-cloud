@@ -39,8 +39,8 @@ public class OssController {
     @ApiOperation("批量上传")
     @PostMapping("/uploads")
     public Result<Boolean> upload(
-            @RequestParam("files") MultipartFile[] files,
-            @RequestParam("otherInfo") String otherInfo,
+            @RequestParam(value = "files", name = "文件集合") MultipartFile[] files,
+            @RequestParam(value = "otherInfo", name = "其他信息关联字段") String otherInfo,
             @RequestParam("business") String business, String version, String fileUuid) {
         return Result.success(service.uploads(files, otherInfo, business, version, fileUuid));
     }

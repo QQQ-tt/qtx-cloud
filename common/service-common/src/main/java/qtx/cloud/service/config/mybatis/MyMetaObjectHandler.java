@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import qtx.cloud.service.utils.CommonMethod;
 
@@ -18,8 +17,11 @@ import java.time.LocalDateTime;
 @Component
 public class MyMetaObjectHandler implements MetaObjectHandler {
 
-    @Autowired
-    private CommonMethod commonMethod;
+    private final CommonMethod commonMethod;
+
+    public MyMetaObjectHandler(CommonMethod commonMethod) {
+        this.commonMethod = commonMethod;
+    }
 
     @Override
     public void insertFill(MetaObject metaObject) {

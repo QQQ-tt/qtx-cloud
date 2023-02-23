@@ -19,12 +19,12 @@ import java.util.List;
 public class Generator {
 
     private static final DataSourceConfig.Builder DATA_SOURCE_CONFIG = new DataSourceConfig.Builder(
-            "jdbc:mysql://172.16.6.77:3306/test",
+            "jdbc:mysql://172.16.6.77:3306/qtx_cloud",
             "root",
             "OvHtCUNp8Bbnrfk");
 
     public static void main(String[] args) {
-        String path = "/service/service-auth";
+        String path = "/service/service-activity";
         String projectPath = System.getProperty("user.dir");
         FastAutoGenerator.create(DATA_SOURCE_CONFIG)
                 // 全局配置
@@ -33,7 +33,7 @@ public class Generator {
                         .outputDir(projectPath + path + "/src/main/java")
                         .disableOpenDir())
                 // 包配置
-                .packageConfig((scanner, builder) -> builder.parent("com.gcp.auth")
+                .packageConfig((scanner, builder) -> builder.parent("qtx.cloud.activty")
                         .entity("entity")
                         .service("service")
                         .serviceImpl("service.impl")

@@ -17,8 +17,8 @@ public interface OssService {
      * 文件上传
      *
      * @param file        文件
-     * @param otherInfo     其他id
-     * @param business 文件类型
+     * @param otherInfo   其他id
+     * @param business    业务类型
      * @param version     版本号
      * @param fileUuid    文件uuid
      * @return true or false
@@ -30,7 +30,7 @@ public interface OssService {
      *
      * @param files       文件
      * @param otherInfo   其他id
-     * @param business 项目编号
+     * @param business    业务类型
      * @param version     版本号
      * @param fileUuid    文件uuid
      * @return true or false
@@ -44,7 +44,7 @@ public interface OssService {
      * @param file        文件
      * @param otherInfo   其他id
      * @param bucket      bucket名称
-     * @param business 项目编号
+     * @param business    业务类型
      * @param version     版本号
      * @param fileUuid    文件uuid
      * @return true or false

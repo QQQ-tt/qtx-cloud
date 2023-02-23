@@ -12,9 +12,9 @@ import org.springframework.context.ConfigurableApplicationContext;
  * @since 2022/10/27 21:22
  */
 @RefreshScope
-@EnableFeignClients(basePackages = "com.gcp")
-@ServletComponentScan(basePackages = "com.gcp")
-@SpringBootApplication(scanBasePackages = {"com.gcp"})
+@EnableFeignClients(basePackages = "qtx.cloud")
+@ServletComponentScan(basePackages = "qtx.cloud")
+@SpringBootApplication(scanBasePackages = {"qtx.cloud"})
 public class ServiceActivityApplication {
     public static void main(String[] args) {
         ConfigurableApplicationContext run = SpringApplication.run(ServiceActivityApplication.class, args);
