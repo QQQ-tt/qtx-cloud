@@ -1,8 +1,8 @@
 package qtx.cloud.gateway.utils;
 
 
-import com.gcp.common.enums.DataEnums;
 import lombok.Data;
+import qtx.cloud.java.enums.DataEnums;
 
 /**
  * @author qtx

@@ -54,10 +54,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         if (matcher.match(StaticConstant.SWAGGER_URL, path.toString()) || AuthEnums.authPath(path.toString())) {
             return chain.filter(exchange);
         }
-        RestTemplate template = new RestTemplate();
-        HttpHeaders requestHeaders = new HttpHeaders();
-        requestHeaders.add(StaticConstant.AUTH, "123");
-
         String token = request.getHeaders().getFirst(StaticConstant.TOKEN);
         String userCode = request.getHeaders().getFirst(StaticConstant.USER_CODE);
         if (StringUtils.isBlank(token)) {
@@ -75,31 +71,41 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
             }
         }
 
+        RestTemplate template = new RestTemplate();
+        HttpHeaders requestHeaders = new HttpHeaders();
+        requestHeaders.add(StaticConstant.AUTH, "123");
+
         HashMap<String, String> param = new HashMap<>(10);
         param.put(StaticConstant.TOKEN, token);
         param.put(StaticConstant.IP, address.toString());
         param.put(StaticConstant.USER_CODE, userCode);
         param.put(StaticConstant.URL, path.toString());
         HttpEntity<HashMap<String, String>> requestEntity = new HttpEntity<>(requestHeaders);
-        ResponseEntity<AuthVO> responseToken = template.exchange("http://" + serviceName + ":2008/auth/user/token" +
-                        "?token={token}&ip={ip}&userCode={userCode}&url={url}",
-                HttpMethod.GET,
-                requestEntity,
-                AuthVO.class,
-                param);
-        AuthVO authVO = responseToken.getBody();
-        assert authVO != null;
-        if (!StringUtils.isBlank(authVO.getDataEnums())) {
+        try {
+            ResponseEntity<AuthVO> responseToken = template.exchange("http://" + serviceName + ":2008/auth/user/token"
+                            + "?token={token}&ip={ip}&userCode={userCode}&url={url}",
+                    HttpMethod.GET,
+                    requestEntity,
+                    AuthVO.class,
+                    param);
+            AuthVO authVO = responseToken.getBody();
+            assert authVO != null;
+            if (!StringUtils.isBlank(authVO.getDataEnums())) {
+                try {
+                    return Method.failed(exchange, authVO.getDataEnums());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            String user = authVO.getUserCode();
+            mutate.header(StaticConstant.USER, user);
+        } catch (Exception e) {
             try {
-                return Method.failed(exchange, authVO.getDataEnums());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                return Method.failed(exchange, "认证服务重启中...");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
         }
-
-        String user = authVO.getUserCode();
-        mutate.header(StaticConstant.USER, user);
-
         return chain.filter(exchange);
     }
 
