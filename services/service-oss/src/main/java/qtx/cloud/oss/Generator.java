@@ -33,7 +33,7 @@ public class Generator {
                         .outputDir(projectPath + path + "/src/main/java")
                         .disableOpenDir())
                 // 包配置
-                .packageConfig((scanner, builder) -> builder.parent("com.gcp.oss")
+                .packageConfig((scanner, builder) -> builder.parent("qtx.cloud.oss")
                         .entity("entity")
                         .service("service")
                         .serviceImpl("service.impl")
@@ -55,12 +55,7 @@ public class Generator {
                         .superClass(BaseEntity.class)
                         .enableTableFieldAnnotation()
                         .enableRemoveIsPrefix()
-                        .addSuperEntityColumns("id",
-                                "delete_flag",
-                                "create_by",
-                                "create_time",
-                                "update_by",
-                                "update_time")
+                        .addSuperEntityColumns("delete_flag", "create_by", "create_on", "update_by", "update_on")
                         .mapperBuilder()
                         .mapperAnnotation(Mapper.class)
                         .build()).execute();

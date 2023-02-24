@@ -24,7 +24,7 @@ import qtx.cloud.model.base.BaseEntity;
 @ApiModel(value = "FileManagement对象", description = "文件管理表")
 public class FileManagement extends BaseEntity {
 
-    @ApiModelProperty("其他信息关联")
+    @ApiModelProperty("与其他表信息关联字段")
     @TableField("other_info")
     private String otherInfo;
 
