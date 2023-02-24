@@ -7,7 +7,8 @@ import java.util.Map;
 import java.util.stream.Stream;
 
 /**
- * 服务编号
+ * 不同业务用户类型
+ *
  * @author qtx
  * @since 2022/11/21 13:40
  */
@@ -19,9 +20,9 @@ public enum ServiceEnums {
      */
     SERVICE_LEARN("学习培训", "LEARN"),
     /**
-     * 库房管理
+     * 业务类型
      */
-    SERVICE_STOREHOUSE("库房管理", "STOREHOUSE");
+    SERVICE_STOREHOUSE("不同类型业务", "TYPE");
 
     /**
      * 服务名称

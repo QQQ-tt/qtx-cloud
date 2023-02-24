@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qtx.cloud.auth.mapper.SysDepartmentMapper">
+
+    <select id="selectPageNew" resultType="qtx.cloud.model.vo.auth.DepartmentVO">
+        select department_id, department_code, department_name, create_by, create_on, remark
+        from sys_department ${ew.customSqlSegment}
+    </select>
+    <select id="selectNew" resultType="qtx.cloud.model.vo.auth.DepartmentListVO">
+        select department_id, department_code, department_name
+        from sys_department ${ew.customSqlSegment}
+    </select>
+</mapper>

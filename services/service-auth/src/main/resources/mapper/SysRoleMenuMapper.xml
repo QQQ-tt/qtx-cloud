@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qtx.cloud.auth.mapper.SysRoleMenuMapper">
+
+    <select id="selectByRoleId" resultType="qtx.cloud.model.vo.auth.SysRoleMenuVo">
+        with info as (select sm.menu_id, sm.name, sm.path, r.status, sm.parent_id, r.delete_flag, r.role_id
+                      from sys_menu sm
+                               left join sys_role_menu r on r.delete_flag = sm.delete_flag
+                          and r.menu_id = sm.id)
+        select menu_id, name, path, status, parent_id, delete_flag, role_id
+        from info ${ew.customSqlSegment}
+    </select>
+</mapper>

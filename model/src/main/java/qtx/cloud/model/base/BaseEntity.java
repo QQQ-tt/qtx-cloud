@@ -3,23 +3,24 @@ package qtx.cloud.model.base;
 import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 /**
  * @author QTX
- * @Since 2022/8/30
+ * @since 2022/8/30
  */
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
 public class BaseEntity {
-
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
 
     @JsonIgnore
     @ExcelProperty("创建数据的用户")

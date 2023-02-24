@@ -7,7 +7,6 @@ import feign.codec.ErrorDecoder;
 import feign.optionals.OptionalDecoder;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.ObjectProvider;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.http.HttpMessageConverters;
 import org.springframework.cloud.openfeign.support.HttpMessageConverterCustomizer;
 import org.springframework.cloud.openfeign.support.ResponseEntityDecoder;
@@ -23,20 +22,42 @@ import qtx.cloud.service.utils.CommonMethod;
 @Configuration
 public class MyFeignConfig implements RequestInterceptor {
 
-    @Autowired
-    private CommonMethod commonMethod;
+    private final CommonMethod commonMethod;
 
+    public MyFeignConfig(CommonMethod commonMethod) {
+        this.commonMethod = commonMethod;
+    }
+
+    /**
+     * 设置feign请求头参数
+     *
+     * @param template
+     */
     @Override
     public void apply(RequestTemplate template) {
         template.header(StaticConstant.AUTH, "123");
         template.header(StaticConstant.USER, commonMethod.getUser());
     }
 
+    /**
+     * feign 接口异常捕获
+     * 状态码大于3xx
+     *
+     * @return
+     */
     @Bean
     public ErrorDecoder exceptionErrorDecoder() {
         return new ExceptionErrorDecoder();
     }
 
+    /**
+     * feign接口异常捕获
+     * 状态码大于2xx小于3xx
+     *
+     * @param messageConverters
+     * @param customizers
+     * @return
+     */
     @Bean
     public Decoder exceptionDecoder(ObjectFactory<HttpMessageConverters> messageConverters,
                                     ObjectProvider<HttpMessageConverterCustomizer> customizers) {

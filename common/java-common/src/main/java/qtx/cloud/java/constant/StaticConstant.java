@@ -17,7 +17,7 @@ public class StaticConstant {
 
     public static final String TOKEN = "token";
     /**
-     * 服务认证信息
+     * 服务认证信息head标志
      */
     public static final String AUTH = "auth";
     /**
@@ -27,22 +27,22 @@ public class StaticConstant {
     /**
      * 用户登录验证码前缀
      */
-    public static final String LOGIN_AUTH_CODE = "login:auth:";
+    public static final String REDIS_LOGIN_AUTH_CODE = "login:auth:";
 
     /**
      * 验证码
      */
-    public static final String CODE = ":code";
+    public static final String REDIS_CODE = ":code";
 
     /**
      * 试错次数
      */
-    public static final String NUM = ":num";
+    public static final String REDIS_NUM = ":num";
 
     /**
-     * 登录错误次数
+     * 登录错误次数redis
      */
-    public static final String LOGIN_NUM = ":login_num";
+    public static final String REDIS_LOGIN_NUM = ":login_num";
 
     /**
      * 账户登录错误次数上线
