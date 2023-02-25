@@ -57,4 +57,8 @@ public class StaticConstant {
      * 网关限制，放行地址
      */
     public static final String SWAGGER_URL = "/*/v2/api-docs";
+    /**
+     * 日志打印放行
+     */
+    public static final String OSS_URL = "/file/*";
 }

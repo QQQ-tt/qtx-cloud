@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.lang.NonNull;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.java.enums.DataEnums;
@@ -34,9 +35,20 @@ public class AuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        log.info("request:[method:{}, path:{}]", request.getMethod(), request.getRequestURI());
-        log.info("request:[param:{}]", JSON.toJSONString(request.getParameterMap()));
+        String uri = request.getRequestURI();
         String userCode = request.getHeader(StaticConstant.USER);
+        AntPathMatcher matcher = new AntPathMatcher();
+        RequestWrapper requestWrapper = null;
+        if (!matcher.match(StaticConstant.OSS_URL, uri)) {
+            requestWrapper = new RequestWrapper(request);
+            String s = JSON.toJSONString(requestWrapper.getBodyString());
+            String replaceAll = s.replaceAll(" ", "").replaceAll("\\\\n", "").replaceAll("\\\\", "");
+            log.info("request:[method:{}, path:{},json:{},param:{}]",
+                    request.getMethod(),
+                    uri,
+                    replaceAll,
+                    JSON.toJSONString(request.getParameterMap()));
+        }
         String ip = request.getHeader(StaticConstant.IP);
         commonMethod.setUserCode(userCode);
         commonMethod.setIp(ip);
@@ -45,6 +57,6 @@ public class AuthFilter extends OncePerRequestFilter {
             commonMethod.failed(response, DataEnums.GATEWAY_TRANSBOUNDARY);
             return;
         }
-        filterChain.doFilter(request, response);
+        filterChain.doFilter(requestWrapper == null ? request : requestWrapper, response);
     }
 }
