@@ -167,6 +167,13 @@ public class DataListener<E> implements ReadListener<E> {
         return num != fields.length;
     }
 
+    /**
+     * 获取excel表头
+     *
+     * @return
+     *
+     * @throws ClassNotFoundException
+     */
     public Set<String> excelHead() throws ClassNotFoundException {
         HashSet<String> set = new HashSet<>(20);
         Field[] fields = entity.getDeclaredFields();

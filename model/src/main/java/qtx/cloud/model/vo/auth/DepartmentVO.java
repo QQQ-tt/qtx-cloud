@@ -1,8 +1,8 @@
 package qtx.cloud.model.vo.auth;
 
-import qtx.cloud.model.base.DateUserVO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import qtx.cloud.model.base.DateUserVO;
 
 /**
  * @author qtx
@@ -11,7 +11,7 @@ import lombok.Data;
 @Data
 public class DepartmentVO extends DateUserVO {
 
-    private Long departmentId;
+    private Integer id;
 
     @ApiModelProperty("科室编号")
     private String departmentCode;

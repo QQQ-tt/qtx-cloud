@@ -10,7 +10,7 @@ import lombok.Data;
 @Data
 public class DepartmentListVO {
 
-    private Long departmentId;
+    private Integer id;
 
     @ApiModelProperty("科室编号")
     private String departmentCode;

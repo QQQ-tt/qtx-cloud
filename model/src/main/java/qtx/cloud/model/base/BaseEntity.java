@@ -5,10 +5,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -17,9 +14,6 @@ import java.time.LocalDateTime;
  * @since 2022/8/30
  */
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class BaseEntity {
 
     @JsonIgnore

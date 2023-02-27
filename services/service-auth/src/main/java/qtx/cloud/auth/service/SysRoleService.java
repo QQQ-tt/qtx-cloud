@@ -81,7 +81,7 @@ public interface SysRoleService extends IService<SysRole> {
      * @param id
      * @return
      */
-    List<SysRoleMenuVo> getMenuByRole(Long id);
+    List<SysRoleMenuVo> getMenuByRole(Integer id);
 
     /**
      * 获取登录人通过角色获取权限

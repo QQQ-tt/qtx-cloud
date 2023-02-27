@@ -24,13 +24,4 @@ public class CreateSysUserDTO {
 
     @ApiModelProperty("角色")
     private List<Integer> roleId;
-
-    @ApiModelProperty("角色名称")
-    private String roleName;
-
-    @ApiModelProperty("0:女 1:男")
-    private Integer sex;
-
-    @ApiModelProperty("联系方式")
-    private String tel;
 }

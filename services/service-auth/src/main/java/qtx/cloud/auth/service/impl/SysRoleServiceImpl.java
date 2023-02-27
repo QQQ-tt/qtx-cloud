@@ -98,7 +98,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     @Override
-    public List<SysRoleMenuVo> getMenuByRole(Long id) {
+    public List<SysRoleMenuVo> getMenuByRole(Integer id) {
         return roleMenuService.getMenuByRole(id);
     }
 

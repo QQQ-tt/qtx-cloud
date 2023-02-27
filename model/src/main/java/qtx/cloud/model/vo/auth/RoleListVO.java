@@ -10,13 +10,8 @@ import lombok.Data;
 @Data
 public class RoleListVO {
 
-    private Long roleId;
-
-    private String roleUuid;
+    private Integer id;
 
     @ApiModelProperty("角色名称")
     private String roleName;
-
-    @ApiModelProperty("对应服务")
-    private String platform;
 }

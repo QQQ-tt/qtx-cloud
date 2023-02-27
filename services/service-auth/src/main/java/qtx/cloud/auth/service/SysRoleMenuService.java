@@ -29,7 +29,7 @@ public interface SysRoleMenuService extends IService<SysRoleMenu> {
      * @param role
      * @return
      */
-    List<SysRoleMenuVo> getMenuByRole(Long role);
+    List<SysRoleMenuVo> getMenuByRole(Integer role);
 
     /**
      * 为角色添加菜单

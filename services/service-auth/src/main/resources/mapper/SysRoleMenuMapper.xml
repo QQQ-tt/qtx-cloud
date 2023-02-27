@@ -3,11 +3,11 @@
 <mapper namespace="qtx.cloud.auth.mapper.SysRoleMenuMapper">
 
     <select id="selectByRoleId" resultType="qtx.cloud.model.vo.auth.SysRoleMenuVo">
-        with info as (select sm.menu_id, sm.name, sm.path, r.status, sm.parent_id, r.delete_flag, r.role_id
+        with info as (select sm.id, sm.name, sm.path, r.status, sm.parent_id, r.delete_flag, r.role_id
                       from sys_menu sm
                                left join sys_role_menu r on r.delete_flag = sm.delete_flag
                           and r.menu_id = sm.id)
-        select menu_id, name, path, status, parent_id, delete_flag, role_id
+        select id, name, path, status, parent_id, delete_flag, role_id
         from info ${ew.customSqlSegment}
     </select>
 </mapper>

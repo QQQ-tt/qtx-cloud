@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class SysRoleMenuVo {
 
-    private Long menuId;
+    private Integer id;
     /**
      * 菜单名称
      */
@@ -27,7 +27,7 @@ public class SysRoleMenuVo {
      */
     private String status;
 
-    private Long parentId;
+    private Integer parentId;
 
     private List<SysRoleMenuVo> list;
 }

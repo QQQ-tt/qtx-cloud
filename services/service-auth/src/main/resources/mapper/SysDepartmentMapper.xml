@@ -3,11 +3,11 @@
 <mapper namespace="qtx.cloud.auth.mapper.SysDepartmentMapper">
 
     <select id="selectPageNew" resultType="qtx.cloud.model.vo.auth.DepartmentVO">
-        select department_id, department_code, department_name, create_by, create_on, remark
+        select id, department_code, department_name, create_by, create_on, remark
         from sys_department ${ew.customSqlSegment}
     </select>
     <select id="selectNew" resultType="qtx.cloud.model.vo.auth.DepartmentListVO">
-        select department_id, department_code, department_name
+        select id, department_code, department_name
         from sys_department ${ew.customSqlSegment}
     </select>
 </mapper>

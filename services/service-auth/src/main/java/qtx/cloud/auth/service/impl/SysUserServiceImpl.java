@@ -131,7 +131,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Object[] objs = VerifyUtil.newBuilder()
                 .setWidth(120)
                 .setHeight(35)
-                .setSize(1)
+                .setSize(4)
                 .setLines(1)
                 .setFontSize(25)
                 .setTilt(true)

@@ -59,18 +59,18 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
                 .eq(BaseEntity::getDeleteFlag, false)
                 .in(SysRoleMenu::getRoleId, roleByUser));
         return sysRoleMenuVos.stream()
-                .filter(f -> f.getParentId().equals(0L))
+                .filter(f -> f.getParentId().equals(0))
                 .peek(e -> e.setList(child(sysRoleMenuVos, e)))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<SysRoleMenuVo> getMenuByRole(Long role) {
+    public List<SysRoleMenuVo> getMenuByRole(Integer role) {
         List<SysRoleMenuVo> sysRoleMenuVos = baseMapper.selectByRoleId(Wrappers.lambdaQuery(SysRoleMenu.class)
                 .eq(BaseEntity::getDeleteFlag, false)
                 .eq(SysRoleMenu::getRoleId, role));
         return sysRoleMenuVos.stream()
-                .filter(f -> f.getParentId().equals(0L))
+                .filter(f -> f.getParentId().equals(0))
                 .peek(e -> e.setList(child(sysRoleMenuVos, e)))
                 .collect(Collectors.toList());
     }
@@ -78,7 +78,7 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
     private List<SysRoleMenuVo> child(List<SysRoleMenuVo> list, SysRoleMenuVo e) {
         return list.stream()
                 .filter(f -> f.getParentId() != null)
-                .filter(f -> f.getParentId().equals(e.getMenuId()))
+                .filter(f -> f.getParentId().equals(e.getId()))
                 .peek(p -> p.setList(child(list, p)))
                 .collect(Collectors.toList());
     }

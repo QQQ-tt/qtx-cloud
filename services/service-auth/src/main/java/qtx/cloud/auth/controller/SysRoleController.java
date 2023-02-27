@@ -73,7 +73,7 @@ public class SysRoleController {
 
     @ApiOperation("获取权限配置")
     @PostMapping("/getMenuByRoleId")
-    public Result<List<SysRoleMenuVo>> getMenuByRole(@RequestParam Long id) {
+    public Result<List<SysRoleMenuVo>> getMenuByRole(@RequestParam Integer id) {
         return Result.success(service.getMenuByRole(id));
     }
 

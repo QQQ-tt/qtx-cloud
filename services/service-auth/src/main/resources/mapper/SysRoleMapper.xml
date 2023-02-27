@@ -17,7 +17,7 @@
         from sys_role ${ew.customSqlSegment}
     </select>
     <select id="selectNew" resultType="qtx.cloud.model.vo.auth.RoleListVO">
-        select id, role_name, platform
+        select id, role_name
         from sys_role ${ew.customSqlSegment}
     </select>
 </mapper>
