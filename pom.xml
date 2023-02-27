@@ -13,7 +13,7 @@
         <module>service-gateway</module>
         <module>service-feign</module>
         <module>model</module>
-        <module>services</module>
+        <module>service</module>
     </modules>
 
     <parent>

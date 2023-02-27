@@ -120,7 +120,7 @@ public class ExcelTransfer<T> {
      *
      * @param response http
      * @param name     文件名称
-     * @param list  实体:数据
+     * @param list     实体:数据
      */
     public void exportExcel(HttpServletResponse response, String name, List<ExcelVO> list) throws IOException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
@@ -187,7 +187,7 @@ public class ExcelTransfer<T> {
 
     private void isEmpty(MultipartFile file) {
         if (file == null || file.isEmpty()) {
-            throw new DataException(DataEnums.DATA_IS_NULL);
+            throw new DataException(DataEnums.DATA_IS_ABNORMAL);
         }
     }
 

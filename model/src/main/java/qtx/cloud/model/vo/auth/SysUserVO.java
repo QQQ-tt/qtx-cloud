@@ -23,24 +23,6 @@ public class SysUserVO implements Serializable {
     @ApiModelProperty("用户名称")
     private String userName;
 
-    @ApiModelProperty("0:女 1:男")
-    private Integer sex;
-
-    @ApiModelProperty("联系方式")
-    private String tel;
-
-    @ApiModelProperty("角色ID")
-    private Long roleId;
-
-    @ApiModelProperty("角色名称")
-    private String roleName;
-
-    @ApiModelProperty("科室编号")
-    private String departmentCode;
-
-    @ApiModelProperty("科室名称")
-    private String departmentName;
-
     @ApiModelProperty("启用状态")
     private Boolean status;
 

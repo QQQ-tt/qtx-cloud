@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qtx.cloud.auth.mapper.SysUserMapper">
+
+    <select id="selectPageNew" resultType="qtx.cloud.model.vo.auth.SysUserVO">
+        with r as (select s.id,
+                          s.user_code,
+                          s.user_name,
+                          s.status,
+                          s.create_on,
+                          u.user_name as create_by,
+                          s.delete_flag
+                   from sys_user s
+                            left join sys_user u
+                                      on s.create_by = u.user_code)
+        select id,
+               user_code,
+               user_name,
+               status,
+               create_on,
+               create_by,
+               delete_flag
+        from r ${ew.customSqlSegment}
+    </select>
+    <select id="selectPageByDepartment" resultType="qtx.cloud.model.vo.auth.SysUserVO">
+        select sys_user.id,
+               sys_user.user_code,
+               user_name,
+               status
+        from sys_user
+                 left join sys_user_info sur on sys_user.delete_flag = sur.delete_flag
+            and sys_user.user_code = sur.user_code
+                 left join sys_department sd on sur.delete_flag = sd.delete_flag and sur.department_id = sd.id
+        order by department_code = #{dto.departmentCode} desc, id desc
+    </select>
+</mapper>
