@@ -9,11 +9,9 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import qtx.cloud.auth.entity.SysUser;
-import qtx.cloud.auth.entity.SysUserRole;
-import qtx.cloud.auth.entity.Token;
-import qtx.cloud.auth.entity.User;
+import qtx.cloud.auth.entity.*;
 import qtx.cloud.auth.mapper.SysUserMapper;
+import qtx.cloud.auth.service.SysUserInfoService;
 import qtx.cloud.auth.service.SysUserRoleService;
 import qtx.cloud.auth.service.SysUserService;
 import qtx.cloud.java.constant.StaticConstant;
@@ -61,6 +59,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     private final RedisUtils redisUtils;
 
+    private final SysUserInfoService sysUserInfoService;
+
     @Value("${time.token}")
     private Long tokenTime;
 
@@ -68,12 +68,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private Integer refreshTime;
 
     public SysUserServiceImpl(JwtUtils jwtUtils, PasswordEncoder passwordEncoder, CommonMethod commonMethod,
-                              SysUserRoleService sysUserRoleService, RedisUtils redisUtils) {
+                              SysUserRoleService sysUserRoleService, RedisUtils redisUtils,
+                              SysUserInfoService sysUserInfoService) {
         this.jwtUtils = jwtUtils;
         this.passwordEncoder = passwordEncoder;
         this.commonMethod = commonMethod;
         this.sysUserRoleService = sysUserRoleService;
         this.redisUtils = redisUtils;
+        this.sysUserInfoService = sysUserInfoService;
     }
 
     @Override
@@ -169,6 +171,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .userName(user.getUserName())
                 .password(user.getPassword())
                 .build())) {
+            sysUserInfoService.save(SysUserInfo.builder().userCode(user.getUserCode()).build());
             return new CreateVO(user.getUserName(), user.getUserCode(), password);
         } else {
             throw new DataException(DataEnums.DATA_INSERT_FAIL);
@@ -181,8 +184,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         removeRole(user.getUserCode());
         sysUserRoleService.addRoleWithUser(new UserRolesDTO().setUserCode(user.getUserCode()).setRoleIds(roleId));
         SysUser sysUser = new SysUser();
+        SysUserInfo sysUserInfo = new SysUserInfo();
         BeanUtils.copyProperties(user, sysUser);
+        BeanUtils.copyProperties(user, sysUserInfo);
         try {
+            if (sysUser.getId() == null) {
+                sysUserInfoService.save(sysUserInfo);
+            } else {
+                sysUserInfoService.update(sysUserInfo,
+                        Wrappers.lambdaUpdate(SysUserInfo.class).eq(SysUserInfo::getUserCode, sysUser.getUserCode()));
+            }
             return saveOrUpdate(sysUser);
         } catch (Exception e) {
             throw new DataException(DataEnums.DATA_INSERT_FAIL);

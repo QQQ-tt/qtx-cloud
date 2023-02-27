@@ -22,6 +22,9 @@ public class CreateSysUserDTO {
     @ApiModelProperty("是否启用，1是，0否")
     private Integer status;
 
+    @ApiModelProperty("科室id")
+    private Integer departmentId;
+
     @ApiModelProperty("角色")
     private List<Integer> roleId;
 }
