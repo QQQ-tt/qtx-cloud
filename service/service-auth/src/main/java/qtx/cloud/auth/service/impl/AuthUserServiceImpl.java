@@ -3,7 +3,6 @@ package qtx.cloud.auth.service.impl;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import qtx.cloud.auth.entity.Token;
 import qtx.cloud.auth.service.AuthUserService;
 import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.java.enums.DataEnums;
@@ -11,6 +10,7 @@ import qtx.cloud.model.vo.auth.AuthVO;
 import qtx.cloud.service.utils.JwtUtils;
 import qtx.cloud.service.utils.RedisUtils;
 
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -31,8 +31,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public AuthVO authToken(String token, String ip, String userCode, String url) {
-        Token s = (Token) redisUtils.getMsg(StaticConstant.LOGIN_USER + userCode + ":info");
-        String secret = (String) redisUtils.getMsg(StaticConstant.LOGIN_USER + userCode + ":secret");
+        Map<Object, Object> s = redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + ":info");
         AuthVO vo = new AuthVO();
         // 验证token
         if (Objects.isNull(s)) {
@@ -40,6 +39,7 @@ public class AuthUserServiceImpl implements AuthUserService {
             vo.setDataEnums(DataEnums.USER_NOT_LOGIN);
             return vo;
         }
+        String secret = (String) s.get("secret");
         String userCodeToken = jwtUtils.getInfoFromToken(token, secret);
         log.info("user code :{}", userCodeToken);
         if (StringUtils.isBlank(userCodeToken)) {
@@ -49,19 +49,19 @@ public class AuthUserServiceImpl implements AuthUserService {
             return vo;
         }
         // userCode合法性
-        if (!userCodeToken.equals(s.getUser().getUserCode())) {
+        if (!userCodeToken.equals(s.get("userCode"))) {
             log.info("token info error user code {}", DataEnums.USER_IS_FAIL);
             vo.setDataEnums(DataEnums.USER_IS_FAIL);
             return vo;
         }
         // ip
-        if (!ip.equals(s.getUser().getIp())) {
+        if (!ip.equals(s.get("ip"))) {
             log.info("token info error ip {}", DataEnums.USER_IS_FAIL);
             vo.setDataEnums(DataEnums.USER_IS_FAIL);
             return vo;
         }
         // 判断是否过期
-        if (jwtUtils.isTokenExpired(s.getToken(), secret)) {
+        if (jwtUtils.isTokenExpired((String) s.get("accessToken"), secret)) {
             redisUtils.deleteByKey(userCodeToken);
             log.info("token info error time {}", DataEnums.USER_LOGIN_EXPIRED);
             vo.setDataEnums(DataEnums.USER_LOGIN_EXPIRED);

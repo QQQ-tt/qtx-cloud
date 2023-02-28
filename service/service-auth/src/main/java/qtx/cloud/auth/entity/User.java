@@ -23,5 +23,9 @@ public class User {
 
     private String ip;
 
+    private String secret;
+
+    private String accessToken;
+
     private String refreshToken;
 }

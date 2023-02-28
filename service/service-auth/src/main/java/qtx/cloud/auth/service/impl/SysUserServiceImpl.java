@@ -1,5 +1,7 @@
 package qtx.cloud.auth.service.impl;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,7 +11,10 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import qtx.cloud.auth.entity.*;
+import qtx.cloud.auth.entity.SysUser;
+import qtx.cloud.auth.entity.SysUserInfo;
+import qtx.cloud.auth.entity.SysUserRole;
+import qtx.cloud.auth.entity.User;
 import qtx.cloud.auth.mapper.SysUserMapper;
 import qtx.cloud.auth.service.SysUserInfoService;
 import qtx.cloud.auth.service.SysUserRoleService;
@@ -31,9 +36,7 @@ import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -252,14 +255,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public LoginVO refreshToken(String refreshToken, String userCode) {
-        Token token = (Token) redisUtils.getMsg(StaticConstant.LOGIN_USER + userCode + ":" + refreshToken);
-        if (Objects.isNull(token)) {
+        Map<Object, Object> user = redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + ":info");
+        if (Objects.isNull(user)) {
             throw new DataException(DataEnums.TOKEN_IS_NULL);
         }
-        SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class)
-                .eq(SysUser::getUserCode, token.getUser().getUserCode()));
-        String secret = (String) redisUtils.getMsg(StaticConstant.LOGIN_USER + userCode + ":secret");
-        return getLoginVO(userCode, secret, one);
+        SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, user.get("userCode")));
+        return getLoginVO(userCode, (String) user.get("secret"), one);
     }
 
     private void removeRole(String userCode) {
@@ -290,22 +291,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .userCode(userCode)
                 .role(role)
                 .ip(commonMethod.getIp())
+                .secret(secret)
+                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-        redisUtils.setMsgDiyTimeOut(StaticConstant.LOGIN_USER + userCode + ":info",
-                new Token(accessToken, userName, build),
-                Math.toIntExact(tokenTime),
-                TimeUnit.SECONDS);
-        redisUtils.setMsgDiyTimeOut(StaticConstant.LOGIN_USER + userCode + ":secret",
-                secret,
-                Math.toIntExact(tokenTime),
-                TimeUnit.SECONDS);
-        redisUtils.setMsgDiyTimeOut(StaticConstant.LOGIN_USER + userCode + ":refreshKey",
-                refreshToken,
-                refreshTime,
-                TimeUnit.SECONDS);
-        redisUtils.setMsgDiyTimeOut(StaticConstant.LOGIN_USER + userCode + ":" + refreshToken,
-                new Token(accessToken, userName, build),
+        redisUtils.setHashMsgAllTimeOut(StaticConstant.LOGIN_USER + userCode + ":info",
+                JSONObject.parseObject(JSON.toJSONBytes(build), Map.class),
                 refreshTime,
                 TimeUnit.SECONDS);
         redisUtils.deleteByKey(getRedisCodeId(secret));
@@ -323,13 +314,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param userCode 用户工号
      */
     public boolean deleteRedisUserInfo(String userCode) {
-        boolean byKey = redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + ":info");
-        redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + ":secret");
-        String msg = (String) redisUtils.getMsg(StaticConstant.LOGIN_USER + userCode + ":refreshKey");
-        redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + ":refreshKey");
-        if (StringUtils.isNotBlank(msg)) {
-            redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + ":" + msg);
-        }
-        return byKey;
+        return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + ":info");
     }
 }

@@ -99,6 +99,10 @@ public class RedisUtils {
         redisTemplate.expire(key, timeOut, timeUnit);
     }
 
+    public Map<Object, Object> getHashMsg(String key) {
+        return redisTemplate.opsForHash().entries(key);
+    }
+
     public Object getHashMsg(String key, String hashKey) {
         return redisTemplate.opsForHash().get(key, hashKey);
     }
