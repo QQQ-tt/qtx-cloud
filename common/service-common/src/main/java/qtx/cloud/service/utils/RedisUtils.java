@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
@@ -48,6 +49,58 @@ public class RedisUtils {
      */
     public Object getMsg(String key) {
         return redisTemplate.opsForValue().get(key);
+    }
+
+    /**
+     * hash结构 添加数据
+     *
+     * @param key
+     * @param hashKey
+     * @param msg
+     */
+    public void setHashMsg(String key, String hashKey, Object msg) {
+        redisTemplate.opsForHash().put(key, hashKey, msg);
+    }
+
+    /**
+     * hash结构 批量添加
+     *
+     * @param key
+     * @param msg
+     */
+    public void setHashMsgAll(String key, Map<?, ?> msg) {
+        redisTemplate.opsForHash().putAll(key, msg);
+    }
+
+    /**
+     * hash结构 批量添加 设置过期时间
+     *
+     * @param key
+     * @param msg
+     * @param timeOut
+     * @param timeUnit
+     */
+    public void setHashMsgAllTimeOut(String key, Map<?, ?> msg, long timeOut, TimeUnit timeUnit) {
+        redisTemplate.opsForHash().putAll(key, msg);
+        redisTemplate.expire(key, timeOut, timeUnit);
+    }
+
+    /**
+     * hash结构 添加数据 设置过期时间
+     *
+     * @param key
+     * @param hashKey
+     * @param msg
+     * @param timeOut
+     * @param timeUnit
+     */
+    public void setHashMsgTimeOut(String key, String hashKey, Object msg, long timeOut, TimeUnit timeUnit) {
+        redisTemplate.opsForHash().put(key, hashKey, msg);
+        redisTemplate.expire(key, timeOut, timeUnit);
+    }
+
+    public Object getHashMsg(String key, String hashKey) {
+        return redisTemplate.opsForHash().get(key, hashKey);
     }
 
     /**
