@@ -86,6 +86,12 @@ public class DataListener<E> implements ReadListener<E> {
         }
     }
 
+    /**
+     * 匹配表头
+     *
+     * @param headMap
+     * @param context
+     */
     @Override
     public void invokeHead(Map<Integer, ReadCellData<?>> headMap, AnalysisContext context) {
         Set<String> head;
@@ -127,6 +133,7 @@ public class DataListener<E> implements ReadListener<E> {
             log.info("{}条数据，开始转换数据格式。", cachedDataList.size());
             saveList.addAll(new HashSet<>(convert.convert(cachedDataList)));
         } else {
+            // 默认逻辑删除
             Set<E> set = new HashSet<>(service.query().eq("is_delete", "0").list());
             asList = new HashSet<>(cachedDataList);
             asList.forEach(s -> {

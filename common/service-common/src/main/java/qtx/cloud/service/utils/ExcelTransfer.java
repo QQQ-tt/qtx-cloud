@@ -18,6 +18,7 @@ import qtx.cloud.service.excel.DataListener;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
@@ -98,11 +99,7 @@ public class ExcelTransfer<T> {
      */
     public void exportExcel(HttpServletResponse response, String name,
                             Map<List<List<String>>, List<List<String>>> listListMap) throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-        String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+        setResponse(response, name);
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .build()) {
@@ -122,12 +119,8 @@ public class ExcelTransfer<T> {
      * @param name     文件名称
      * @param list     实体:数据
      */
-    public void exportExcel(HttpServletResponse response, String name, List<ExcelVO> list) throws IOException {
-        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-        response.setCharacterEncoding("utf-8");
-        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-        String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+    public void exportExcel(HttpServletResponse response, String name, List<ExcelList> list) throws IOException {
+        setResponse(response, name);
         try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
                 .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
                 .build()) {
@@ -136,6 +129,26 @@ public class ExcelTransfer<T> {
                 WriteSheet writeSheet = EasyExcel.writerSheet(i.get(), e.getSheet()).head(e.getListsHead()).build();
                 i.getAndIncrement();
                 excelWriter.write(e.getListsData(), writeSheet);
+            });
+        }
+    }
+
+    /**
+     * 下载excel，多实体，多sheet
+     *
+     * @param response http
+     * @param map      实体:数据
+     */
+    public void exportExcel(HttpServletResponse response, Map<Class<?>, ExcelClass> map) throws IOException {
+        setResponse(response, "name");
+        try (ExcelWriter excelWriter = EasyExcel.write(response.getOutputStream())
+                .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+                .build()) {
+            AtomicInteger i = new AtomicInteger(0);
+            map.forEach((k, v) -> {
+                WriteSheet writeSheet = EasyExcel.writerSheet(i.get(), v.getSheet()).head(k).build();
+                i.getAndIncrement();
+                excelWriter.write(v.getData(), writeSheet);
             });
         }
     }
@@ -171,11 +184,7 @@ public class ExcelTransfer<T> {
 
     private void export(HttpServletResponse response, List<T> list, String name, String sheet, Class<?> aClass) {
         try {
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setCharacterEncoding("utf-8");
-            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-            String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
-            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+            setResponse(response, name);
             EasyExcel.write(response.getOutputStream(), aClass)
                     .sheet(sheet)
                     .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
@@ -191,11 +200,26 @@ public class ExcelTransfer<T> {
         }
     }
 
+    private static void setResponse(HttpServletResponse response, String name) throws UnsupportedEncodingException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setCharacterEncoding("utf-8");
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
+        response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+    }
+
     @Data
     @Builder
-    static class ExcelVO {
+    static class ExcelList {
         private String sheet;
         private List<List<String>> listsHead;
         private List<List<Object>> listsData;
+    }
+
+    @Data
+    @Builder
+    static class ExcelClass {
+        private String sheet;
+        private List<?> data;
     }
 }

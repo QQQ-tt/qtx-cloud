@@ -11,6 +11,7 @@ import qtx.cloud.model.dto.auth.DepartmentDTO;
 import qtx.cloud.model.vo.auth.DepartmentListVO;
 import qtx.cloud.model.vo.auth.DepartmentVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -54,6 +55,12 @@ public class SysDepartmentController {
     @GetMapping("/listDepartment")
     public Result<List<DepartmentListVO>> listDepartment(String name) {
         return Result.success(service.listDepartment(name));
+    }
+
+    @ApiOperation("导出")
+    @GetMapping("/downloadExcel")
+    public void downloadExcel(HttpServletResponse response) {
+        service.downloadExcel(response);
     }
 
 }

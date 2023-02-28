@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import lombok.SneakyThrows;
 import org.springframework.stereotype.Service;
 import qtx.cloud.auth.entity.SysDepartment;
 import qtx.cloud.auth.mapper.SysDepartmentMapper;
@@ -14,7 +15,9 @@ import qtx.cloud.model.base.BaseEntity;
 import qtx.cloud.model.dto.auth.DepartmentDTO;
 import qtx.cloud.model.vo.auth.DepartmentListVO;
 import qtx.cloud.model.vo.auth.DepartmentVO;
+import qtx.cloud.service.utils.ExcelTransfer;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -27,6 +30,12 @@ import java.util.List;
  */
 @Service
 public class SysDepartmentServiceImpl extends ServiceImpl<SysDepartmentMapper, SysDepartment> implements SysDepartmentService {
+
+    private final ExcelTransfer<SysDepartment> excelTransfer;
+
+    public SysDepartmentServiceImpl(ExcelTransfer<SysDepartment> excelTransfer) {
+        this.excelTransfer = excelTransfer;
+    }
 
     @Override
     public IPage<DepartmentVO> listDepartmentPage(DepartmentDTO dto) {
@@ -70,5 +79,11 @@ public class SysDepartmentServiceImpl extends ServiceImpl<SysDepartmentMapper, S
         return baseMapper.selectNew(Wrappers.lambdaQuery(SysDepartment.class)
                 .eq(BaseEntity::getDeleteFlag, false)
                 .likeRight(StringUtils.isNotBlank(name), SysDepartment::getDepartmentName, name));
+    }
+
+    @SneakyThrows
+    @Override
+    public void downloadExcel(HttpServletResponse response) {
+        excelTransfer.exportExcel(response, list(), "科室", "sheet", this);
     }
 }

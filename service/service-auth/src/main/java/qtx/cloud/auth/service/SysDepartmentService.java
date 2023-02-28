@@ -7,6 +7,7 @@ import qtx.cloud.model.dto.auth.DepartmentDTO;
 import qtx.cloud.model.vo.auth.DepartmentListVO;
 import qtx.cloud.model.vo.auth.DepartmentVO;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -29,6 +30,7 @@ public interface SysDepartmentService extends IService<SysDepartment> {
 
     /**
      * 更新或新增
+     *
      * @param entity 实体
      * @return true or false
      */
@@ -36,9 +38,16 @@ public interface SysDepartmentService extends IService<SysDepartment> {
 
     /**
      * 科室查询
+     *
      * @param name 科室名称
      * @return 集合
      */
     List<DepartmentListVO> listDepartment(String name);
 
+    /**
+     * 导出
+     *
+     * @param response
+     */
+    void downloadExcel(HttpServletResponse response);
 }

@@ -1,5 +1,6 @@
 package qtx.cloud.auth.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -28,6 +29,7 @@ public class SysDepartment extends BaseEntity {
     private Integer id;
 
     @ApiModelProperty("科室编号")
+    @ExcelProperty(value = {"科室", "科室名称"})
     @TableField("department_code")
     private String departmentCode;
 
