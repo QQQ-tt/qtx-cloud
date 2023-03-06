@@ -64,7 +64,7 @@ public class DataListener<E> implements ReadListener<E> {
     /**
      * 这个每一条数据解析都会来调用
      *
-     * @param data    one row value. Is is same as {@link AnalysisContext#readRowHolder()}
+     * @param data    one row value. Is same as {@link AnalysisContext#readRowHolder()}
      * @param context
      */
     @Override
@@ -128,15 +128,13 @@ public class DataListener<E> implements ReadListener<E> {
     /** 加上存储数据库 */
     private void saveData() {
         List<E> saveList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
-        Set<E> asList;
         if (convert != null) {
             log.info("{}条数据，开始转换数据格式。", cachedDataList.size());
             saveList.addAll(new HashSet<>(convert.convert(cachedDataList)));
         } else {
-            // 默认逻辑删除
+            // 默认逻辑删除 is_delete 字段自行替换
             Set<E> set = new HashSet<>(service.query().eq("is_delete", "0").list());
-            asList = new HashSet<>(cachedDataList);
-            asList.forEach(s -> {
+            new HashSet<>(cachedDataList).parallelStream().forEach(s -> {
                 if (!set.contains(s)) {
                     saveList.add(s);
                 }
