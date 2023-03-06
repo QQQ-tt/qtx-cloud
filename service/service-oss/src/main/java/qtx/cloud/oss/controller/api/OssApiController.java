@@ -22,7 +22,7 @@ public class OssApiController {
     }
 
     @GetMapping("/getUrl")
-    public String getUrl(@RequestParam("fileObject") String fileObject) {
+    public String getUrl(@RequestParam(value = "fileObject",name = "文件对象") String fileObject) {
         return service.getObjectUrl(fileObject);
     }
 

@@ -41,24 +41,24 @@ public class OssController {
     public Result<Boolean> upload(
             @RequestParam(value = "files", name = "文件集合") MultipartFile[] files,
             @RequestParam(value = "otherInfo", name = "其他信息关联字段") String otherInfo,
-            @RequestParam("business") String business, String version, String fileUuid) {
+            @RequestParam(value = "business", name = "业务类型") String business, String version, String fileUuid) {
         return Result.success(service.uploads(files, otherInfo, business, version, fileUuid));
     }
 
     @ApiOperation("上传到指定bucket")
     @PostMapping("/uploadByBucket")
     public Result<Boolean> uploadByBucket(
-            @RequestParam("file") MultipartFile file,
-            @RequestParam("otherInfo") String otherInfo,
-            @RequestParam("bucket") String bucket,
-            @RequestParam("business") String business, String version, String fileUuid) {
+            @RequestParam(value = "file", name = "文件") MultipartFile file,
+            @RequestParam(value = "otherInfo", name = "其他信息关联字段") String otherInfo,
+            @RequestParam(value = "bucket", name = "存储桶") String bucket,
+            @RequestParam(value = "business", name = "业务类型") String business, String version, String fileUuid) {
         return Result.success(service.uploadByBucket(file, otherInfo, bucket, business, version, fileUuid));
     }
 
     @ApiOperation("下载")
     @GetMapping("/download")
-    public void download(
-            @RequestParam("fileObject") String fileObject, HttpServletResponse response) throws IOException {
+    public void download(@RequestParam(value = "fileObject", name = "文件对象")
+                         String fileObject, HttpServletResponse response) throws IOException {
         service.downloadFile(fileObject, response);
     }
 
@@ -72,33 +72,35 @@ public class OssController {
     @ApiOperation("下载指定bucket文件")
     @GetMapping("/downloadFileByBucket")
     public void downloadFileByBucket(
-            @RequestParam("bucket") String bucket,
-            @RequestParam("fileObject") String fileObject, HttpServletResponse response) throws IOException {
+            @RequestParam(value = "bucket", name = "存储桶") String bucket,
+            @RequestParam(value = "fileObject", name = "文件对象")
+            String fileObject, HttpServletResponse response) throws IOException {
         service.downloadFileByBucket(bucket, fileObject, response);
     }
 
     @ApiOperation("删除文件")
     @DeleteMapping("/removeFile")
-    public Result<Boolean> removeFile(@RequestParam("fileObject") String fileObject) {
+    public Result<Boolean> removeFile(@RequestParam(value = "fileObject", name = "文件对象") String fileObject) {
         return Result.success(service.removeFile(fileObject));
     }
 
     @ApiOperation("修改文件为历史文件")
     @GetMapping("/updateToHis")
-    public Result<Boolean> updateToHis(@RequestParam("fileObject") String fileObject) {
+    public Result<Boolean> updateToHis(@RequestParam(value = "fileObject", name = "文件对象") String fileObject) {
         return Result.success(service.updateToHis(fileObject));
     }
 
     @ApiOperation("删除指定bucket文件")
     @DeleteMapping("/removeFileByBucket")
     public Result<Boolean> removeFileByBucket(
-            @RequestParam("fileObject") String fileObject, @RequestParam("bucket") String bucket) {
+            @RequestParam(value = "fileObject", name = "文件对象") String fileObject,
+            @RequestParam(value = "bucket", name = "存储桶") String bucket) {
         return Result.success(service.removeFileByBucket(bucket, fileObject));
     }
 
     @ApiOperation("获取外链")
     @GetMapping("/getUrl")
-    public Result<String> getUrl(@RequestParam("fileObject") String fileObject) {
+    public Result<String> getUrl(@RequestParam(value = "fileObject", name = "文件对象") String fileObject) {
         return Result.success(service.getObjectUrl(fileObject));
     }
 }

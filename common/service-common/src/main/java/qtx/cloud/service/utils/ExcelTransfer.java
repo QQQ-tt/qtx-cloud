@@ -25,6 +25,10 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ * 下载对应实体类不允许使用链式调用注解
+ *
+ * <p>@Accessors(chain = true) 对应实体类实现equals和hashCode方法会自动过滤与数据库重复的数据
+ *
  * @author qtx
  * @since 2022/10/30 20:03
  */
@@ -39,21 +43,17 @@ public class ExcelTransfer<T> {
     private int size;
 
     /**
-     * 上传excel 对用实体类不允许使用链式调用注解
-     *
-     * <p>@Accessors(chain = true) 对应实体类实现equals和hashCode方法会自动过滤与数据库重复的数据
+     * 上传excel
      *
      * @param file    文件
      * @param service 对应实体的service
      * @return 成功与否
      *
-     * @throws ClassNotFoundException
+     * @throws ClassNotFoundException 对应的实体没找到
      */
     public boolean importExcel(MultipartFile file, IService<T> service) throws ClassNotFoundException {
         isEmpty(file);
-        String name = service.getClass().getName();
-        String s = name.substring(size, name.length() - 11);
-        Class<?> aClass = Class.forName(packageName + s);
+        Class<?> aClass = getClass(service);
         try {
             EasyExcel.read(file.getInputStream(), aClass, new DataListener<>(service, aClass)).sheet().doRead();
         } catch (IOException e) {
@@ -64,22 +64,61 @@ public class ExcelTransfer<T> {
     }
 
     /**
-     * 上传excel 对用实体类不允许使用链式调用注解 自定义格式转换
+     * 上传excel
      *
-     * <p>@Accessors(chain = true) 对应实体类实现equals和hashCode方法会自动过滤与数据库重复的数据
+     * @param file    文件
+     * @param service 对应实体的service
+     * @param aClass  实体类
+     * @return 成功与否
+     *
+     * @throws ClassNotFoundException 对应的实体没找到
+     */
+    public boolean importExcel(MultipartFile file, IService<T> service, Class<?> aClass) throws ClassNotFoundException {
+        isEmpty(file);
+        try {
+            EasyExcel.read(file.getInputStream(), aClass, new DataListener<>(service, aClass)).sheet().doRead();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 上传excel
      *
      * @param file    文件
      * @param service 对应实体的service
      * @param list    实现自定义转换方法
      * @return 成功与否
      *
-     * @throws ClassNotFoundException 为找到对应的类
+     * @throws ClassNotFoundException 对应的实体没找到
      */
     public boolean importExcel(MultipartFile file, IService<T> service, ConvertList<T> list) throws ClassNotFoundException {
         isEmpty(file);
-        String name = service.getClass().getName();
-        String s = name.substring(size, name.length() - 11);
-        Class<?> aClass = Class.forName(packageName + s);
+        Class<?> aClass = getClass(service);
+        try {
+            EasyExcel.read(file.getInputStream(), aClass, new DataListener<>(service, list, aClass)).sheet().doRead();
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 上传excel
+     *
+     * @param file    文件
+     * @param service 对应实体的service
+     * @param list    实现自定义转换方法
+     * @param aClass  实体类
+     * @return 成功与否
+     *
+     * @throws ClassNotFoundException 对应的实体没找到
+     */
+    public boolean importExcel(MultipartFile file, IService<T> service, ConvertList<T> list, Class<?> aClass) throws ClassNotFoundException {
+        isEmpty(file);
         try {
             EasyExcel.read(file.getInputStream(), aClass, new DataListener<>(service, list, aClass)).sheet().doRead();
         } catch (IOException e) {
@@ -200,12 +239,18 @@ public class ExcelTransfer<T> {
         }
     }
 
-    private static void setResponse(HttpServletResponse response, String name) throws UnsupportedEncodingException {
+    private void setResponse(HttpServletResponse response, String name) throws UnsupportedEncodingException {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
-        // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+        // 这里URLEncoder.encode可以防止中文乱码 当然和easy excel没有关系
         String fileName = URLEncoder.encode(name, "UTF-8").replaceAll("\\+", "%20");
         response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
+    }
+
+    private Class<?> getClass(IService<T> service) throws ClassNotFoundException {
+        String name = service.getClass().getName();
+        String s = name.substring(size, name.length() - 11);
+        return Class.forName(packageName + s);
     }
 
     @Data

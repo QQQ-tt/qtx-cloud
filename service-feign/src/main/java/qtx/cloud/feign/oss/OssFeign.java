@@ -17,6 +17,6 @@ public interface OssFeign {
      * @return
      */
     @GetMapping("/api/file/getUrl")
-    String getUrl(@RequestParam("fileObject") String fileObject);
+    String getUrl(@RequestParam(value = "fileObject",name = "文件对象") String fileObject);
 
 }

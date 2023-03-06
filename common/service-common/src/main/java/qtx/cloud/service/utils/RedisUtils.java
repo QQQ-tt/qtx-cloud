@@ -99,6 +99,12 @@ public class RedisUtils {
         redisTemplate.expire(key, timeOut, timeUnit);
     }
 
+    /**
+     * 获取hash field 所有key-value
+     *
+     * @param key
+     * @return
+     */
     public Map<Object, Object> getHashMsg(String key) {
         return redisTemplate.opsForHash().entries(key);
     }

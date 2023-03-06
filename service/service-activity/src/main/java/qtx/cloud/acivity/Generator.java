@@ -33,7 +33,7 @@ public class Generator {
                         .outputDir(projectPath + path + "/src/main/java")
                         .disableOpenDir())
                 // 包配置
-                .packageConfig((scanner, builder) -> builder.parent("qtx.cloud.activty")
+                .packageConfig((scanner, builder) -> builder.parent("qtx.cloud.activity")
                         .entity("entity")
                         .service("service")
                         .serviceImpl("service.impl")
