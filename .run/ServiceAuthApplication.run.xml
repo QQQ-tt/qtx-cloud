@@ -1,0 +1,10 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ServiceAuthApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <option name="ACTIVE_PROFILES" value="com" />
+    <module name="service-auth" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="qtx.cloud.auth.ServiceAuthApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
