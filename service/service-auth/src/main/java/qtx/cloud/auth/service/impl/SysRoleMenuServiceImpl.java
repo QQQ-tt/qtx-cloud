@@ -55,6 +55,9 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuMapper, SysRo
                 .stream()
                 .map(SysUserRole::getRoleId)
                 .collect(Collectors.toList());
+        if (roleByUser.isEmpty()) {
+            return new ArrayList<>();
+        }
         List<SysRoleMenuVo> sysRoleMenuVos = baseMapper.selectByRoleId(Wrappers.lambdaQuery(SysRoleMenu.class)
                 .eq(BaseEntity::getDeleteFlag, false)
                 .in(SysRoleMenu::getRoleId, roleByUser));

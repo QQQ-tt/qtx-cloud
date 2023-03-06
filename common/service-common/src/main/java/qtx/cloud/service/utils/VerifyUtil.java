@@ -8,26 +8,39 @@ import java.util.Random;
 
 /**
  * 图形验证码生成
+ *
  * @author qtx
  * @since 2022/11/22 14:12
  */
 public class VerifyUtil {
     /** 默认验证码字符集 */
-    private static final char[] chars = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
+    private static final char[] CHARS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e',
             'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U',
             'V', 'W', 'X', 'Y', 'Z'};
-    // 默认字符数量
+    /**
+     * 默认字符数量
+     */
     private final Integer SIZE;
-    // 默认干扰线数量
+    /**
+     * 默认干扰线数量
+     */
     private final int LINES;
-    // 默认宽度
+    /**
+     * 默认宽度
+     */
     private final int WIDTH;
-    // 默认高度
+    /**
+     * 默认高度
+     */
     private final int HEIGHT;
-    // 默认字体大小
+    /**
+     * 默认字体大小
+     */
     private final int FONT_SIZE;
-    // 默认字体倾斜
+    /**
+     * 默认字体倾斜
+     */
     private final boolean TILT;
 
     private final Color BACKGROUND_COLOR;
@@ -62,7 +75,7 @@ public class VerifyUtil {
      * Object[1]：验证码图片。
      */
     public Object[] createImage() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // 创建空白图片
         BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
         // 获取图片画笔
@@ -75,8 +88,6 @@ public class VerifyUtil {
         graphic.fillRect(0, 0, WIDTH, HEIGHT);
         // 画随机字符
         Random ran = new Random();
-
-        //graphic.setBackground(Color.WHITE);
 
         // 计算每个字符占的宽度，这里预留一个字符的位置用于左右边距
         int codeWidth = WIDTH / (SIZE + 1);
@@ -93,7 +104,7 @@ public class VerifyUtil {
                 // 随机一个倾斜的角度 -45到45度之间
                 int theta = ran.nextInt(45);
                 // 随机一个倾斜方向 左或者右
-                theta = (ran.nextBoolean() == true) ? theta : -theta;
+                theta = (ran.nextBoolean()) ? theta : -theta;
                 AffineTransform affineTransform = new AffineTransform();
                 affineTransform.rotate(Math.toRadians(theta), 0, 0);
                 font = font.deriveFont(affineTransform);
@@ -105,9 +116,9 @@ public class VerifyUtil {
             int x = (i * codeWidth) + (codeWidth / 2);
 
             // 取随机字符索引
-            int n = ran.nextInt(chars.length);
+            int n = ran.nextInt(CHARS.length);
             // 得到字符文本
-            String code = String.valueOf(chars[n]);
+            String code = String.valueOf(CHARS[n]);
             // 画字符
             graphic.drawString(code, x, y);
 
@@ -130,8 +141,7 @@ public class VerifyUtil {
      */
     private Color getRandomColor() {
         Random ran = new Random();
-        Color color = new Color(ran.nextInt(256), ran.nextInt(256), ran.nextInt(256));
-        return color;
+        return new Color(ran.nextInt(256), ran.nextInt(256), ran.nextInt(256));
     }
 
     /**
@@ -155,6 +165,7 @@ public class VerifyUtil {
 
         /**
          * 设置字符的个数
+         *
          * @param size
          * @return
          */
@@ -165,6 +176,7 @@ public class VerifyUtil {
 
         /**
          * 设置干扰线的条数
+         *
          * @param lines
          * @return
          */
@@ -175,6 +187,7 @@ public class VerifyUtil {
 
         /**
          * 设置图片的宽度
+         *
          * @param width
          * @return
          */
@@ -185,6 +198,7 @@ public class VerifyUtil {
 
         /**
          * 设置图片的高度
+         *
          * @param height
          * @return
          */
@@ -195,6 +209,7 @@ public class VerifyUtil {
 
         /**
          * 设置字体的大小
+         *
          * @param fontSize
          * @return
          */
@@ -205,6 +220,7 @@ public class VerifyUtil {
 
         /**
          * 设置是否需要倾斜
+         *
          * @param tilt
          * @return
          */
@@ -215,6 +231,7 @@ public class VerifyUtil {
 
         /**
          * 设置验证码的背景颜色
+         *
          * @param backgroundColor
          * @return
          */

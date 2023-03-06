@@ -85,7 +85,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public LoginVO login(LoginDTO user) throws DataException {
         String userCode = user.getUserCode();
         // 登录试错
-        Integer loginNumRedis = (Integer) redisUtils.getMsg(getRedisLoginNumId(userCode));
+        Integer loginNumRedis = (Integer) redisUtils.getMsg(getRedisLoginErrorNumKey(userCode));
         int loginNum = Optional.ofNullable(loginNumRedis).orElse(0);
         if (loginNum == StaticConstant.LOGIN_ERROR_UPPER_LIMIT) {
             log.info("userCode:{},{}", userCode, DataEnums.USER_LOGIN_LOCKING);
@@ -93,14 +93,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         // 验证码
         String secret = user.getSession();
-        String msg = (String) redisUtils.getMsg(getRedisCodeId(secret));
+        String msg = (String) redisUtils.getMsg(getRedisAuthCodeKey(secret));
         if (StringUtils.isBlank(msg)) {
             throw new DataException(DataEnums.AUTH_CODE_EXPIRED);
         }
         if (!user.getAuthCode().equalsIgnoreCase(msg)) {
-            int i = (int) redisUtils.getMsg(getRedisNumId(secret));
+            int i = (int) redisUtils.getMsg(getRedisAuthErrorNumKey(secret));
             if (i > 0) {
-                redisUtils.setMsgDiyTimeOut(getRedisNumId(secret), i - 1, 1, TimeUnit.MINUTES);
+                redisUtils.setMsgDiyTimeOut(getRedisAuthErrorNumKey(secret), i - 1, 1, TimeUnit.MINUTES);
                 throw new DataException(DataEnums.USER_CODE_FAIL);
             } else {
                 throw new DataException(DataEnums.AUTH_CODE_EXPIRED);
@@ -114,7 +114,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new DataException(DataEnums.USER_IS_NULL);
         }
         if (!passwordEncoder.matches(user.getPassword(), one.getPassword())) {
-            redisUtils.setMsgDiyTimeOut(getRedisLoginNumId(userCode), loginNum + 1, 10, TimeUnit.MINUTES);
+            redisUtils.setMsgDiyTimeOut(getRedisLoginErrorNumKey(userCode), loginNum + 1, 10, TimeUnit.MINUTES);
             throw new DataException(DataEnums.WRONG_PASSWORD);
         }
         return getLoginVO(userCode, secret, one);
@@ -139,12 +139,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .setSize(4)
                 .setLines(1)
                 .setFontSize(25)
-                .setTilt(true)
-                .setBackgroundColor(Color.LIGHT_GRAY)
+                .setBackgroundColor(Color.WHITE)
                 .build()
                 .createImage();
-        redisUtils.setMsgDiyTimeOut(getRedisCodeId(session), objs[0], 1, TimeUnit.MINUTES);
-        redisUtils.setMsgDiyTimeOut(getRedisNumId(session), 3, 1, TimeUnit.MINUTES);
+        redisUtils.setMsgDiyTimeOut(getRedisAuthCodeKey(session), objs[0], 1, TimeUnit.MINUTES);
+        redisUtils.setMsgDiyTimeOut(getRedisAuthErrorNumKey(session), 3, 1, TimeUnit.MINUTES);
         // 将图片输出给浏览器
         BufferedImage image = (BufferedImage) objs[1];
         response.setContentType("image/png");
@@ -267,16 +266,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         sysUserRoleService.remove(Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, userCode));
     }
 
-    private String getRedisCodeId(String id) {
-        return StaticConstant.REDIS_LOGIN_AUTH_CODE + id + StaticConstant.REDIS_CODE;
+    private String getRedisAuthCodeKey(String userCode) {
+        return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_CODE;
     }
 
-    private String getRedisNumId(String id) {
-        return StaticConstant.REDIS_LOGIN_AUTH_CODE + id + StaticConstant.REDIS_NUM;
+    private String getRedisAuthErrorNumKey(String userCode) {
+        return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_NUM;
     }
 
-    private String getRedisLoginNumId(String id) {
-        return StaticConstant.REDIS_LOGIN_AUTH_CODE + id + StaticConstant.REDIS_LOGIN_NUM;
+    private String getRedisLoginErrorNumKey(String userCode) {
+        return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_LOGIN_NUM;
     }
 
     private LoginVO getLoginVO(String userCode, String secret, SysUser user) {
@@ -299,8 +298,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 JSONObject.parseObject(JSON.toJSONBytes(build), Map.class),
                 refreshTime,
                 TimeUnit.SECONDS);
-        redisUtils.deleteByKey(getRedisCodeId(secret));
-        redisUtils.deleteByKey(getRedisLoginNumId(userCode));
+        redisUtils.deleteByKey(getRedisAuthCodeKey(secret));
+        redisUtils.deleteByKey(getRedisLoginErrorNumKey(userCode));
         log.info("login user :{}", userCode);
         return new LoginVO().setAccessToken(accessToken)
                 .setRefreshToken(refreshToken)

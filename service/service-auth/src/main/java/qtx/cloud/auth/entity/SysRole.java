@@ -31,10 +31,6 @@ public class SysRole extends BaseEntity {
     @TableField("role_name")
     private String roleName;
 
-    @ApiModelProperty("对应服务")
-    @TableField("platform")
-    private String platform;
-
     @ApiModelProperty("备注")
     @TableField("remark")
     private String remark;

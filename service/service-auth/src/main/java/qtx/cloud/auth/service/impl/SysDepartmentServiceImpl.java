@@ -60,6 +60,7 @@ public class SysDepartmentServiceImpl extends ServiceImpl<SysDepartmentMapper, S
                     .eq(StringUtils.isNotBlank(entity.getDepartmentName()),
                             SysDepartment::getDepartmentName,
                             entity.getDepartmentName())
+                    .or()
                     .eq(StringUtils.isNotBlank(entity.getDepartmentCode()),
                             SysDepartment::getDepartmentCode,
                             entity.getDepartmentCode())
