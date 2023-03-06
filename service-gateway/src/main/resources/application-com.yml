@@ -8,16 +8,14 @@ spring:
   cloud:
     nacos:
       config:
-        group: DEFAULT_GROUP
         server-addr: 172.16.6.77:8848
-        namespace: f5b2bb31-650a-4d32-8ae1-66b11500243d
+        namespace: 2d715237-c667-4294-8d97-b87de336fb79
       discovery:
         server-addr: 172.16.6.77:8848
-        namespace: f5b2bb31-650a-4d32-8ae1-66b11500243d
+        namespace: 2d715237-c667-4294-8d97-b87de336fb79
   config:
     import:
-      - optional:nacos:service-gateway.yaml  # 监听 DEFAULT_GROUP:test.yml
-service-name: 127.0.0.1
-
+      - optional:nacos:service-gateway.yaml?group=CLOUD_GROUP  # 监听 DEFAULT_GROUP:test.yml
+service-name: service-auth
 
 

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: service-auth
+  cloud:
+    nacos:
+      config:
+        server-addr: 172.16.6.77:8848
+        namespace: 2d715237-c667-4294-8d97-b87de336fb79
+      discovery:
+        server-addr: 172.16.6.77:8848
+        namespace: 2d715237-c667-4294-8d97-b87de336fb79
+  config:
+    import:
+      - optional:nacos:service-auth.yaml?group=CLOUD_GROUP  # 监听 DEFAULT_GROUP:test.yml
+knife4j:
+  enable: true
