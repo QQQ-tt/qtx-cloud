@@ -46,12 +46,16 @@ public class RedisConfig {
 
     private Integer timeout;
 
+    private Integer database;
+
     @Bean
+
     public RedisTemplate<String, Object> redisTemplate() {
         RedisStandaloneConfiguration redisStandaloneConfiguration = new RedisStandaloneConfiguration();
         redisStandaloneConfiguration.setHostName(host);
         redisStandaloneConfiguration.setPort(port);
         redisStandaloneConfiguration.setPassword(RedisPassword.of(password));
+        redisStandaloneConfiguration.setDatabase(database);
 
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
 

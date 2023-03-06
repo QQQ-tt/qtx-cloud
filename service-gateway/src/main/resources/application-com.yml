@@ -16,6 +16,6 @@ spring:
   config:
     import:
       - optional:nacos:service-gateway.yaml?group=CLOUD_GROUP  # 监听 DEFAULT_GROUP:test.yml
-service-name: service-auth
+service-name: 127.0.0.1
 
 

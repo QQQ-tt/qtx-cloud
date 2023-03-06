@@ -23,6 +23,7 @@ import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.java.enums.DataEnums;
 import qtx.cloud.java.exception.DataException;
 import qtx.cloud.model.base.BaseEntity;
+import qtx.cloud.model.bo.auth.UserBO;
 import qtx.cloud.model.dto.auth.*;
 import qtx.cloud.model.vo.auth.CreateVO;
 import qtx.cloud.model.vo.auth.LoginVO;
@@ -181,12 +182,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         }
         while (flag);
         user.setPassword(passwordEncoder.encode(password));
-        if (save(SysUser.builder()
+        SysUser sysUser = SysUser.builder()
                 .userCode(user.getUserCode())
                 .userName(user.getUserName())
                 .password(user.getPassword())
-                .build())) {
+                .build();
+        if (save(sysUser)) {
             sysUserInfoService.save(SysUserInfo.builder().userCode(user.getUserCode()).build());
+            UserBO userBO = UserBO.builder()
+                    .id(sysUser.getId())
+                    .userName(user.getUserName())
+                    .userCode(user.getUserCode())
+                    .password(user.getPassword())
+                    .build();
+            redisUtils.setHashMsgAll(StaticConstant.SYS_USER + user.getUserCode() + StaticConstant.REDIS_INFO,
+                    JSONObject.parseObject(com.alibaba.fastjson2.JSON.toJSONString(userBO), Map.class));
             return new CreateVO(user.getUserName(), user.getUserCode(), password);
         } else {
             throw new DataException(DataEnums.DATA_INSERT_FAIL);
@@ -234,8 +244,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean changePassword(SysUserPasswordDTO user) throws DataException {
         String userCard = StringUtils.isBlank(user.getUserCode()) ? commonMethod.getUser() : user.getUserCode();
+        String encode = passwordEncoder.encode(user.getNewPassword());
+        redisUtils.setHashMsg(StaticConstant.SYS_USER + userCard + StaticConstant.REDIS_INFO, "password", encode);
         return update(Wrappers.lambdaUpdate(SysUser.class)
-                .set(SysUser::getPassword, passwordEncoder.encode(user.getNewPassword()))
+                .set(SysUser::getPassword, encode)
                 .eq(SysUser::getUserCode, userCard));
     }
 

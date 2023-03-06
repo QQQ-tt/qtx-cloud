@@ -82,7 +82,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         param.put(StaticConstant.URL, path.toString());
         HttpEntity<HashMap<String, String>> requestEntity = new HttpEntity<>(requestHeaders);
         try {
-            ResponseEntity<AuthVO> responseToken = template.exchange("http://" + serviceName + ":2008/auth/user/token"
+            ResponseEntity<AuthVO> responseToken = template.exchange("http://" + serviceName + ":3008/auth/user/token"
                             + "?token={token}&ip={ip}&userCode={userCode}&url={url}",
                     HttpMethod.GET,
                     requestEntity,
