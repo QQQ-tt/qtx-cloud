@@ -33,4 +33,10 @@
                  left join sys_department sd on sur.delete_flag = sd.delete_flag and sur.department_id = sd.id
         order by department_code = #{dto.departmentCode} desc, id desc
     </select>
+    <select id="selectAll" resultType="qtx.cloud.model.bo.auth.UserBO">
+        select id, user_code, user_name, password
+        from sys_user
+        where status = true
+          and delete_flag = false
+    </select>
 </mapper>

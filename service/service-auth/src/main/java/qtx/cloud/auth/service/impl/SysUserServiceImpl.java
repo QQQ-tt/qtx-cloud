@@ -107,17 +107,30 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             }
         }
         // 密码校验
-        SysUser one = baseMapper.selectOne(Wrappers.lambdaQuery(SysUser.class)
-                .eq(SysUser::getUserCode, userCode)
-                .eq(SysUser::getStatus, true));
-        if (Objects.isNull(one)) {
+        Map<Object, Object> hashMsg =
+                redisUtils.getHashMsg(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
+        String password = null;
+        String userName = null;
+        if (hashMsg == null) {
+            SysUser one = baseMapper.selectOne(Wrappers.lambdaQuery(SysUser.class)
+                    .eq(SysUser::getUserCode, userCode)
+                    .eq(SysUser::getStatus, true));
+            if (one != null) {
+                password = one.getPassword();
+                userName = one.getUserName();
+            }
+        } else {
+            password = (String) hashMsg.get("password");
+            userName = (String) hashMsg.get("userName");
+        }
+        if (Objects.isNull(userName)) {
             throw new DataException(DataEnums.USER_IS_NULL);
         }
-        if (!passwordEncoder.matches(user.getPassword(), one.getPassword())) {
+        if (!passwordEncoder.matches(user.getPassword(), password)) {
             redisUtils.setMsgDiyTimeOut(getRedisLoginErrorNumKey(userCode), loginNum + 1, 10, TimeUnit.MINUTES);
             throw new DataException(DataEnums.WRONG_PASSWORD);
         }
-        return getLoginVO(userCode, secret, one);
+        return getLoginVO(userCode, secret, userName);
     }
 
     @Override
@@ -254,12 +267,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
 
     @Override
     public LoginVO refreshToken(String refreshToken, String userCode) {
-        Map<Object, Object> user = redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + ":info");
+        Map<Object, Object> user =
+                redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
         if (Objects.isNull(user)) {
             throw new DataException(DataEnums.TOKEN_IS_NULL);
         }
-        SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, user.get("userCode")));
-        return getLoginVO(userCode, (String) user.get("secret"), one);
+        return getLoginVO(userCode, (String) user.get("secret"), (String) user.get("userName"));
     }
 
     private void removeRole(String userCode) {
@@ -278,15 +291,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_LOGIN_NUM;
     }
 
-    private LoginVO getLoginVO(String userCode, String secret, SysUser user) {
+    private LoginVO getLoginVO(String userCode, String secret, String name) {
         deleteRedisUserInfo(userCode);
         // 角色
-        String userName = user.getUserName();
-        String role = sysUserRoleService.getRoleByUser(user.getUserCode());
+        String role = sysUserRoleService.getRoleByUser(userCode);
         String accessToken = jwtUtils.generateToken(String.valueOf(userCode), tokenTime, secret);
         String refreshToken = NumUtils.uuid();
         User build = User.builder()
-                .userName(userName)
+                .userName(name)
                 .userCode(userCode)
                 .role(role)
                 .ip(commonMethod.getIp())
@@ -294,7 +306,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-        redisUtils.setHashMsgAllTimeOut(StaticConstant.LOGIN_USER + userCode + ":info",
+        redisUtils.setHashMsgAllTimeOut(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO,
                 JSONObject.parseObject(JSON.toJSONBytes(build), Map.class),
                 refreshTime,
                 TimeUnit.SECONDS);
@@ -303,7 +315,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         log.info("login user :{}", userCode);
         return new LoginVO().setAccessToken(accessToken)
                 .setRefreshToken(refreshToken)
-                .setName(userName)
+                .setName(name)
                 .setUserCode(userCode);
     }
 
@@ -313,6 +325,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param userCode 用户工号
      */
     public boolean deleteRedisUserInfo(String userCode) {
-        return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + ":info");
+        return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
     }
 }

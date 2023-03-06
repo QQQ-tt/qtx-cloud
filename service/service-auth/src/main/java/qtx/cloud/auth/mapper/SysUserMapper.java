@@ -6,11 +6,14 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import qtx.cloud.auth.entity.SysUser;
-import qtx.cloud.model.dto.auth.SysUserDepartmentDTO;
-import qtx.cloud.model.vo.auth.SysUserVO;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import qtx.cloud.auth.entity.SysUser;
+import qtx.cloud.model.bo.auth.UserBO;
+import qtx.cloud.model.dto.auth.SysUserDepartmentDTO;
+import qtx.cloud.model.vo.auth.SysUserVO;
+
+import java.util.List;
 
 /**
  * <p>
@@ -41,5 +44,10 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
      */
     Page<SysUserVO> selectPageByDepartment(IPage<Object> page, @Param("dto") SysUserDepartmentDTO dto);
 
-
+    /**
+     * 项目启动初始化redis数据
+     *
+     * @return
+     */
+    List<UserBO> selectAll();
 }

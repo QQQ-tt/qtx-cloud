@@ -31,7 +31,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public AuthVO authToken(String token, String ip, String userCode, String url) {
-        Map<Object, Object> s = redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + ":info");
+        Map<Object, Object> s = redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
         AuthVO vo = new AuthVO();
         // 验证token
         if (Objects.isNull(s)) {

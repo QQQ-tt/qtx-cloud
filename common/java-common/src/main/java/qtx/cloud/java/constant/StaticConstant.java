@@ -24,6 +24,8 @@ public class StaticConstant {
      * 请求地址
      */
     public static final String URL = "url";
+    public static final String REDIS_INFO = ":info";
+
     /**
      * 用户登录验证码前缀
      */
@@ -38,6 +40,8 @@ public class StaticConstant {
      * 试错次数
      */
     public static final String REDIS_NUM = ":num";
+
+    public static final String SYS_USER = "sys:user:";
 
     /**
      * 登录错误次数redis
