@@ -28,4 +28,6 @@ public class User {
     private String accessToken;
 
     private String refreshToken;
+
+    private String time;
 }

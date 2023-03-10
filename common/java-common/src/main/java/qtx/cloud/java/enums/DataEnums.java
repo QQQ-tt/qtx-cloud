@@ -24,7 +24,7 @@ public enum DataEnums {
     /**
      * 密码错误
      */
-    WRONG_PASSWORD("密码错误", 401),
+    WRONG_PASSWORD("密码错误", 205),
     /**
      * 无法访问
      */
@@ -36,15 +36,15 @@ public enum DataEnums {
     /**
      * 登录已过期
      */
-    USER_LOGIN_EXPIRED("登录已过期", 401),
+    USER_LOGIN_EXPIRED("登录已过期", 201),
     /**
      * 验证码已过期
      */
-    AUTH_CODE_EXPIRED("验证码已过期", 401),
+    AUTH_CODE_EXPIRED("验证码已过期", 201),
     /**
      * token不存在
      */
-    TOKEN_IS_NULL("token不存在", 401),
+    TOKEN_IS_NULL("token不存在", 201),
     /**
      * 账户已锁定5分钟
      */

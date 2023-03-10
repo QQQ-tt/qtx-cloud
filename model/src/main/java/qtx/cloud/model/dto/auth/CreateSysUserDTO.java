@@ -25,6 +25,9 @@ public class CreateSysUserDTO {
     @ApiModelProperty("科室id")
     private Integer departmentId;
 
+    @ApiModelProperty("密码")
+    private String password;
+
     @ApiModelProperty("角色")
     private List<Integer> roleId;
 }

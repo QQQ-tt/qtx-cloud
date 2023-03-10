@@ -57,13 +57,13 @@ public class SysDepartmentServiceImpl extends ServiceImpl<SysDepartmentMapper, S
         List<SysDepartment> list;
         if (StringUtils.isNotBlank(entity.getDepartmentName()) || StringUtils.isNotBlank(entity.getDepartmentCode()) || entity.getId() != null) {
             list = list(Wrappers.lambdaQuery(SysDepartment.class)
-                    .eq(StringUtils.isNotBlank(entity.getDepartmentName()),
-                            SysDepartment::getDepartmentName,
-                            entity.getDepartmentName())
-                    .or()
-                    .eq(StringUtils.isNotBlank(entity.getDepartmentCode()),
-                            SysDepartment::getDepartmentCode,
-                            entity.getDepartmentCode())
+                    .and(e -> e.eq(StringUtils.isNotBlank(entity.getDepartmentName()),
+                                    SysDepartment::getDepartmentName,
+                                    entity.getDepartmentName())
+                            .or()
+                            .eq(StringUtils.isNotBlank(entity.getDepartmentCode()),
+                                    SysDepartment::getDepartmentCode,
+                                    entity.getDepartmentCode()))
                     .ne(entity.getId() != null, SysDepartment::getId, entity.getId()));
         } else {
             throw new DataException(DataEnums.DATA_IS_ABNORMAL);

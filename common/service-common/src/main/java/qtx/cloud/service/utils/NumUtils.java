@@ -4,8 +4,8 @@ import java.util.Random;
 import java.util.UUID;
 
 /**
- * @author: QTX
- * @Since: 2022/8/31
+ * @author qtx
+ * @since 2022/8/31
  */
 public class NumUtils {
     /**

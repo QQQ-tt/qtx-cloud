@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import qtx.cloud.oss.service.OssService;
 
 /**
- * @author : qtx
- * @since : 2022/11/30 14:21
+ * @author qtx
+ * @since 2022/11/30 14:21
  */
 @Api(hidden = true)
 @RestController
@@ -22,7 +22,7 @@ public class OssApiController {
     }
 
     @GetMapping("/getUrl")
-    public String getUrl(@RequestParam(value = "fileObject",name = "文件对象") String fileObject) {
+    public String getUrl(@RequestParam(value = "fileObject", name = "文件对象") String fileObject) {
         return service.getObjectUrl(fileObject);
     }
 

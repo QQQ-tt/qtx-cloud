@@ -1,5 +1,6 @@
 package qtx.cloud.auth.service.impl;
 
+import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -36,6 +37,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -128,7 +130,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             throw new DataException(DataEnums.USER_IS_NULL);
         }
         if (!passwordEncoder.matches(user.getPassword(), password)) {
-            redisUtils.setMsgDiyTimeOut(getRedisLoginErrorNumKey(userCode), loginNum + 1, 10, TimeUnit.MINUTES);
+            redisUtils.setMsgDiyTimeOut(getRedisLoginErrorNumKey(userCode),
+                    loginNum + 1,
+                    StaticConstant.LOGIN_ERROR_LOCK_LIMIT,
+                    TimeUnit.MINUTES);
             throw new DataException(DataEnums.WRONG_PASSWORD);
         }
         return getLoginVO(userCode, secret, userName);
@@ -166,6 +171,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     @Override
+    @SentinelResource(value = "sayHello")
     public CreateVO createUser(CreateUserDTO user) throws DataException {
         String password = user.getPassword();
         if (StringUtils.isBlank(user.getUserName()) && StringUtils.isBlank(password)) {
@@ -189,14 +195,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .build();
         if (save(sysUser)) {
             sysUserInfoService.save(SysUserInfo.builder().userCode(user.getUserCode()).build());
-            UserBO userBO = UserBO.builder()
-                    .id(sysUser.getId())
-                    .userName(user.getUserName())
-                    .userCode(user.getUserCode())
-                    .password(user.getPassword())
-                    .build();
-            redisUtils.setHashMsgAll(StaticConstant.SYS_USER + user.getUserCode() + StaticConstant.REDIS_INFO,
-                    JSONObject.parseObject(com.alibaba.fastjson2.JSON.toJSONString(userBO), Map.class));
+            addUserToRedis(sysUser);
             return new CreateVO(user.getUserName(), user.getUserCode(), password);
         } else {
             throw new DataException(DataEnums.DATA_INSERT_FAIL);
@@ -211,10 +210,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = new SysUser();
         SysUserInfo sysUserInfo = new SysUserInfo();
         BeanUtils.copyProperties(user, sysUser);
+        sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
         BeanUtils.copyProperties(user, sysUserInfo);
         try {
             if (sysUser.getId() == null) {
                 sysUserInfoService.save(sysUserInfo);
+                addUserToRedis(sysUser);
             } else {
                 sysUserInfoService.update(sysUserInfo,
                         Wrappers.lambdaUpdate(SysUserInfo.class).eq(SysUserInfo::getUserCode, sysUser.getUserCode()));
@@ -244,15 +245,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     public boolean changePassword(SysUserPasswordDTO user) throws DataException {
         String userCard = StringUtils.isBlank(user.getUserCode()) ? commonMethod.getUser() : user.getUserCode();
-        String encode = passwordEncoder.encode(user.getNewPassword());
-        redisUtils.setHashMsg(StaticConstant.SYS_USER + userCard + StaticConstant.REDIS_INFO, "password", encode);
-        return update(Wrappers.lambdaUpdate(SysUser.class)
-                .set(SysUser::getPassword, encode)
-                .eq(SysUser::getUserCode, userCard));
+        SysUser sysUser = Optional.ofNullable(getOne(Wrappers.lambdaQuery(SysUser.class)
+                .eq(SysUser::getUserCode, userCard))).orElse(new SysUser());
+        if (passwordEncoder.matches(user.getOldPassword(), sysUser.getPassword())) {
+            String encode = passwordEncoder.encode(user.getNewPassword());
+            redisUtils.setHashMsg(StaticConstant.SYS_USER + userCard + StaticConstant.REDIS_INFO, "password", encode);
+            return update(Wrappers.lambdaUpdate(SysUser.class)
+                    .set(SysUser::getPassword, encode)
+                    .eq(SysUser::getUserCode, userCard));
+        } else {
+            throw new DataException(DataEnums.WRONG_PASSWORD);
+        }
     }
 
     @Override
     public boolean changeStatus(String userCode, Boolean status) {
+        if (!status) {
+            removeUserOnRedis(userCode);
+            deleteRedisUserInfo(userCode);
+        }
         return update(Wrappers.lambdaUpdate(SysUser.class)
                 .set(SysUser::getStatus, status)
                 .eq(SysUser::getUserCode, userCode));
@@ -317,6 +328,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .secret(secret)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .time(LocalDateTime.now().toString())
                 .build();
         redisUtils.setHashMsgAllTimeOut(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO,
                 JSONObject.parseObject(JSON.toJSONBytes(build), Map.class),
@@ -332,11 +344,36 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
-     * 清空但前用户在redis所有信息
+     * 清空但前用户在redis登录信息
      *
      * @param userCode 用户工号
      */
     public boolean deleteRedisUserInfo(String userCode) {
         return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
+    }
+
+    /**
+     * 实时添加用户到redis
+     *
+     * @param sysUser 用户基本信息
+     */
+    private void addUserToRedis(SysUser sysUser) {
+        UserBO userBO = UserBO.builder()
+                .id(sysUser.getId())
+                .userName(sysUser.getUserName())
+                .userCode(sysUser.getUserCode())
+                .password(sysUser.getPassword())
+                .build();
+        redisUtils.setHashMsgAll(StaticConstant.SYS_USER + sysUser.getUserCode() + StaticConstant.REDIS_INFO,
+                JSONObject.parseObject(com.alibaba.fastjson2.JSON.toJSONString(userBO), Map.class));
+    }
+
+    /**
+     * 实时移除redis用户
+     *
+     * @param userCode 工号
+     */
+    public void removeUserOnRedis(String userCode) {
+        redisUtils.deleteByKey(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
     }
 }

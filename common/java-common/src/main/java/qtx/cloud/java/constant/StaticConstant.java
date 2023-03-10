@@ -52,6 +52,10 @@ public class StaticConstant {
      * 账户登录错误次数上线
      */
     public static final int LOGIN_ERROR_UPPER_LIMIT = 5;
+    /**
+     * 账户锁定时间
+     */
+    public static final int LOGIN_ERROR_LOCK_LIMIT = 10;
 
     /**
      * 用户登录token

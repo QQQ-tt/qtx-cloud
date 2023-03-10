@@ -5,8 +5,8 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 /**
- * @author: QTX
- * @Since: 2022/8/31
+ * @author qtx
+ * @since 2022/8/31
  */
 @Data
 public class SysUserPasswordDTO {
@@ -14,4 +14,7 @@ public class SysUserPasswordDTO {
 
     @NotNull
     private String newPassword;
+
+    @NotNull
+    private String oldPassword;
 }
