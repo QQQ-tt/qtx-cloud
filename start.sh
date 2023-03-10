@@ -2,10 +2,12 @@
 start1(){
     echo "starting gateway....."
     nohup java -jar /gateway.jar > gateway.log &
+    sleep 30s
 }
 start2(){
     echo "starting auth....."
     nohup java -jar /auth.jar > auth.log &
+    sleep 30s
 }
 #定义一个方法pid_health_check $1是这个方法的参数,其他地方调用此方法传入进来
 pid_health_check(){
@@ -30,11 +32,11 @@ do
     ##if语句 (ps -ef|grep relations-analysis)查询结果小于1表示此服务已经停了
     if [[ $process_cnt -lt 1 ]]
     then
-       echo "start1"
+        echo "start1"
         start1
     fi
-    echo "check healthy of admin-client...."
-    process_cnt=$(pid_health_check admin)
+    echo "check healthy of auth...."
+    process_cnt=$(pid_health_check auth)
     if [[ $process_cnt -lt 1 ]]
     then
         echo "start2"
