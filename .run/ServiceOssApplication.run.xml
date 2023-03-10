@@ -1,6 +1,5 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="ServiceOssApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <option name="ACTIVE_PROFILES" value="com" />
     <module name="service-oss" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="qtx.cloud.oss.ServiceOssApplication" />
     <method v="2">
