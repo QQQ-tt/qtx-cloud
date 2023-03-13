@@ -69,4 +69,8 @@ public class StaticConstant {
      * 日志打印放行
      */
     public static final String OSS_URL = "/file/*";
+
+    public static final int STRING_MAX_SIZE = 255;
+
+    public static final String STRING_SIZ_ERROR = "字符长度异常";
 }
