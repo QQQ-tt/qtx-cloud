@@ -9,7 +9,7 @@ ADD service-gateway/target/service-gateway-1.0-SNAPSHOT.jar gateway.jar
 
 ADD start.sh /start.sh
 
-RUN CHMOD +x /start.sh
+RUN chmod +x /start.sh
 
 #设置镜像对外暴露端口
 EXPOSE 3000
