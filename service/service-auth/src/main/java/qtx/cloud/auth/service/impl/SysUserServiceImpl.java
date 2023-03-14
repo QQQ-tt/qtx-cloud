@@ -7,6 +7,17 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.time.LocalDateTime;
+import java.util.*;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,349 +42,362 @@ import qtx.cloud.model.vo.auth.LoginVO;
 import qtx.cloud.model.vo.auth.SysUserVO;
 import qtx.cloud.service.utils.*;
 
-import javax.imageio.ImageIO;
-import javax.servlet.http.HttpServletResponse;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
 /**
- * <p>
  * 服务实现类
- * </p>
  *
  * @author qtx
  * @since 2022-08-30
  */
 @Slf4j
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements SysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
+    implements SysUserService {
 
-    private final JwtUtils jwtUtils;
+  private final JwtUtils jwtUtils;
 
-    private final PasswordEncoder passwordEncoder;
+  private final PasswordEncoder passwordEncoder;
 
-    private final CommonMethod commonMethod;
+  private final CommonMethod commonMethod;
 
-    private final SysUserRoleService sysUserRoleService;
+  private final SysUserRoleService sysUserRoleService;
 
-    private final RedisUtils redisUtils;
+  private final RedisUtils redisUtils;
 
-    private final SysUserInfoService sysUserInfoService;
+  private final SysUserInfoService sysUserInfoService;
 
-    @Value("${time.token}")
-    private Long tokenTime;
+  @Value("${time.token}")
+  private Long tokenTime;
 
-    @Value("${time.refresh}")
-    private Integer refreshTime;
+  @Value("${time.refresh}")
+  private Integer refreshTime;
 
-    public SysUserServiceImpl(JwtUtils jwtUtils, PasswordEncoder passwordEncoder, CommonMethod commonMethod,
-                              SysUserRoleService sysUserRoleService, RedisUtils redisUtils,
-                              SysUserInfoService sysUserInfoService) {
-        this.jwtUtils = jwtUtils;
-        this.passwordEncoder = passwordEncoder;
-        this.commonMethod = commonMethod;
-        this.sysUserRoleService = sysUserRoleService;
-        this.redisUtils = redisUtils;
-        this.sysUserInfoService = sysUserInfoService;
+  public SysUserServiceImpl(
+      JwtUtils jwtUtils,
+      PasswordEncoder passwordEncoder,
+      CommonMethod commonMethod,
+      SysUserRoleService sysUserRoleService,
+      RedisUtils redisUtils,
+      SysUserInfoService sysUserInfoService) {
+    this.jwtUtils = jwtUtils;
+    this.passwordEncoder = passwordEncoder;
+    this.commonMethod = commonMethod;
+    this.sysUserRoleService = sysUserRoleService;
+    this.redisUtils = redisUtils;
+    this.sysUserInfoService = sysUserInfoService;
+  }
+
+  @Override
+  public LoginVO login(LoginDTO user) throws DataException {
+    String userCode = user.getUserCode();
+    // 登录试错
+    Integer loginNumRedis = (Integer) redisUtils.getMsg(getRedisLoginErrorNumKey(userCode));
+    int loginNum = Optional.ofNullable(loginNumRedis).orElse(0);
+    if (loginNum == StaticConstant.LOGIN_ERROR_UPPER_LIMIT) {
+      log.info("userCode:{},{}", userCode, DataEnums.USER_LOGIN_LOCKING);
+      throw new DataException(DataEnums.USER_LOGIN_LOCKING);
     }
-
-    @Override
-    public LoginVO login(LoginDTO user) throws DataException {
-        String userCode = user.getUserCode();
-        // 登录试错
-        Integer loginNumRedis = (Integer) redisUtils.getMsg(getRedisLoginErrorNumKey(userCode));
-        int loginNum = Optional.ofNullable(loginNumRedis).orElse(0);
-        if (loginNum == StaticConstant.LOGIN_ERROR_UPPER_LIMIT) {
-            log.info("userCode:{},{}", userCode, DataEnums.USER_LOGIN_LOCKING);
-            throw new DataException(DataEnums.USER_LOGIN_LOCKING);
-        }
-        // 验证码
-        String secret = user.getSession();
-        String msg = (String) redisUtils.getMsg(getRedisAuthCodeKey(secret));
-        if (StringUtils.isBlank(msg)) {
-            throw new DataException(DataEnums.AUTH_CODE_EXPIRED);
-        }
-        if (!user.getAuthCode().equalsIgnoreCase(msg)) {
-            int i = (int) redisUtils.getMsg(getRedisAuthErrorNumKey(secret));
-            if (i > 0) {
-                redisUtils.setMsgDiyTimeOut(getRedisAuthErrorNumKey(secret), i - 1, 1, TimeUnit.MINUTES);
-                throw new DataException(DataEnums.USER_CODE_FAIL);
-            } else {
-                throw new DataException(DataEnums.AUTH_CODE_EXPIRED);
-            }
-        }
-        // 密码校验
-        Map<Object, Object> hashMsg =
-                redisUtils.getHashMsg(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
-        String password = null;
-        String userName = null;
-        if (hashMsg == null) {
-            SysUser one = baseMapper.selectOne(Wrappers.lambdaQuery(SysUser.class)
-                    .eq(SysUser::getUserCode, userCode)
-                    .eq(SysUser::getStatus, true));
-            if (one != null) {
-                password = one.getPassword();
-                userName = one.getUserName();
-            }
-        } else {
-            password = (String) hashMsg.get("password");
-            userName = (String) hashMsg.get("userName");
-        }
-        if (Objects.isNull(userName)) {
-            throw new DataException(DataEnums.USER_IS_NULL);
-        }
-        if (!passwordEncoder.matches(user.getPassword(), password)) {
-            redisUtils.setMsgDiyTimeOut(getRedisLoginErrorNumKey(userCode),
-                    loginNum + 1,
-                    StaticConstant.LOGIN_ERROR_LOCK_LIMIT,
-                    TimeUnit.MINUTES);
-            throw new DataException(DataEnums.WRONG_PASSWORD);
-        }
-        return getLoginVO(userCode, secret, userName);
+    // 验证码
+    String secret = user.getSession();
+    String msg = (String) redisUtils.getMsg(getRedisAuthCodeKey(secret));
+    if (StringUtils.isBlank(msg)) {
+      throw new DataException(DataEnums.AUTH_CODE_EXPIRED);
     }
-
-    @Override
-    public SysUserVO getOneOnline() {
-        String user = commonMethod.getUser();
-        SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, user));
-        SysUserVO vo = new SysUserVO();
-        BeanUtils.copyProperties(one, vo);
-        return vo;
+    if (!user.getAuthCode().equalsIgnoreCase(msg)) {
+      int i = (int) redisUtils.getMsg(getRedisAuthErrorNumKey(secret));
+      if (i > 0) {
+        redisUtils.setMsgDiyTimeOut(getRedisAuthErrorNumKey(secret), i - 1, 1, TimeUnit.MINUTES);
+        throw new DataException(DataEnums.USER_CODE_FAIL);
+      } else {
+        throw new DataException(DataEnums.AUTH_CODE_EXPIRED);
+      }
     }
-
-    @Override
-    public void getAuthCode(HttpServletResponse response, String session) throws IOException {
-        // 利用图片工具生成图片
-        // 返回的数组第一个参数是生成的验证码，第二个参数是生成的图片
-        Object[] objs = VerifyUtil.newBuilder()
-                .setWidth(120)
-                .setHeight(35)
-                .setSize(4)
-                .setLines(1)
-                .setFontSize(25)
-                .setBackgroundColor(Color.WHITE)
-                .build()
-                .createImage();
-        redisUtils.setMsgDiyTimeOut(getRedisAuthCodeKey(session), objs[0], 1, TimeUnit.MINUTES);
-        redisUtils.setMsgDiyTimeOut(getRedisAuthErrorNumKey(session), 3, 1, TimeUnit.MINUTES);
-        // 将图片输出给浏览器
-        BufferedImage image = (BufferedImage) objs[1];
-        response.setContentType("image/png");
-        OutputStream os = response.getOutputStream();
-        ImageIO.write(image, "png", os);
+    // 密码校验
+    Map<Object, Object> hashMsg =
+        redisUtils.getHashMsg(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
+    String password = null;
+    String userName = null;
+    if (hashMsg == null) {
+      SysUser one =
+          baseMapper.selectOne(
+              Wrappers.lambdaQuery(SysUser.class)
+                  .eq(SysUser::getUserCode, userCode)
+                  .eq(SysUser::getStatus, true));
+      if (one != null) {
+        password = one.getPassword();
+        userName = one.getUserName();
+      }
+    } else {
+      password = (String) hashMsg.get("password");
+      userName = (String) hashMsg.get("userName");
     }
-
-    @Override
-    @SentinelResource(value = "sayHello")
-    public CreateVO createUser(CreateUserDTO user) throws DataException {
-        String password = user.getPassword();
-        if (StringUtils.isBlank(user.getUserName()) && StringUtils.isBlank(password)) {
-            throw new DataException(DataEnums.DATA_IS_ABNORMAL);
-        }
-        Set<String> set = list().stream().map(SysUser::getUserCode).collect(Collectors.toSet());
-        boolean flag;
-        do {
-            String s = String.valueOf(NumUtils.numUserCard());
-            flag = set.contains(s);
-            if (!flag) {
-                user.setUserCode(s);
-            }
-        }
-        while (flag);
-        user.setPassword(passwordEncoder.encode(password));
-        SysUser sysUser = SysUser.builder()
-                .userCode(user.getUserCode())
-                .userName(user.getUserName())
-                .password(user.getPassword())
-                .build();
-        if (save(sysUser)) {
-            sysUserInfoService.save(SysUserInfo.builder().userCode(user.getUserCode()).build());
-            addUserToRedis(sysUser);
-            return new CreateVO(user.getUserName(), user.getUserCode(), password);
-        } else {
-            throw new DataException(DataEnums.DATA_INSERT_FAIL);
-        }
+    if (Objects.isNull(userName)) {
+      throw new DataException(DataEnums.USER_IS_NULL);
     }
-
-    @Override
-    public boolean saveOrUpdateNew(CreateSysUserDTO user) throws DataException {
-        List<Integer> roleId = user.getRoleId();
-        removeRole(user.getUserCode());
-        sysUserRoleService.addRoleWithUser(new UserRolesDTO().setUserCode(user.getUserCode()).setRoleIds(roleId));
-        SysUser sysUser = new SysUser();
-        SysUserInfo sysUserInfo = new SysUserInfo();
-        BeanUtils.copyProperties(user, sysUser);
-        sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
-        BeanUtils.copyProperties(user, sysUserInfo);
-        try {
-            if (sysUser.getId() == null) {
-                sysUserInfoService.save(sysUserInfo);
-                addUserToRedis(sysUser);
-            } else {
-                sysUserInfoService.update(sysUserInfo,
-                        Wrappers.lambdaUpdate(SysUserInfo.class).eq(SysUserInfo::getUserCode, sysUser.getUserCode()));
-            }
-            return saveOrUpdate(sysUser);
-        } catch (Exception e) {
-            throw new DataException(DataEnums.DATA_INSERT_FAIL);
-        }
+    if (!passwordEncoder.matches(user.getPassword(), password)) {
+      redisUtils.setMsgDiyTimeOut(
+          getRedisLoginErrorNumKey(userCode),
+          loginNum + 1,
+          StaticConstant.LOGIN_ERROR_LOCK_LIMIT,
+          TimeUnit.MINUTES);
+      throw new DataException(DataEnums.WRONG_PASSWORD);
     }
+    return getLoginVO(userCode, secret, userName);
+  }
 
-    @Override
-    public boolean logout() {
-        return deleteRedisUserInfo(commonMethod.getUser());
-    }
+  @Override
+  public SysUserVO getOneOnline() {
+    String user = commonMethod.getUser();
+    SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, user));
+    SysUserVO vo = new SysUserVO();
+    BeanUtils.copyProperties(one, vo);
+    return vo;
+  }
 
-    @Override
-    public Page<SysUserVO> listUserPage(SysUserDTO dto) {
-        return baseMapper.selectPageNew(dto.getPage(),
-                Wrappers.lambdaQuery(SysUser.class)
-                        .eq(BaseEntity::getDeleteFlag, false)
-                        .like(StringUtils.isNotBlank(dto.getUserCode()), SysUser::getUserCode, dto.getUserCode())
-                        .like(StringUtils.isNotBlank(dto.getUserName()), SysUser::getUserName, dto.getUserName())
-                        .eq(StringUtils.isNotBlank(dto.getStatus()), SysUser::getStatus, dto.getStatus())
-                        .orderByDesc(BaseEntity::getCreateOn));
-    }
+  @Override
+  public void getAuthCode(HttpServletResponse response, String session) throws IOException {
+    // 利用图片工具生成图片
+    // 返回的数组第一个参数是生成的验证码，第二个参数是生成的图片
+    Object[] objs =
+        VerifyUtil.newBuilder()
+            .setWidth(120)
+            .setHeight(35)
+            .setSize(4)
+            .setLines(1)
+            .setFontSize(25)
+            .setBackgroundColor(Color.WHITE)
+            .build()
+            .createImage();
+    redisUtils.setMsgDiyTimeOut(getRedisAuthCodeKey(session), objs[0], 1, TimeUnit.MINUTES);
+    redisUtils.setMsgDiyTimeOut(getRedisAuthErrorNumKey(session), 3, 1, TimeUnit.MINUTES);
+    // 将图片输出给浏览器
+    BufferedImage image = (BufferedImage) objs[1];
+    response.setContentType("image/png");
+    OutputStream os = response.getOutputStream();
+    ImageIO.write(image, "png", os);
+  }
 
-    @Override
-    public boolean changePassword(SysUserPasswordDTO user) throws DataException {
-        String userCard = StringUtils.isBlank(user.getUserCode()) ? commonMethod.getUser() : user.getUserCode();
-        SysUser sysUser = Optional.ofNullable(getOne(Wrappers.lambdaQuery(SysUser.class)
-                .eq(SysUser::getUserCode, userCard))).orElse(new SysUser());
-        if (passwordEncoder.matches(user.getOldPassword(), sysUser.getPassword())) {
-            String encode = passwordEncoder.encode(user.getNewPassword());
-            redisUtils.setHashMsg(StaticConstant.SYS_USER + userCard + StaticConstant.REDIS_INFO, "password", encode);
-            return update(Wrappers.lambdaUpdate(SysUser.class)
-                    .set(SysUser::getPassword, encode)
-                    .eq(SysUser::getUserCode, userCard));
-        } else {
-            throw new DataException(DataEnums.WRONG_PASSWORD);
-        }
+  @Override
+  @SentinelResource(value = "sayHello")
+  public CreateVO createUser(CreateUserDTO user) throws DataException {
+    String password = user.getPassword();
+    if (StringUtils.isBlank(user.getUserName()) && StringUtils.isBlank(password)) {
+      throw new DataException(DataEnums.DATA_IS_ABNORMAL);
     }
+    Set<String> set = list().stream().map(SysUser::getUserCode).collect(Collectors.toSet());
+    boolean flag;
+    do {
+      String s = String.valueOf(NumUtils.numUserCard());
+      flag = set.contains(s);
+      if (!flag) {
+        user.setUserCode(s);
+      }
+    } while (flag);
+    user.setPassword(passwordEncoder.encode(password));
+    SysUser sysUser =
+        SysUser.builder()
+            .userCode(user.getUserCode())
+            .userName(user.getUserName())
+            .password(user.getPassword())
+            .build();
+    if (save(sysUser)) {
+      sysUserInfoService.save(SysUserInfo.builder().userCode(user.getUserCode()).build());
+      addUserToRedis(sysUser);
+      return new CreateVO(user.getUserName(), user.getUserCode(), password);
+    } else {
+      throw new DataException(DataEnums.DATA_INSERT_FAIL);
+    }
+  }
 
-    @Override
-    public boolean changeStatus(String userCode, Boolean status) {
-        if (!status) {
-            removeUserOnRedis(userCode);
-            deleteRedisUserInfo(userCode);
-        }
-        return update(Wrappers.lambdaUpdate(SysUser.class)
-                .set(SysUser::getStatus, status)
-                .eq(SysUser::getUserCode, userCode));
+  @Override
+  public boolean saveOrUpdateNew(CreateSysUserDTO user) throws DataException {
+    List<Integer> roleId = user.getRoleId();
+    removeRole(user.getUserCode());
+    sysUserRoleService.addRoleWithUser(
+        new UserRolesDTO().setUserCode(user.getUserCode()).setRoleIds(roleId));
+    SysUser sysUser = new SysUser();
+    SysUserInfo sysUserInfo = new SysUserInfo();
+    BeanUtils.copyProperties(user, sysUser);
+    sysUser.setPassword(passwordEncoder.encode(sysUser.getPassword()));
+    BeanUtils.copyProperties(user, sysUserInfo);
+    try {
+      if (sysUser.getId() == null) {
+        sysUserInfoService.save(sysUserInfo);
+        addUserToRedis(sysUser);
+      } else {
+        sysUserInfoService.update(
+            sysUserInfo,
+            Wrappers.lambdaUpdate(SysUserInfo.class)
+                .eq(SysUserInfo::getUserCode, sysUser.getUserCode()));
+      }
+      return saveOrUpdate(sysUser);
+    } catch (Exception e) {
+      throw new DataException(DataEnums.DATA_INSERT_FAIL);
     }
+  }
 
-    @Override
-    public boolean removeByIdNew(Long id) {
-        removeRole(getById(id).getUserCode());
-        return removeById(id);
-    }
+  @Override
+  public boolean logout() {
+    return deleteRedisUserInfo(commonMethod.getUser());
+  }
 
-    @Override
-    public SysUserVO getUserByCode(String code) {
-        SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, code));
-        SysUserVO vo = new SysUserVO();
-        BeanUtils.copyProperties(one, vo);
-        return vo;
-    }
+  @Override
+  public Page<SysUserVO> listUserPage(SysUserDTO dto) {
+    return baseMapper.selectPageNew(
+        dto.getPage(),
+        Wrappers.lambdaQuery(SysUser.class)
+            .eq(BaseEntity::getDeleteFlag, false)
+            .like(
+                StringUtils.isNotBlank(dto.getUserCode()), SysUser::getUserCode, dto.getUserCode())
+            .like(
+                StringUtils.isNotBlank(dto.getUserName()), SysUser::getUserName, dto.getUserName())
+            .eq(StringUtils.isNotBlank(dto.getStatus()), SysUser::getStatus, dto.getStatus())
+            .orderByDesc(BaseEntity::getCreateOn));
+  }
 
-    @Override
-    public Page<SysUserVO> listProjectUser(SysUserDepartmentDTO dto) {
-        return baseMapper.selectPageByDepartment(dto.getPage(), dto);
+  @Override
+  public boolean changePassword(SysUserPasswordDTO user) throws DataException {
+    String userCard =
+        StringUtils.isBlank(user.getUserCode()) ? commonMethod.getUser() : user.getUserCode();
+    SysUser sysUser =
+        Optional.ofNullable(
+                getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, userCard)))
+            .orElse(new SysUser());
+    if (passwordEncoder.matches(user.getOldPassword(), sysUser.getPassword())) {
+      String encode = passwordEncoder.encode(user.getNewPassword());
+      redisUtils.setHashMsg(
+          StaticConstant.SYS_USER + userCard + StaticConstant.REDIS_INFO, "password", encode);
+      return update(
+          Wrappers.lambdaUpdate(SysUser.class)
+              .set(SysUser::getPassword, encode)
+              .eq(SysUser::getUserCode, userCard));
+    } else {
+      throw new DataException(DataEnums.WRONG_PASSWORD);
     }
+  }
 
-    @Override
-    public LoginVO refreshToken(String refreshToken, String userCode) {
-        Map<Object, Object> user =
-                redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
-        if (Objects.isNull(user)) {
-            throw new DataException(DataEnums.TOKEN_IS_NULL);
-        }
-        return getLoginVO(userCode, (String) user.get("secret"), (String) user.get("userName"));
+  @Override
+  public boolean changeStatus(String userCode, Boolean status) {
+    if (!status) {
+      removeUserOnRedis(userCode);
+      deleteRedisUserInfo(userCode);
     }
+    return update(
+        Wrappers.lambdaUpdate(SysUser.class)
+            .set(SysUser::getStatus, status)
+            .eq(SysUser::getUserCode, userCode));
+  }
 
-    private void removeRole(String userCode) {
-        sysUserRoleService.remove(Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, userCode));
-    }
+  @Override
+  public boolean removeByIdNew(Long id) {
+    removeRole(getById(id).getUserCode());
+    return removeById(id);
+  }
 
-    private String getRedisAuthCodeKey(String userCode) {
-        return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_CODE;
-    }
+  @Override
+  public SysUserVO getUserByCode(String code) {
+    SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, code));
+    SysUserVO vo = new SysUserVO();
+    BeanUtils.copyProperties(one, vo);
+    return vo;
+  }
 
-    private String getRedisAuthErrorNumKey(String userCode) {
-        return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_NUM;
-    }
+  @Override
+  public Page<SysUserVO> listProjectUser(SysUserDepartmentDTO dto) {
+    return baseMapper.selectPageByDepartment(dto.getPage(), dto);
+  }
 
-    private String getRedisLoginErrorNumKey(String userCode) {
-        return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_LOGIN_NUM;
+  @Override
+  public LoginVO refreshToken(String refreshToken, String userCode) {
+    Map<Object, Object> user =
+        redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
+    if (Objects.isNull(user)) {
+      throw new DataException(DataEnums.TOKEN_IS_NULL);
     }
+    return getLoginVO(userCode, (String) user.get("secret"), (String) user.get("userName"));
+  }
 
-    private LoginVO getLoginVO(String userCode, String secret, String name) {
-        deleteRedisUserInfo(userCode);
-        // 角色
-        String role = sysUserRoleService.getRoleByUser(userCode);
-        String accessToken = jwtUtils.generateToken(String.valueOf(userCode), tokenTime, secret);
-        String refreshToken = NumUtils.uuid();
-        User build = User.builder()
-                .userName(name)
-                .userCode(userCode)
-                .role(role)
-                .ip(commonMethod.getIp())
-                .secret(secret)
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .time(LocalDateTime.now().toString())
-                .build();
-        redisUtils.setHashMsgAllTimeOut(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO,
-                JSONObject.parseObject(JSON.toJSONBytes(build), Map.class),
-                refreshTime,
-                TimeUnit.SECONDS);
-        redisUtils.deleteByKey(getRedisAuthCodeKey(secret));
-        redisUtils.deleteByKey(getRedisLoginErrorNumKey(userCode));
-        log.info("login user :{}", userCode);
-        return new LoginVO().setAccessToken(accessToken)
-                .setRefreshToken(refreshToken)
-                .setName(name)
-                .setUserCode(userCode);
-    }
+  private void removeRole(String userCode) {
+    sysUserRoleService.remove(
+        Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, userCode));
+  }
 
-    /**
-     * 清空但前用户在redis登录信息
-     *
-     * @param userCode 用户工号
-     */
-    public boolean deleteRedisUserInfo(String userCode) {
-        return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
-    }
+  private String getRedisAuthCodeKey(String userCode) {
+    return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_CODE;
+  }
 
-    /**
-     * 实时添加用户到redis
-     *
-     * @param sysUser 用户基本信息
-     */
-    private void addUserToRedis(SysUser sysUser) {
-        UserBO userBO = UserBO.builder()
-                .id(sysUser.getId())
-                .userName(sysUser.getUserName())
-                .userCode(sysUser.getUserCode())
-                .password(sysUser.getPassword())
-                .build();
-        redisUtils.setHashMsgAll(StaticConstant.SYS_USER + sysUser.getUserCode() + StaticConstant.REDIS_INFO,
-                JSONObject.parseObject(com.alibaba.fastjson2.JSON.toJSONString(userBO), Map.class));
-    }
+  private String getRedisAuthErrorNumKey(String userCode) {
+    return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_NUM;
+  }
 
-    /**
-     * 实时移除redis用户
-     *
-     * @param userCode 工号
-     */
-    public void removeUserOnRedis(String userCode) {
-        redisUtils.deleteByKey(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
-    }
+  private String getRedisLoginErrorNumKey(String userCode) {
+    return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_LOGIN_NUM;
+  }
+
+  private LoginVO getLoginVO(String userCode, String secret, String name) {
+    deleteRedisUserInfo(userCode);
+    // 角色
+    String role = sysUserRoleService.getRoleByUser(userCode);
+    String accessToken = jwtUtils.generateToken(String.valueOf(userCode), tokenTime, secret);
+    String refreshToken = NumUtils.uuid();
+    User build =
+        User.builder()
+            .userName(name)
+            .userCode(userCode)
+            .role(role)
+            .ip(commonMethod.getIp())
+            .secret(secret)
+            .accessToken(accessToken)
+            .refreshToken(refreshToken)
+            .time(LocalDateTime.now().toString())
+            .build();
+    redisUtils.setHashMsgAllTimeOut(
+        StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO,
+        JSONObject.parseObject(JSON.toJSONBytes(build), Map.class),
+        refreshTime,
+        TimeUnit.SECONDS);
+    redisUtils.deleteByKey(getRedisAuthCodeKey(secret));
+    redisUtils.deleteByKey(getRedisLoginErrorNumKey(userCode));
+    log.info("login user :{}", userCode);
+    return new LoginVO()
+        .setAccessToken(accessToken)
+        .setRefreshToken(refreshToken)
+        .setName(name)
+        .setUserCode(userCode);
+  }
+
+  /**
+   * 清空但前用户在redis登录信息
+   *
+   * @param userCode 用户工号
+   */
+  public boolean deleteRedisUserInfo(String userCode) {
+    return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
+  }
+
+  /**
+   * 实时添加用户到redis
+   *
+   * @param sysUser 用户基本信息
+   */
+  private void addUserToRedis(SysUser sysUser) {
+    UserBO userBO =
+        UserBO.builder()
+            .id(sysUser.getId())
+            .userName(sysUser.getUserName())
+            .userCode(sysUser.getUserCode())
+            .password(sysUser.getPassword())
+            .build();
+    redisUtils.setHashMsgAll(
+        StaticConstant.SYS_USER + sysUser.getUserCode() + StaticConstant.REDIS_INFO,
+        JSONObject.parseObject(com.alibaba.fastjson2.JSON.toJSONString(userBO), Map.class));
+  }
+
+  /**
+   * 实时移除redis用户
+   *
+   * @param userCode 工号
+   */
+  public void removeUserOnRedis(String userCode) {
+    redisUtils.deleteByKey(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
+  }
 }

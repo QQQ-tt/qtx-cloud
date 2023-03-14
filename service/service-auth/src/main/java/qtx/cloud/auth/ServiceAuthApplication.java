@@ -16,8 +16,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 @ServletComponentScan(basePackages = "qtx.cloud")
 @SpringBootApplication(scanBasePackages = {"qtx.cloud"})
 public class ServiceAuthApplication {
-    public static void main(String[] args) {
-        ConfigurableApplicationContext run = SpringApplication.run(ServiceAuthApplication.class, args);
-        System.out.println(run.getEnvironment().getProperty("test.name"));
-    }
+  public static void main(String[] args) {
+    ConfigurableApplicationContext run = SpringApplication.run(ServiceAuthApplication.class, args);
+    System.out.println(run.getEnvironment().getProperty("test.name"));
+  }
 }

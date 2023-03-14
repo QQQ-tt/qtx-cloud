@@ -10,9 +10,7 @@ import lombok.*;
 import qtx.cloud.model.base.BaseEntity;
 
 /**
- * <p>
  * 用户表
- * </p>
  *
  * @author qtx
  * @since 2022-11-21
@@ -26,22 +24,22 @@ import qtx.cloud.model.base.BaseEntity;
 @ApiModel(value = "SysUser对象", description = "用户表")
 public class SysUser extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+  @TableId(value = "id", type = IdType.AUTO)
+  private Integer id;
 
-    @ApiModelProperty("工号")
-    @TableField("user_code")
-    private String userCode;
+  @ApiModelProperty("工号")
+  @TableField("user_code")
+  private String userCode;
 
-    @ApiModelProperty("用户名称")
-    @TableField("user_name")
-    private String userName;
+  @ApiModelProperty("用户名称")
+  @TableField("user_name")
+  private String userName;
 
-    @ApiModelProperty("密码")
-    @TableField("password")
-    private String password;
+  @ApiModelProperty("密码")
+  @TableField("password")
+  private String password;
 
-    @ApiModelProperty("启用状态")
-    @TableField("status")
-    private Boolean status;
+  @ApiModelProperty("启用状态")
+  @TableField("status")
+  private Boolean status;
 }

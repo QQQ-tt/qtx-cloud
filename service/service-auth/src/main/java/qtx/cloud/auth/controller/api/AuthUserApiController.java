@@ -15,17 +15,18 @@ import qtx.cloud.model.vo.auth.AuthVO;
 @RequestMapping("/auth/user")
 public class AuthUserApiController {
 
-    private final AuthUserService authUserService;
+  private final AuthUserService authUserService;
 
-    public AuthUserApiController(AuthUserService authUserService) {
-        this.authUserService = authUserService;
-    }
+  public AuthUserApiController(AuthUserService authUserService) {
+    this.authUserService = authUserService;
+  }
 
-    @GetMapping("/token")
-    public AuthVO authToken(
-            @RequestParam("token") String token,
-            @RequestParam("ip") String ip, @RequestParam("userCode") String userCode, @RequestParam("url") String url) {
-        return authUserService.authToken(token, ip, userCode, url);
-    }
-
+  @GetMapping("/token")
+  public AuthVO authToken(
+      @RequestParam("token") String token,
+      @RequestParam("ip") String ip,
+      @RequestParam("userCode") String userCode,
+      @RequestParam("url") String url) {
+    return authUserService.authToken(token, ip, userCode, url);
+  }
 }

@@ -1,4 +1,4 @@
-package qtx.cloud.acivity;
+package qtx.cloud.activity;
 
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
@@ -55,7 +55,7 @@ public class Generator {
                         .superClass(BaseEntity.class)
                         .enableTableFieldAnnotation()
                         .enableRemoveIsPrefix()
-                        .addSuperEntityColumns("id", "delete_flag", "create_by", "create_on", "update_by", "update_on")
+                        .addSuperEntityColumns("delete_flag", "create_by", "create_on", "update_by", "update_on")
                         .mapperBuilder()
                         .mapperAnnotation(Mapper.class)
                         .build()).execute();

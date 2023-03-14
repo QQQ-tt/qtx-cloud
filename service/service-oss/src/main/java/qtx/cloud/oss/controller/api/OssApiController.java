@@ -15,15 +15,14 @@ import qtx.cloud.oss.service.OssService;
 @RestController
 @RequestMapping("/api/file")
 public class OssApiController {
-    private final OssService service;
+  private final OssService service;
 
-    public OssApiController(OssService service) {
-        this.service = service;
-    }
+  public OssApiController(OssService service) {
+    this.service = service;
+  }
 
-    @GetMapping("/getUrl")
-    public String getUrl(@RequestParam(value = "fileObject", name = "文件对象") String fileObject) {
-        return service.getObjectUrl(fileObject);
-    }
-
+  @GetMapping("/getUrl")
+  public String getUrl(@RequestParam(value = "fileObject", name = "文件对象") String fileObject) {
+    return service.getObjectUrl(fileObject);
+  }
 }

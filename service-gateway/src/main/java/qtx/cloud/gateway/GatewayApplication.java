@@ -15,8 +15,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 @RefreshScope
 public class GatewayApplication {
 
-    public static void main(String[] args) {
-        ConfigurableApplicationContext run = SpringApplication.run(GatewayApplication.class, args);
-        System.out.println(run.getEnvironment().getProperty("service-name"));
-    }
+  public static void main(String[] args) {
+    ConfigurableApplicationContext run = SpringApplication.run(GatewayApplication.class, args);
+    System.out.println(run.getEnvironment().getProperty("service-name"));
+  }
 }

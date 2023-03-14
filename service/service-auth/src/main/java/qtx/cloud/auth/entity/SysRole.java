@@ -8,7 +8,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
+import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.model.base.BaseEntity;
+
+import javax.validation.constraints.Max;
 
 /**
  * <p>
@@ -31,6 +34,7 @@ public class SysRole extends BaseEntity {
     @TableField("role_name")
     private String roleName;
 
+    @Max(value = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
     @ApiModelProperty("备注")
     @TableField("remark")
     private String remark;

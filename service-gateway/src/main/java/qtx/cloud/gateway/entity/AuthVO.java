@@ -9,9 +9,9 @@ import lombok.Data;
 @Data
 public class AuthVO {
 
-    private String userCode;
+  private String userCode;
 
-    private String dataEnums;
+  private String dataEnums;
 
-    private Boolean flag;
+  private Boolean flag;
 }

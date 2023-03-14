@@ -1,41 +1,38 @@
 package qtx.cloud.auth.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import qtx.cloud.auth.entity.SysUserRole;
 import qtx.cloud.model.dto.auth.UserRolesDTO;
 
-import java.util.List;
-
-
 /**
- * <p>
  * 用户角色关系表 服务类
- * </p>
  *
  * @author qtx
  * @since 2022-09-07
  */
 public interface SysUserRoleService extends IService<SysUserRole> {
 
-    /**
-     * 赋予用户对应的角色
-     *
-     * @param dto 用户card和对应角色的id集合
-     */
-    void addRoleWithUser(UserRolesDTO dto);
+  /**
+   * 赋予用户对应的角色
+   *
+   * @param dto 用户card和对应角色的id集合
+   */
+  void addRoleWithUser(UserRolesDTO dto);
 
-    /**
-     * 通过用户card获取角色
-     *
-     * @param card
-     * @return
-     */
-    String getRoleByUser(String card);
+  /**
+   * 通过用户工号获取角色
+   *
+   * @param userCode 工号
+   * @return 角色字符
+   */
+  String getRoleByUser(String userCode);
 
-    /**
-     * 通过用户获取角色id集合
-     * @param card
-     * @return
-     */
-    List<SysUserRole> listRoleByUser(String card);
+  /**
+   * 通过用户工号获取角色id集合
+   *
+   * @param userCode 工号
+   * @return 角色集合
+   */
+  List<SysUserRole> listRoleByUser(String userCode);
 }

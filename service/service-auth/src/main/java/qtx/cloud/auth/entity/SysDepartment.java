@@ -12,9 +12,7 @@ import lombok.Setter;
 import qtx.cloud.model.base.BaseEntity;
 
 /**
- * <p>
  * 科室管理表
- * </p>
  *
  * @author qtx
  * @since 2022-11-17
@@ -25,19 +23,19 @@ import qtx.cloud.model.base.BaseEntity;
 @ApiModel(value = "SysDepartment对象", description = "科室管理表")
 public class SysDepartment extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+  @TableId(value = "id", type = IdType.AUTO)
+  private Integer id;
 
-    @ApiModelProperty("科室编号")
-    @ExcelProperty(value = {"科室", "科室名称"})
-    @TableField("department_code")
-    private String departmentCode;
+  @ApiModelProperty("科室编号")
+  @ExcelProperty(value = {"科室", "科室名称"})
+  @TableField("department_code")
+  private String departmentCode;
 
-    @ApiModelProperty("科室名称")
-    @TableField("department_name")
-    private String departmentName;
+  @ApiModelProperty("科室名称")
+  @TableField("department_name")
+  private String departmentName;
 
-    @ApiModelProperty("备注")
-    @TableField("remark")
-    private String remark;
+  @ApiModelProperty("备注")
+  @TableField("remark")
+  private String remark;
 }

@@ -15,18 +15,16 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "config.minio")
 public class MinioConfig {
 
-    private String url;
+  private String url;
 
-    private String accessKey;
+  private String accessKey;
 
-    private String secretKey;
-    /**
-     * 默认Bucket
-     */
-    private String bucketName;
+  private String secretKey;
+  /** 默认Bucket */
+  private String bucketName;
 
-    @Bean
-    public MinioClient minioClient() {
-        return MinioClient.builder().endpoint(url).credentials(accessKey, secretKey).build();
-    }
+  @Bean
+  public MinioClient minioClient() {
+    return MinioClient.builder().endpoint(url).credentials(accessKey, secretKey).build();
+  }
 }

@@ -8,9 +8,7 @@ import lombok.*;
 import qtx.cloud.model.base.BaseEntity;
 
 /**
- * <p>
  * 角色菜单关系表
- * </p>
  *
  * @author qtx
  * @since 2022-09-21
@@ -23,24 +21,18 @@ import qtx.cloud.model.base.BaseEntity;
 @TableName("sys_role_menu")
 public class SysRoleMenu extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+  @TableId(value = "id", type = IdType.AUTO)
+  private Integer id;
 
-    /**
-     * 角色id
-     */
-    @TableField("role_id")
-    private String roleId;
+  /** 角色id */
+  @TableField("role_id")
+  private String roleId;
 
-    /**
-     * 菜单id
-     */
-    @TableField("menu_id")
-    private String menuId;
+  /** 菜单id */
+  @TableField("menu_id")
+  private String menuId;
 
-    /**
-     * 状态
-     */
-    @TableField("status")
-    private Boolean status;
+  /** 状态 */
+  @TableField("status")
+  private Boolean status;
 }

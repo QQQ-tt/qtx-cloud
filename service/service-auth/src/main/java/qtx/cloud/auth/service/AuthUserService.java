@@ -8,14 +8,14 @@ import qtx.cloud.model.vo.auth.AuthVO;
  */
 public interface AuthUserService {
 
-    /**
-     * 认证token真伪及解析及权限认证
-     *
-     * @param token    用户token
-     * @param ip       用户ip
-     * @param userCode 工号
-     * @param url
-     * @return 用户工号
-     */
-    AuthVO authToken(String token, String ip, String userCode, String url);
+  /**
+   * 认证token真伪及解析及权限认证
+   *
+   * @param token 用户token
+   * @param ip 用户ip
+   * @param userCode 工号
+   * @param url 请求地址
+   * @return 用户工号
+   */
+  AuthVO authToken(String token, String ip, String userCode, String url);
 }

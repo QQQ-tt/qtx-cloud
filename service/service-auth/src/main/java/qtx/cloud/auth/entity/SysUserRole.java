@@ -8,9 +8,7 @@ import lombok.*;
 import qtx.cloud.model.base.BaseEntity;
 
 /**
- * <p>
  * 用户角色关系表
- * </p>
  *
  * @author qtx
  * @since 2022-09-07
@@ -23,20 +21,14 @@ import qtx.cloud.model.base.BaseEntity;
 @TableName("sys_user_role")
 public class SysUserRole extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+  @TableId(value = "id", type = IdType.AUTO)
+  private Integer id;
 
-    /**
-     * 用户账号
-     */
-    @TableField("user_card")
-    private String userCard;
+  /** 用户账号 */
+  @TableField("user_card")
+  private String userCard;
 
-    /**
-     * 角色id
-     */
-    @TableField("role_id")
-    private Integer roleId;
+  /** 角色id */
+  @TableField("role_id")
+  private Integer roleId;
 }
-
-
