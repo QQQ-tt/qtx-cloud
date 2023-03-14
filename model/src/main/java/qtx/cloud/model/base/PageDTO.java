@@ -11,12 +11,12 @@ import lombok.Data;
 @Data
 public class PageDTO {
 
-    private Integer pageSize;
+  private Integer pageSize;
 
-    private Integer pageNum;
+  private Integer pageNum;
 
-    @JsonIgnore
-    public IPage<Object> getPage() {
-        return com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO.of(pageNum, pageSize);
-    }
+  @JsonIgnore
+  public IPage<Object> getPage() {
+    return com.baomidou.mybatisplus.extension.plugins.pagination.PageDTO.of(pageNum, pageSize);
+  }
 }

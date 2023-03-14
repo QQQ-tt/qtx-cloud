@@ -10,11 +10,11 @@ import lombok.Data;
 @Data
 public class DepartmentListVO {
 
-    private Integer id;
+  private Integer id;
 
-    @ApiModelProperty("科室编号")
-    private String departmentCode;
+  @ApiModelProperty("科室编号")
+  private String departmentCode;
 
-    @ApiModelProperty("科室名称")
-    private String departmentName;
+  @ApiModelProperty("科室名称")
+  private String departmentName;
 }

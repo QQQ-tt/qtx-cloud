@@ -8,28 +8,24 @@ import qtx.cloud.java.enums.DataEnums;
  */
 public class AuthVO {
 
-    private String userCode;
+  private String userCode;
 
-    private String dataEnums;
+  private String dataEnums;
 
-    public String getUserCode() {
-        return userCode;
-    }
+  public String getUserCode() {
+    return userCode;
+  }
 
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
+  public void setUserCode(String userCode) {
+    this.userCode = userCode;
+  }
 
-    public String getDataEnums() {
-        return dataEnums;
-    }
+  public void setDataEnums(DataEnums dataEnums) {
+    this.dataEnums = dataEnums.getMsg();
+  }
 
-    public void setDataEnums(DataEnums dataEnums) {
-        this.dataEnums = dataEnums.getMsg();
-    }
-
-    @Override
-    public String toString() {
-        return "AuthVO{" + "userCode='" + userCode + '\'' + ", dataEnums='" + dataEnums + '\'' + '}';
-    }
+  @Override
+  public String toString() {
+    return "AuthVO{" + "userCode='" + userCode + '\'' + ", dataEnums='" + dataEnums + '\'' + '}';
+  }
 }

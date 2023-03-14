@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class OssBatchDTO {
 
-    @ApiModelProperty(value = "文件对象", required = true)
-    private String fileObject;
+  @ApiModelProperty(value = "文件对象", required = true)
+  private String fileObject;
 
-    @ApiModelProperty("下载后的文件名称，需要文件后缀")
-    private String name;
+  @ApiModelProperty("下载后的文件名称，需要文件后缀")
+  private String name;
 }

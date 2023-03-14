@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CreateVO {
-    private String name;
-    private String userCode;
-    private String password;
+  private String name;
+  private String userCode;
+  private String password;
 }

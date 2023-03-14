@@ -10,20 +10,20 @@ import lombok.Data;
 @Data
 public class SysMenuDTO {
 
-    private Integer menuId;
+  private Integer menuId;
 
-    @ApiModelProperty("菜单名称")
-    private String name;
+  @ApiModelProperty("菜单名称")
+  private String name;
 
-    @ApiModelProperty("菜单地址")
-    private String path;
+  @ApiModelProperty("菜单地址")
+  private String path;
 
-    @ApiModelProperty("菜单编码")
-    private String code;
+  @ApiModelProperty("菜单编码")
+  private String code;
 
-    @ApiModelProperty("父id")
-    private Long parentId;
+  @ApiModelProperty("父id")
+  private Long parentId;
 
-    @ApiModelProperty("是否为菜单")
-    private Boolean menu;
+  @ApiModelProperty("是否为菜单")
+  private Boolean menu;
 }

@@ -1,10 +1,9 @@
 package qtx.cloud.model.dto.auth;
 
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 /**
  * @author qtx
@@ -12,9 +11,9 @@ import java.util.List;
  */
 @Data
 public class SysRoleMenuDTO {
-    @NotNull
-    @ApiModelProperty("角色")
-    private String roleId;
-    @NotNull
-    private List<String> menuIdList;
+  @NotNull
+  @ApiModelProperty("角色")
+  private String roleId;
+
+  @NotNull private List<String> menuIdList;
 }

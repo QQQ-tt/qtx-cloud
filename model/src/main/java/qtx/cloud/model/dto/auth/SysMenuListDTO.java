@@ -10,9 +10,9 @@ import lombok.Data;
 @Data
 public class SysMenuListDTO {
 
-    @ApiModelProperty("名字")
-    private String name;
+  @ApiModelProperty("名字")
+  private String name;
 
-    @ApiModelProperty("编码")
-    private String code;
+  @ApiModelProperty("编码")
+  private String code;
 }

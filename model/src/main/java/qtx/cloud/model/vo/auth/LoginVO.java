@@ -10,11 +10,11 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class LoginVO {
-    private String name;
+  private String name;
 
-    private String accessToken;
+  private String accessToken;
 
-    private String refreshToken;
+  private String refreshToken;
 
-    private String userCode;
+  private String userCode;
 }

@@ -16,14 +16,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class UserBO {
 
-    private Integer id;
+  private Integer id;
 
-    @ApiModelProperty("工号")
-    private String userCode;
+  @ApiModelProperty("工号")
+  private String userCode;
 
-    @ApiModelProperty("用户名称")
-    private String userName;
+  @ApiModelProperty("用户名称")
+  private String userName;
 
-    @ApiModelProperty("密码")
-    private String password;
+  @ApiModelProperty("密码")
+  private String password;
 }

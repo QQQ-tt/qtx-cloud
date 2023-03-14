@@ -8,14 +8,10 @@ import lombok.Data;
  */
 @Data
 public class SysRoleVO {
-    private String id;
-    /**
-     * 角色id
-     */
-    private String roleId;
+  private String id;
+  /** 角色id */
+  private String roleId;
 
-    /**
-     * 角色名字
-     */
-    private String roleName;
+  /** 角色名字 */
+  private String roleName;
 }

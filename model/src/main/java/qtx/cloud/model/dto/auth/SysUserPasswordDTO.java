@@ -1,8 +1,7 @@
 package qtx.cloud.model.dto.auth;
 
-import lombok.Data;
-
 import javax.validation.constraints.NotNull;
+import lombok.Data;
 
 /**
  * @author qtx
@@ -10,11 +9,9 @@ import javax.validation.constraints.NotNull;
  */
 @Data
 public class SysUserPasswordDTO {
-    private String userCode;
+  private String userCode;
 
-    @NotNull
-    private String newPassword;
+  @NotNull private String newPassword;
 
-    @NotNull
-    private String oldPassword;
+  @NotNull private String oldPassword;
 }

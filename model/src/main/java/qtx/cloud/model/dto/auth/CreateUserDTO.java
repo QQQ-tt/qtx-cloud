@@ -2,6 +2,7 @@ package qtx.cloud.model.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
@@ -11,15 +12,14 @@ import lombok.Data;
 @Data
 public class CreateUserDTO {
 
-    @ApiModelProperty("用户名")
-    private String userName;
+  @NotNull
+  @ApiModelProperty("用户名")
+  private String userName;
 
-    /**
-     * 用户工号
-     */
-    @JsonIgnore
-    private String userCode;
+  @NotNull
+  @ApiModelProperty("密码")
+  private String password;
 
-    @ApiModelProperty("密码")
-    private String password;
+  /** 用户工号 */
+  @JsonIgnore private String userCode;
 }

@@ -1,8 +1,7 @@
 package qtx.cloud.model.vo.auth;
 
-import lombok.Data;
-
 import java.util.List;
+import lombok.Data;
 
 /**
  * @author qtx
@@ -11,23 +10,17 @@ import java.util.List;
 @Data
 public class SysRoleMenuVo {
 
-    private Integer id;
-    /**
-     * 菜单名称
-     */
-    private String name;
+  private Integer id;
+  /** 菜单名称 */
+  private String name;
 
-    /**
-     * 菜单地址
-     */
-    private String path;
+  /** 菜单地址 */
+  private String path;
 
-    /**
-     * 图标地址
-     */
-    private String status;
+  /** 图标地址 */
+  private String status;
 
-    private Integer parentId;
+  private Integer parentId;
 
-    private List<SysRoleMenuVo> list;
+  private List<SysRoleMenuVo> list;
 }

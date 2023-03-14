@@ -2,9 +2,8 @@ package qtx.cloud.model.base;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
-
 import java.time.LocalDate;
+import lombok.Data;
 
 /**
  * @author qtx
@@ -13,10 +12,10 @@ import java.time.LocalDate;
 @Data
 public class DateUserVO {
 
-    @ApiModelProperty("创建人")
-    private String createBy;
+  @ApiModelProperty("创建人")
+  private String createBy;
 
-    @ApiModelProperty("创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
-    private LocalDate createOn;
+  @ApiModelProperty("创建时间")
+  @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
+  private LocalDate createOn;
 }
