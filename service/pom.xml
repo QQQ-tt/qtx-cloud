@@ -16,6 +16,7 @@
         <module>service-activity</module>
         <module>service-oss</module>
         <module>service-auth</module>
+        <module>service-other</module>
     </modules>
 
     <properties>
