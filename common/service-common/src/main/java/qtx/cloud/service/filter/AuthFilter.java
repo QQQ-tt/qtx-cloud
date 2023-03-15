@@ -43,7 +43,7 @@ public class AuthFilter extends OncePerRequestFilter {
             requestWrapper = new RequestWrapper(request);
             String s = JSON.toJSONString(requestWrapper.getBodyString());
             String replaceAll = s.replaceAll(" ", "").replaceAll("\\\\n", "").replaceAll("\\\\", "");
-            log.info("request:[method:{}, path:{},json:{},param:{}]",
+            log.info("request:[method:{},path:{},json:{},param:{}]",
                     request.getMethod(),
                     uri,
                     replaceAll,
