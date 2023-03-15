@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 实际业务关联表 前端控制器
+ * 流程节点业务表 前端控制器
  * </p>
  *
  * @author qtx
- * @since 2023-03-11
+ * @since 2023-03-15
  */
 @RestController
 @RequestMapping("/acBusiness")

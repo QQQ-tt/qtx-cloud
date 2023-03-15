@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 
 /**
  * <p>
- * 实际业务关联表 服务实现类
+ * 流程节点表 服务实现类
  * </p>
  *
  * @author qtx
- * @since 2023-03-11
+ * @since 2023-03-15
  */
 @Service
 public class AcBusinessServiceImpl extends ServiceImpl<AcBusinessMapper, AcBusiness> implements AcBusinessService {

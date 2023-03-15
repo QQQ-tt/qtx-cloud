@@ -19,7 +19,7 @@ import java.util.List;
 public class Generator {
 
     private static final DataSourceConfig.Builder DATA_SOURCE_CONFIG = new DataSourceConfig.Builder(
-            "jdbc:mysql://172.16.6.77:3306/qtx_cloud",
+            "jdbc:mysql://172.16.6.77:3306/test",
             "root",
             "OvHtCUNp8Bbnrfk");
 

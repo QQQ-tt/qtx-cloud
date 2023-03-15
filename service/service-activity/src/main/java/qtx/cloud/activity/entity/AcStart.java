@@ -4,13 +4,12 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import java.time.LocalDateTime;
+import qtx.cloud.model.base.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import qtx.cloud.model.base.BaseEntity;
-
-import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
  * </p>
  *
  * @author qtx
- * @since 2023-03-11
+ * @since 2023-03-15
  */
 @Getter
 @Setter
@@ -81,8 +80,4 @@ public class AcStart extends BaseEntity {
     @ApiModelProperty("备注")
     @TableField("remark")
     private String remark;
-
-    @ApiModelProperty("文件uuid")
-    @TableField("file_uuid")
-    private String fileUuid;
 }

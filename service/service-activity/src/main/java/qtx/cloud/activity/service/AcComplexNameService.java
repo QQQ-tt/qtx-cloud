@@ -1,16 +1,16 @@
 package qtx.cloud.activity.service;
 
-import qtx.cloud.activity.entity.AcBusiness;
+import qtx.cloud.activity.entity.AcComplexName;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * <p>
- * 流程节点表 服务类
+ * 复合流程名称表 服务类
  * </p>
  *
  * @author qtx
  * @since 2023-03-15
  */
-public interface AcBusinessService extends IService<AcBusiness> {
+public interface AcComplexNameService extends IService<AcComplexName> {
 
 }

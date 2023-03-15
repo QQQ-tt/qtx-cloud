@@ -12,7 +12,7 @@ import lombok.Setter;
 
 /**
  * <p>
- * 流程节点表
+ * 复合流程名称表
  * </p>
  *
  * @author qtx
@@ -20,29 +20,17 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-@TableName("ac_node")
-@ApiModel(value = "AcNode对象", description = "流程节点表")
-public class AcNode extends BaseEntity {
+@TableName("ac_complex_name")
+@ApiModel(value = "AcComplexName对象", description = "复合流程名称表")
+public class AcComplexName extends BaseEntity {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
+    @ApiModelProperty("复合流程名称")
+    @TableField("name")
+    private String name;
+
     @TableField("ac_name_id")
     private Integer acNameId;
-
-    @ApiModelProperty("节点名称")
-    @TableField("node_name")
-    private String nodeName;
-
-    @ApiModelProperty("节点组编号")
-    @TableField("node_group")
-    private Integer nodeGroup;
-
-    @ApiModelProperty("当前节点通过个数")
-    @TableField("node_pass")
-    private Integer nodePass;
-
-    @ApiModelProperty("是否隐藏")
-    @TableField("is_hidden")
-    private Boolean hidden;
 }
