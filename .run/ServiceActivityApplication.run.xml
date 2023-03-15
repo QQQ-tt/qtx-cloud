@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ServiceActivityApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <module name="service-activity" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="qtx.cloud.activity.ServiceActivityApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -10,7 +10,7 @@ public class AuthVO {
 
   private String userCode;
 
-  private String dataEnums;
+  private DataEnums dataEnums;
 
   public String getUserCode() {
     return userCode;
@@ -21,7 +21,7 @@ public class AuthVO {
   }
 
   public void setDataEnums(DataEnums dataEnums) {
-    this.dataEnums = dataEnums.getMsg();
+    this.dataEnums = dataEnums;
   }
 
   @Override

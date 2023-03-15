@@ -49,19 +49,19 @@ public class AuthUserServiceImpl implements AuthUserService {
       return vo;
     }
     // userCode合法性
-    if (!userCodeToken.equals(s.get("userCode"))) {
+    if (!userCodeToken.equals(s.get(StaticConstant.USER_CODE))) {
       log.info("token info error user code {}", DataEnums.USER_IS_FAIL);
       vo.setDataEnums(DataEnums.USER_IS_FAIL);
       return vo;
     }
     // ip
-    if (!ip.equals(s.get("ip"))) {
+    if (!ip.equals(s.get(StaticConstant.IP))) {
       log.info("token info error ip {}", DataEnums.USER_IS_FAIL);
       vo.setDataEnums(DataEnums.USER_IS_FAIL);
       return vo;
     }
     // 判断是否过期
-    if (jwtUtils.isTokenExpired((String) s.get("accessToken"), secret)) {
+    if (jwtUtils.isTokenExpired((String) s.get(StaticConstant.ACCESS_TOKEN), secret)) {
       redisUtils.deleteByKey(userCodeToken);
       log.info("token info error time {}", DataEnums.USER_LOGIN_EXPIRED);
       vo.setDataEnums(DataEnums.USER_LOGIN_EXPIRED);

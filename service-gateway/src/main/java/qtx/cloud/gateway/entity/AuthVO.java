@@ -1,6 +1,7 @@
 package qtx.cloud.gateway.entity;
 
 import lombok.Data;
+import qtx.cloud.java.enums.DataEnums;
 
 /**
  * @author qtx
@@ -11,7 +12,7 @@ public class AuthVO {
 
   private String userCode;
 
-  private String dataEnums;
+  private DataEnums dataEnums;
 
   private Boolean flag;
 }

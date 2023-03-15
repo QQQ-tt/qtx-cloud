@@ -18,7 +18,16 @@ public class Result<T> {
     this.code = enums.getCode();
   }
 
+  private Result(String msg, int code) {
+    this.msg = msg;
+    this.code = code;
+  }
+
   public static <T> Result<T> failed(String msg) {
     return new Result<>(msg, DataEnums.FAILED);
+  }
+
+  public static <T> Result<T> failed(String msg, int code) {
+    return new Result<>(msg, code);
   }
 }

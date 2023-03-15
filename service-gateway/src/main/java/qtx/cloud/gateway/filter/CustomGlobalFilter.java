@@ -38,6 +38,12 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
   @Value("${service-name}")
   private String serviceName;
 
+  private final RestTemplate restTemplate;
+
+  public CustomGlobalFilter(RestTemplate restTemplate) {
+    this.restTemplate = restTemplate;
+  }
+
   @Override
   public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
     ServerHttpRequest request = exchange.getRequest();
@@ -71,7 +77,6 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
       }
     }
 
-    RestTemplate template = new RestTemplate();
     HttpHeaders requestHeaders = new HttpHeaders();
     requestHeaders.add(StaticConstant.AUTH, "123");
 
@@ -83,7 +88,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     HttpEntity<HashMap<String, String>> requestEntity = new HttpEntity<>(requestHeaders);
     try {
       ResponseEntity<AuthVO> responseToken =
-          template.exchange(
+          restTemplate.exchange(
               "http://"
                   + serviceName
                   + ":3008/auth/user/token"
@@ -94,7 +99,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
               param);
       AuthVO authVO = responseToken.getBody();
       assert authVO != null;
-      if (!StringUtils.isBlank(authVO.getDataEnums())) {
+      if (authVO.getDataEnums() != null) {
         try {
           return Method.failed(exchange, authVO.getDataEnums());
         } catch (IOException e) {
