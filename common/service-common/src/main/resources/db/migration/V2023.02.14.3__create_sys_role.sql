@@ -11,7 +11,5 @@ CREATE TABLE `sys_role`
     `remark`        varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci         DEFAULT NULL COMMENT '备注',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
-  ROW_FORMAT = DYNAMIC COMMENT ='角色管理';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='角色管理';

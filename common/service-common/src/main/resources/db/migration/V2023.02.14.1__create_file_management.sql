@@ -20,7 +20,5 @@ CREATE TABLE `file_management`
     `update_on`     datetime                                                              DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`)
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
-  ROW_FORMAT = DYNAMIC COMMENT ='文件管理表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='文件管理表';

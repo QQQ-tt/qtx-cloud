@@ -11,7 +11,5 @@ CREATE TABLE `sys_role_menu`
     `update_on`   datetime                                                              DEFAULT NULL COMMENT '修改时间',
     PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB
-  AUTO_INCREMENT = 0
   DEFAULT CHARSET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci
-  ROW_FORMAT = DYNAMIC COMMENT ='角色菜单关系表';
+  COLLATE = utf8mb4_0900_ai_ci COMMENT ='角色菜单关系表';
