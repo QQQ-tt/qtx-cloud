@@ -1,6 +1,7 @@
 package qtx.cloud.model.dto.activity;
 
 import io.swagger.annotations.ApiModelProperty;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -23,7 +24,9 @@ public class ActivityNodeDTO {
   @ApiModelProperty("当前节点组所需通过数量")
   private Integer nodePassNum;
 
-  @NotNull
-  @ApiModelProperty("实际关联业务")
-  private String businessInfo;
+  @ApiModelProperty("节点是否隐藏")
+  private Boolean hidden;
+
+  @ApiModelProperty("实际业务信息集合")
+  private List<ActivityBusinessDTO> list;
 }

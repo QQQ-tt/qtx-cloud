@@ -29,6 +29,11 @@ public class ActivityDTO {
   @ApiModelProperty(value = "实际业务含义", required = true)
   private String businessMean;
 
+  @NotNull
+  @Max(value = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
+  @ApiModelProperty("实际业务表名称")
+  private String tableName;
+
   @ApiModelProperty("节点")
   private List<ActivityNodeDTO> list;
 }
