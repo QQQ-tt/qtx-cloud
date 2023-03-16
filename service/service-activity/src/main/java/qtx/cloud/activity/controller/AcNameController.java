@@ -29,7 +29,7 @@ public class AcNameController {
 
   @ApiOperation("创建或更新流程")
   @PostMapping("/saveOrUpdateCa")
-  public Result<Boolean> saveOrUpdateCa(@RequestBody ActivityDTO dto) {
+  public Result<String> saveOrUpdateCa(@RequestBody ActivityDTO dto) {
     return Result.success(acNameService.saveOrUpdateCa(dto));
   }
 }

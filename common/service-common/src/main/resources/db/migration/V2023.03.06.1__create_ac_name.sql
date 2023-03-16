@@ -1,6 +1,7 @@
 CREATE TABLE `ac_name`
 (
     `id`            int                                                          NOT NULL AUTO_INCREMENT,
+    `ac_uuid`       varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '流程uuid',
     `name`          varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '流程名称',
     `init_type`     bit(1)                                                                DEFAULT b'1' COMMENT '是否逐一初始化',
     `business_mean` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '业务含义',

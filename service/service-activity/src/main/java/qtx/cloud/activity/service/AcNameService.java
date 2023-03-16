@@ -16,7 +16,7 @@ public interface AcNameService extends IService<AcName> {
    * 创建或修改流程
    *
    * @param dto 流程详情
-   * @return true or false
+   * @return 流程uuid
    */
-  boolean saveOrUpdateCa(ActivityDTO dto);
+  String saveOrUpdateCa(ActivityDTO dto);
 }

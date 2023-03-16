@@ -2,4 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="qtx.cloud.activity.mapper.AcStartMapper">
 
+    <select id="selectAc" resultType="qtx.cloud.model.bo.activity.AcBO">
+        select an.ac_uuid,
+        an.name,
+        ann.node_name,
+        ann.node_group,
+        ann.node_pass_num,
+        ann.is_hidden as hidden,
+        ab.business_info
+        from ac_name an
+        left join ac_node ann on an.id = ann.ac_name_id and an.delete_flag = ann.delete_flag
+        left join ac_business ab on ann.id = ab.ac_node_id and an.delete_flag = ab.delete_flag
+        where an.ac_uuid = #{acUuid}
+        and an.delete_flag = false
+        <if test="flag == true and flag != null">
+            and ann.node_group = 1
+        </if>
+        order by node_group;
+    </select>
 </mapper>

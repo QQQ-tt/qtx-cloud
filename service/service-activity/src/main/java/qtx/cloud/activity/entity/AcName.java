@@ -27,8 +27,9 @@ public class AcName extends BaseEntity {
   @TableId(value = "id", type = IdType.AUTO)
   private Integer id;
 
-  @TableField("uuid")
-  private String uuid;
+  @ApiModelProperty("流程名称")
+  @TableField("ac_uuid")
+  private String acUuid;
 
   @ApiModelProperty("流程名称")
   @TableField("name")

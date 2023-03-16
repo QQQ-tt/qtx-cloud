@@ -14,7 +14,7 @@ import qtx.cloud.model.base.BaseEntity;
  * 流程启动表
  *
  * @author qtx
- * @since 2023-03-15
+ * @since 2023-03-16
  */
 @Getter
 @Setter
@@ -28,14 +28,25 @@ public class AcStart extends BaseEntity {
   @TableId(value = "id", type = IdType.AUTO)
   private Integer id;
 
-  @TableField("ac_name_id")
-  private Integer acNameId;
+  @ApiModelProperty("流程名称")
+  @TableField("ac_name")
+  private String acName;
 
-  @TableField("ac_node_id")
-  private Integer acNodeId;
+  @ApiModelProperty("节点名称")
+  @TableField("ac_node")
+  private String acNode;
 
-  @TableField("ac_business_id")
-  private Integer acBusinessId;
+  @ApiModelProperty("实际关联业务(处理人或角色)")
+  @TableField("ac_business")
+  private String acBusiness;
+
+  @ApiModelProperty("流程uuid")
+  @TableField("ac_uuid")
+  private String acUuid;
+
+  @ApiModelProperty("流程任务uuid")
+  @TableField("task_uuid")
+  private String taskUuid;
 
   @ApiModelProperty("提交日期")
   @TableField("submission_time")
@@ -56,6 +67,14 @@ public class AcStart extends BaseEntity {
   @ApiModelProperty("当前节点的本次操作结果")
   @TableField("this_flag")
   private Boolean thisFlag;
+
+  @ApiModelProperty("当前节点所需通过总数")
+  @TableField("node_pass_num")
+  private Integer nodePassNum;
+
+  @ApiModelProperty("当前节点已通过数量")
+  @TableField("this_node_pass_num")
+  private Integer thisNodePassNum;
 
   @ApiModelProperty("审核状态")
   @TableField("status")

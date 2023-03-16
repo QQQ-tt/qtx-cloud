@@ -37,12 +37,12 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public boolean saveOrUpdateCa(ActivityDTO dto) {
-    AcName oldAcName = null;
+  public String saveOrUpdateCa(ActivityDTO dto) {
+    // 流程主表创建
     String uuid;
     if (dto.getId() != null) {
-      oldAcName = getById(dto.getId());
-      uuid = oldAcName.getUuid();
+      AcName oldAcName = getById(dto.getId());
+      uuid = oldAcName.getAcUuid();
       update(
           Wrappers.lambdaUpdate(AcName.class)
               .set(AcName::getHistory, true)
@@ -52,13 +52,14 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
     }
     AcName buildAcName =
         AcName.builder()
-            .uuid(uuid)
+            .acUuid(uuid)
             .name(dto.getName())
+            .initType(dto.getInitType())
             .businessMean(dto.getBusinessMean())
             .tableName(dto.getTableName())
             .build();
     save(buildAcName);
-
+    // 流程详情创建
     dto.getList()
         .forEach(
             e -> {
@@ -86,6 +87,6 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
                                   .build()));
               acBusinessService.saveBatch(acBusinesses);
             });
-    return false;
+    return uuid;
   }
 }
