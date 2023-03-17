@@ -1,6 +1,5 @@
 package qtx.cloud.oss.service.impl;
 
-import cn.hutool.core.util.ZipUtil;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import io.minio.ObjectWriteResponse;
 import java.io.IOException;
@@ -22,6 +21,7 @@ import qtx.cloud.oss.entity.FileManagement;
 import qtx.cloud.oss.service.FileManagementService;
 import qtx.cloud.oss.service.OssService;
 import qtx.cloud.oss.utils.MinioUtils;
+import qtx.cloud.oss.utils.ZipUtil;
 import qtx.cloud.service.utils.NumUtils;
 
 /**
