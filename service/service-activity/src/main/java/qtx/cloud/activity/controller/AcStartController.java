@@ -11,6 +11,7 @@ import qtx.cloud.activity.service.AcStartService;
 import qtx.cloud.java.Result;
 import qtx.cloud.model.dto.activity.AcStartUpdateDTO;
 import qtx.cloud.model.vo.activity.AcToDoVO;
+import qtx.cloud.model.vo.activity.TaskVO;
 
 /**
  * 流程启动表 前端控制器
@@ -34,6 +35,13 @@ public class AcStartController {
   @GetMapping("/acStart")
   public Result<String> acStart(@RequestParam String acUuid) {
     return Result.success(acStartService.startAc(acUuid));
+  }
+
+  @ApiOperation("查询流程")
+  @ApiImplicitParam(name = "taskUuid", value = "任务uuid")
+  @GetMapping("/listTask")
+  public Result<List<TaskVO>> listTask(@RequestParam String taskUuid) {
+    return Result.success(acStartService.listTask(taskUuid));
   }
 
   @ApiOperation("更新节点")

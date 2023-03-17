@@ -5,6 +5,7 @@ import java.util.List;
 import qtx.cloud.activity.entity.AcStart;
 import qtx.cloud.model.dto.activity.AcStartUpdateDTO;
 import qtx.cloud.model.vo.activity.AcToDoVO;
+import qtx.cloud.model.vo.activity.TaskVO;
 
 /**
  * 流程启动表 服务类
@@ -38,4 +39,12 @@ public interface AcStartService extends IService<AcStart> {
    * @return 待办集合
    */
   List<AcToDoVO> toDo(String acUuid, String userCode);
+
+  /**
+   * 流程查询
+   *
+   * @param taskUuid 任务uuid
+   * @return 流程集合
+   */
+  List<TaskVO> listTask(String taskUuid);
 }

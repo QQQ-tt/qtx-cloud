@@ -19,6 +19,7 @@ import qtx.cloud.java.exception.DataException;
 import qtx.cloud.model.bo.activity.AcBO;
 import qtx.cloud.model.dto.activity.AcStartUpdateDTO;
 import qtx.cloud.model.vo.activity.AcToDoVO;
+import qtx.cloud.model.vo.activity.TaskVO;
 import qtx.cloud.service.utils.CommonMethod;
 import qtx.cloud.service.utils.NumUtils;
 
@@ -135,6 +136,11 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
   @Override
   public List<AcToDoVO> toDo(String acUuid, String userCode) {
     return baseMapper.selectToDo(acUuid, userCode != null ? userCode : commonMethod.getUser());
+  }
+
+  @Override
+  public List<TaskVO> listTask(String taskUuid) {
+    return baseMapper.selectTask(taskUuid);
   }
 
   private void initNode(boolean start, List<AcBO> list, String taskUuid) {

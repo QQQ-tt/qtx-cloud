@@ -35,4 +35,39 @@
         </if>
         group by ac_uuid;
     </select>
+    <select id="selectTask" resultType="qtx.cloud.model.vo.activity.TaskVO">
+        with info as (select ac_uuid, task_uuid
+                      from ac_start
+                      where task_uuid = #{taskUuid}
+                      group by ac_uuid, task_uuid),
+             ac as (select an.ac_uuid,
+                           ann.node_name,
+                           ann.node_group,
+                           su.user_name,
+                           an.delete_flag,
+                           ab.business_info,
+                           task_uuid
+                    from info
+                             left join ac_name an on info.ac_uuid = an.ac_uuid
+                             left join ac_node ann on an.id = ann.ac_name_id and an.delete_flag = ann.delete_flag
+                             left join ac_business ab on ann.id = ab.ac_node_id and an.delete_flag = ab.delete_flag
+                             left join sys_user su
+                                       on an.delete_flag = su.delete_flag and ab.business_info = su.user_code)
+        select node_name,
+               node_group,
+               user_name as business,
+               business_info,
+               submission_time,
+               review_progress,
+               pass_time,
+               flag,
+               this_flag,
+               status,
+               status_info
+        from ac
+                 left join ac_start ass
+                           on ac.delete_flag = ass.delete_flag and ac.ac_uuid = ass.ac_uuid and
+                              ac.node_name = ass.ac_node and
+                              ass.ac_business = ac.business_info
+    </select>
 </mapper>

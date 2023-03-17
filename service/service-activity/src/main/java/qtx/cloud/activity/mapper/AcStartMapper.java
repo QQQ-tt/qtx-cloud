@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import qtx.cloud.activity.entity.AcStart;
 import qtx.cloud.model.bo.activity.AcBO;
 import qtx.cloud.model.vo.activity.AcToDoVO;
+import qtx.cloud.model.vo.activity.TaskVO;
 
 /**
  * 流程启动表 Mapper 接口
@@ -36,4 +37,12 @@ public interface AcStartMapper extends BaseMapper<AcStart> {
    * @return 待办集合
    */
   List<AcToDoVO> selectToDo(@Param("acUuid") String acUuid, @Param("userCode") String userCode);
+
+  /**
+   * 查询流程详情
+   *
+   * @param taskUuid 任务uuid
+   * @return 流程集合
+   */
+  List<TaskVO> selectTask(@Param("taskUuid") String taskUuid);
 }
