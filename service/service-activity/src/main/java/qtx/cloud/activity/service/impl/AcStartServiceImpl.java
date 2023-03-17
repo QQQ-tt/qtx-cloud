@@ -18,6 +18,7 @@ import qtx.cloud.java.enums.DataEnums;
 import qtx.cloud.java.exception.DataException;
 import qtx.cloud.model.bo.activity.AcBO;
 import qtx.cloud.model.dto.activity.AcStartUpdateDTO;
+import qtx.cloud.model.vo.activity.AcToDoVO;
 import qtx.cloud.service.utils.CommonMethod;
 import qtx.cloud.service.utils.NumUtils;
 
@@ -64,6 +65,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
                 .eq(AcStart::getTaskUuid, dto.getTaskUuid())
                 .eq(AcStart::getNode, Boolean.TRUE)
                 .eq(AcStart::getAcBusiness, user)
+                .isNull(AcStart::getThisFlag)
                 .orderByDesc(AcStart::getAcNodeGroup)
                 .last("limit 1"));
     if (one == null) {
@@ -83,7 +85,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
             .thisFlag(dto.getThisFlag())
             .status(dto.getStatus())
             .thisNodePassNum(
-                one.getThisFlag() ? one.getThisNodePassNum() + 1 : one.getThisNodePassNum())
+                dto.getThisFlag() ? one.getThisNodePassNum() + 1 : one.getThisNodePassNum())
             .nodePassNum(one.getNodePassNum())
             .statusInfo(dto.getStatusInfo())
             .fileUuid(dto.getFileUuid())
@@ -105,7 +107,6 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
     } else {
       if (acStart.getThisNodePassNum().equals(acStart.getNodePassNum())) {
         acStart.setReviewProgress(new BigDecimal(1));
-        acStart.setFlag(dto.getThisFlag());
         AcName acName =
             acNameService.getOne(
                 Wrappers.lambdaQuery(AcName.class).eq(AcName::getAcUuid, acStart.getAcUuid()));
@@ -117,14 +118,23 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
             initNode(false, list, acStart.getTaskUuid());
           }
         }
+        update(
+            Wrappers.lambdaUpdate(AcStart.class)
+                .set(AcStart::getFlag, true)
+                .eq(AcStart::getAcNodeGroup, acStart.getAcNodeGroup())
+                .eq(AcStart::getTaskUuid, acStart.getTaskUuid()));
       } else {
         acStart.setReviewProgress(
             new BigDecimal(acStart.getThisNodePassNum())
                 .divide(new BigDecimal(acStart.getNodePassNum()), 2, RoundingMode.HALF_DOWN));
       }
     }
-    return update(
-        acStart, Wrappers.lambdaUpdate(AcStart.class).eq(AcStart::getId, acStart.getId()));
+    return updateById(acStart);
+  }
+
+  @Override
+  public List<AcToDoVO> toDo(String acUuid, String userCode) {
+    return baseMapper.selectToDo(acUuid, userCode != null ? userCode : commonMethod.getUser());
   }
 
   private void initNode(boolean start, List<AcBO> list, String taskUuid) {

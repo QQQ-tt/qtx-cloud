@@ -2,12 +2,15 @@ package qtx.cloud.activity.controller;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 import qtx.cloud.activity.service.AcStartService;
 import qtx.cloud.java.Result;
 import qtx.cloud.model.dto.activity.AcStartUpdateDTO;
+import qtx.cloud.model.vo.activity.AcToDoVO;
 
 /**
  * 流程启动表 前端控制器
@@ -37,5 +40,16 @@ public class AcStartController {
   @PostMapping("/updateAc")
   public Result<Boolean> updateAc(@RequestBody @Valid AcStartUpdateDTO dto) {
     return Result.success(acStartService.updateAc(dto));
+  }
+
+  @ApiOperation("待办")
+  @ApiImplicitParams(
+      value = {
+        @ApiImplicitParam(name = "acUuid", value = "流程uuid"),
+        @ApiImplicitParam(name = "userCode", value = "用户工号")
+      })
+  @GetMapping("/toDo")
+  public Result<List<AcToDoVO>> toDo(String acUuid, String userCode) {
+    return Result.success(acStartService.toDo(acUuid, userCode));
   }
 }

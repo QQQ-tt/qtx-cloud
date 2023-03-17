@@ -3,7 +3,6 @@ package qtx.cloud.service.config.exception;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import feign.codec.DecodeException;
 import java.time.LocalDateTime;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -25,16 +24,15 @@ import qtx.cloud.java.exception.FeignException;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(NullPointerException.class)
-  public Result<String> nullException(
-      NullPointerException e, HttpServletRequest request, HttpServletResponse response) {
+  public Result<String> nullException(NullPointerException e, HttpServletResponse response) {
     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-    log.error("空指针异常,msg:{}", e.getMessage());
+    log.error("空指针异常");
+    e.printStackTrace();
     return Result.failed("空指针异常");
   }
 
   @ExceptionHandler(FeignException.class)
-  public Result<LocalDateTime> feignException(
-      FeignException e, HttpServletRequest request, HttpServletResponse response) {
+  public Result<LocalDateTime> feignException(FeignException e, HttpServletResponse response) {
     response.setStatus(e.getCode());
     log.info(e.getMessage());
     if (StringUtils.isBlank(e.getMessage())) {
@@ -57,8 +55,7 @@ public class GlobalExceptionHandler {
   }
 
   @ExceptionHandler(Exception.class)
-  public Result<String> exception(
-      Exception e, HttpServletRequest request, HttpServletResponse response) {
+  public Result<String> exception(Exception e, HttpServletResponse response) {
     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
     log.error(e.getMessage());
     e.printStackTrace();

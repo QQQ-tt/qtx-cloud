@@ -1,8 +1,10 @@
 package qtx.cloud.activity.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import java.util.List;
 import qtx.cloud.activity.entity.AcStart;
 import qtx.cloud.model.dto.activity.AcStartUpdateDTO;
+import qtx.cloud.model.vo.activity.AcToDoVO;
 
 /**
  * 流程启动表 服务类
@@ -27,4 +29,13 @@ public interface AcStartService extends IService<AcStart> {
    * @return true or false
    */
   boolean updateAc(AcStartUpdateDTO dto);
+
+  /**
+   * 用户待办
+   *
+   * @param acUuid 流程uuid
+   * @param userCode 用户工号
+   * @return 待办集合
+   */
+  List<AcToDoVO> toDo(String acUuid, String userCode);
 }
