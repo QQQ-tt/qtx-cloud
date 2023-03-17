@@ -18,6 +18,9 @@
         <if test="flag == true and flag != null">
             and ann.node_group = 1
         </if>
+        <if test="group != null and group != ''">
+            and ann.node_group = #{group}
+        </if>
         order by node_group;
     </select>
 </mapper>

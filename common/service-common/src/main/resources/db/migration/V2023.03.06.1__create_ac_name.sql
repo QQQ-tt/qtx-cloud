@@ -12,7 +12,8 @@ CREATE TABLE `ac_name`
     `create_on`     datetime                                                     NOT NULL COMMENT '创建时间',
     `update_by`     varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '修改人',
     `update_on`     datetime                                                              DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
-    PRIMARY KEY (`id`)
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `ac_uuid` (`ac_uuid`) COMMENT '唯一索引'
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4
   COLLATE = utf8mb4_0900_ai_ci COMMENT ='单一流程名称表';

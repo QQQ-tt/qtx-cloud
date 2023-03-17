@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import lombok.*;
 import qtx.cloud.model.base.BaseEntity;
@@ -36,6 +37,10 @@ public class AcStart extends BaseEntity {
   @TableField("ac_node")
   private String acNode;
 
+  @ApiModelProperty("节点组编号")
+  @TableField("ac_node_group")
+  private Integer acNodeGroup;
+
   @ApiModelProperty("实际关联业务(处理人或角色)")
   @TableField("ac_business")
   private String acBusiness;
@@ -54,7 +59,7 @@ public class AcStart extends BaseEntity {
 
   @ApiModelProperty("审核进度")
   @TableField("review_progress")
-  private Object reviewProgress;
+  private BigDecimal reviewProgress;
 
   @ApiModelProperty("审核通过日期")
   @TableField("pass_time")
@@ -62,7 +67,7 @@ public class AcStart extends BaseEntity {
 
   @ApiModelProperty("当前节点结果")
   @TableField("flag")
-  private String flag;
+  private Boolean flag;
 
   @ApiModelProperty("当前节点的本次操作结果")
   @TableField("this_flag")
@@ -95,6 +100,10 @@ public class AcStart extends BaseEntity {
   @ApiModelProperty("是否为历史记录")
   @TableField("is_his")
   private Boolean his;
+
+  @ApiModelProperty("文件uuid")
+  @TableField("file_uuid")
+  private String fileUuid;
 
   @ApiModelProperty("备注")
   @TableField("remark")

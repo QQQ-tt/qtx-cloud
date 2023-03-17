@@ -1,7 +1,7 @@
 package qtx.cloud.model.dto.activity;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.util.List;
+import java.util.Set;
 import javax.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -27,6 +27,6 @@ public class ActivityNodeDTO {
   @ApiModelProperty("节点是否隐藏")
   private Boolean hidden;
 
-  @ApiModelProperty("实际业务信息集合")
-  private List<ActivityBusinessDTO> list;
+  @ApiModelProperty("实际关联业务(处理人或角色等)")
+  private Set<String> stringSet;
 }

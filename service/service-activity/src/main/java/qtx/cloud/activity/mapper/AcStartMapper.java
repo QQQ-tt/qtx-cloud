@@ -21,7 +21,9 @@ public interface AcStartMapper extends BaseMapper<AcStart> {
    *
    * @param acUuid 流程id
    * @param flag 初始化类型
+   * @param group 组编号
    * @return 初始流程集合
    */
-  List<AcBO> selectAc(@Param("acUuid") String acUuid, @Param("flag") Boolean flag);
+  List<AcBO> selectAc(
+      @Param("acUuid") String acUuid, @Param("flag") Boolean flag, @Param("group") Integer group);
 }

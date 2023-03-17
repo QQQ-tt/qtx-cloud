@@ -63,7 +63,7 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
     dto.getList()
         .forEach(
             e -> {
-              if (e.getList().size() < e.getNodePassNum()) {
+              if (e.getStringSet().size() < e.getNodePassNum()) {
                 throw new DataException(DataEnums.DATA_IS_ABNORMAL);
               }
               AcNode acNode =
@@ -76,14 +76,14 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
                       .build();
               acNodeService.save(acNode);
               List<AcBusiness> acBusinesses = new ArrayList<>();
-              e.getList()
+              e.getStringSet()
                   .forEach(
                       b ->
                           acBusinesses.add(
                               AcBusiness.builder()
                                   .acNameId(buildAcName.getId())
                                   .acNodeId(acNode.getId())
-                                  .businessInfo(b.getBusinessInfo())
+                                  .businessInfo(b)
                                   .build()));
               acBusinessService.saveBatch(acBusinesses);
             });
