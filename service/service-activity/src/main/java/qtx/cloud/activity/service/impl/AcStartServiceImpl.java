@@ -110,7 +110,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
             acNameService.getOne(
                 Wrappers.lambdaQuery(AcName.class).eq(AcName::getAcUuid, acStart.getAcUuid()));
         if (acName.getInitType()) {
-          // 开启下一节点
+          // 开启下一组节点
           List<AcBO> list =
               baseMapper.selectAc(acStart.getAcUuid(), Boolean.FALSE, acStart.getAcNodeGroup() + 1);
           if (!list.isEmpty()) {
