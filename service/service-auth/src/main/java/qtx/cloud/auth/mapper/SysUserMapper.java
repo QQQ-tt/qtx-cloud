@@ -36,7 +36,7 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
    *
    * @param page 分页参数
    * @param dto 科室
-   * @return
+   * @return 用户信息
    */
   Page<SysUserVO> selectPageByDepartment(
       IPage<Object> page, @Param("dto") SysUserDepartmentDTO dto);
@@ -44,7 +44,15 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
   /**
    * 项目启动初始化redis数据
    *
-   * @return
+   * @return 用户基本信息集合
    */
   List<UserBO> selectAll();
+
+  /**
+   * 获取用户全部信息
+   *
+   * @param userCode 用户工号
+   * @return 用户信息
+   */
+  SysUserVO selectUserByUserCode(String userCode);
 }

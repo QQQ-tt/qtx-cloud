@@ -10,7 +10,6 @@ import org.apache.ibatis.annotations.Param;
 import qtx.cloud.auth.entity.SysRole;
 import qtx.cloud.model.vo.auth.RoleListVO;
 import qtx.cloud.model.vo.auth.RoleVO;
-import qtx.cloud.model.vo.auth.SysRoleVO;
 
 /**
  * 用户角色表 Mapper 接口
@@ -20,8 +19,6 @@ import qtx.cloud.model.vo.auth.SysRoleVO;
  */
 @Mapper
 public interface SysRoleMapper extends BaseMapper<SysRole> {
-
-  List<SysRoleVO> listVo();
 
   /**
    * 分页查询角色
@@ -40,4 +37,12 @@ public interface SysRoleMapper extends BaseMapper<SysRole> {
    * @return 集合
    */
   List<RoleListVO> selectNew(@Param(Constants.WRAPPER) LambdaQueryWrapper<SysRole> queryWrapper);
+
+  /**
+   * 查询角色
+   *
+   * @param id 角色id
+   * @return 角色信息
+   */
+  RoleVO selectOneById(Integer id);
 }

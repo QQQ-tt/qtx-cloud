@@ -39,8 +39,8 @@ public class SysRoleController {
   }
 
   @ApiOperation("更新或新增")
-  @PostMapping("/saveOrUpdate")
-  public Result<Boolean> saveOrUpdate(@RequestBody SysRole entity) {
+  @PostMapping("/saveOrUpdateRole")
+  public Result<Boolean> saveOrUpdateRole(@RequestBody SysRole entity) {
     return Result.success(service.saveOrUpdateNew(entity));
   }
 
@@ -51,15 +51,21 @@ public class SysRoleController {
   }
 
   @ApiOperation("删除")
-  @DeleteMapping("/removeById")
-  public Result<Boolean> removeById(@RequestParam Long id) {
+  @DeleteMapping("/removeRoleById")
+  public Result<Boolean> removeRoleById(@RequestParam Long id) {
     return Result.success(service.removeById(id));
   }
 
-  @ApiOperation("列表查询角色（不分页）")
-  @PostMapping("/listRole")
-  public Result<List<RoleListVO>> listRole(@RequestBody RoleDTO dto) {
-    return Result.success(service.listRole(dto));
+  @ApiOperation("列表查询角色")
+  @GetMapping("/listRole")
+  public Result<List<RoleListVO>> listRole(String roleName) {
+    return Result.success(service.listRole(roleName));
+  }
+
+  @ApiOperation("获取角色")
+  @GetMapping("/getRoleById")
+  public Result<RoleVO> getRoleById(@RequestParam Integer id) {
+    return Result.success(service.getRoleById(id));
   }
 
   @ApiOperation("权限配置")
@@ -70,13 +76,13 @@ public class SysRoleController {
 
   @ApiOperation("获取权限配置")
   @PostMapping("/getMenuByRoleId")
-  public Result<List<SysRoleMenuVo>> getMenuByRole(@RequestParam Integer id) {
+  public Result<List<SysRoleMenuVo>> getMenuByRoleId(@RequestParam Integer id) {
     return Result.success(service.getMenuByRole(id));
   }
 
   @ApiOperation("获取登录人权限配置")
   @PostMapping("/getMenuByOnline")
-  public Result<List<SysRoleMenuVo>> getMenuByRole() {
+  public Result<List<SysRoleMenuVo>> getMenuByOnline() {
     return Result.success(service.getMenuByRole());
   }
 }

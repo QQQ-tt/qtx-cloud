@@ -11,7 +11,7 @@ import lombok.Data;
 public class AcToDoVO {
 
   @ApiModelProperty("流程名称")
-  private String name;
+  private String acName;
 
   @ApiModelProperty("待办数量")
   private Integer num;

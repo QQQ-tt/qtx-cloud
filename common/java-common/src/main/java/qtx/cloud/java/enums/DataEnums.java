@@ -1,9 +1,5 @@
 package qtx.cloud.java.enums;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.stream.Stream;
-
 /**
  * @author qtx
  * @since 2022/10/29 0:00
@@ -22,7 +18,7 @@ public enum DataEnums {
   /** 通过网关访问 */
   GATEWAY_TRANSBOUNDARY("通过网关访问", 407),
   /** 登录已过期 */
-  USER_LOGIN_EXPIRED("登录已过期", 201),
+  USER_LOGIN_EXPIRED("登录已过期", 401),
   /** 验证码已过期 */
   AUTH_CODE_EXPIRED("验证码已过期", 201),
   /** token不存在 */
@@ -39,6 +35,8 @@ public enum DataEnums {
   USER_CODE_FAIL("验证码错误", 205),
   /** 用户角色为空 */
   USER_ROLE_NULL("用户角色为空", 201),
+  /** 用户删除失败 */
+  USER_REMOVE_FAIL("用户删除失败", 201),
   /** 服务编号不匹配 */
   PLATFORM_IS_FAIL("服务编号不匹配", 205),
   /** 入参数据异常 */
@@ -73,11 +71,5 @@ public enum DataEnums {
 
   public String getMsg() {
     return msg;
-  }
-
-  private static final Map<String, Integer> DATE_ENUMS = new HashMap<>();
-
-  static {
-    Stream.of(DataEnums.values()).forEach(v -> DATE_ENUMS.put(v.msg, v.code));
   }
 }

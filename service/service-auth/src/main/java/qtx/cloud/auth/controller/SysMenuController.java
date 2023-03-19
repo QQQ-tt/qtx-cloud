@@ -40,14 +40,14 @@ public class SysMenuController {
   }
 
   @ApiOperation("新建或更新")
-  @PostMapping("/saveOrUpdate")
-  public Result<Boolean> saveOrUpdate(@RequestBody SysMenuDTO dto) {
+  @PostMapping("/saveOrUpdateMenu")
+  public Result<Boolean> saveOrUpdateMenu(@RequestBody SysMenuDTO dto) {
     return Result.success(service.saveOrUpdateNew(dto));
   }
 
   @ApiOperation("删除")
-  @GetMapping("/removeById")
-  public Result<Boolean> removeById(Integer id) {
+  @DeleteMapping("/removeMenuById")
+  public Result<Boolean> removeMenuById(Integer id) {
     return Result.success(service.removeByIdNew(id));
   }
 }

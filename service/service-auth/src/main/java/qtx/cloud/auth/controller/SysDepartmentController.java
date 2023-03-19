@@ -37,14 +37,14 @@ public class SysDepartmentController {
   }
 
   @ApiOperation("更新或新增")
-  @PostMapping("/saveOrUpdate")
-  public Result<Boolean> saveOrUpdate(@RequestBody SysDepartment entity) {
+  @PostMapping("/saveOrUpdateDepartment")
+  public Result<Boolean> saveOrUpdateDepartment(@RequestBody SysDepartment entity) {
     return Result.success(service.saveOrUpdateNew(entity));
   }
 
   @ApiOperation("删除")
-  @DeleteMapping("/removeById")
-  public Result<Boolean> removeById(@RequestParam Long id) {
+  @DeleteMapping("/removeDepartmentById")
+  public Result<Boolean> removeDepartmentById(@RequestParam Long id) {
     return Result.success(service.removeById(id));
   }
 

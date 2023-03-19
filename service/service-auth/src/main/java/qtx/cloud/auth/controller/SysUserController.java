@@ -51,8 +51,8 @@ public class SysUserController {
   }
 
   @ApiOperation("添加或修改用户")
-  @PostMapping("/saveOrUpdate")
-  public Result<Boolean> saveOrUpdate(@RequestBody CreateSysUserDTO dto) {
+  @PostMapping("/saveOrUpdateUser")
+  public Result<Boolean> saveOrUpdateUser(@RequestBody CreateSysUserDTO dto) {
     return Result.success(service.saveOrUpdateNew(dto));
   }
 
@@ -81,8 +81,8 @@ public class SysUserController {
   }
 
   @ApiOperation("删除用户")
-  @DeleteMapping("/removeById")
-  public Result<Boolean> removeById(@RequestParam Long id) {
+  @DeleteMapping("/removeUserById")
+  public Result<Boolean> removeUserById(@RequestParam Long id) {
     return Result.success(service.removeByIdNew(id));
   }
 

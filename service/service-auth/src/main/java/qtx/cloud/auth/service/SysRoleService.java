@@ -9,7 +9,6 @@ import qtx.cloud.model.dto.auth.SysRoleMenuDTO;
 import qtx.cloud.model.vo.auth.RoleListVO;
 import qtx.cloud.model.vo.auth.RoleVO;
 import qtx.cloud.model.vo.auth.SysRoleMenuVo;
-import qtx.cloud.model.vo.auth.SysRoleVO;
 
 /**
  * 用户角色表 服务类
@@ -39,33 +38,26 @@ public interface SysRoleService extends IService<SysRole> {
    * 更新为超级用户状态
    *
    * @param id 角色id
-   * @param flag
+   * @param flag true or false
    * @return true or false
    */
-  boolean updateSuper(Integer id, boolean flag);
-
-  /**
-   * 获取全部角色
-   *
-   * @return 角色集合
-   */
-  List<SysRoleVO> listAll();
+  boolean updateSuper(Integer id, Boolean flag);
 
   /**
    * 查询角色
    *
-   * @param dto 查询条件
+   * @param name 查询条件
    * @return 集合
    */
-  List<RoleListVO> listRole(RoleDTO dto);
+  List<RoleListVO> listRole(String name);
 
   /**
-   * 通过角色id获取角色
+   * 获取角色
    *
-   * @param id
-   * @return
+   * @param id 角色id
+   * @return 角色
    */
-  RoleVO getOneById(Integer id);
+  RoleVO getRoleById(Integer id);
 
   /**
    * 为角色赋予权限
@@ -78,15 +70,15 @@ public interface SysRoleService extends IService<SysRole> {
   /**
    * 通过角色获取权限
    *
-   * @param id
-   * @return
+   * @param id 角色id
+   * @return 角色权限集合
    */
   List<SysRoleMenuVo> getMenuByRole(Integer id);
 
   /**
    * 获取登录人通过角色获取权限
    *
-   * @return
+   * @return 角色权限集合
    */
   List<SysRoleMenuVo> getMenuByRole();
 }

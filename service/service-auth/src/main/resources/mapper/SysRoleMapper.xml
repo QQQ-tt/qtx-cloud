@@ -20,4 +20,11 @@
         select id, role_name
         from sys_role ${ew.customSqlSegment}
     </select>
+    <select id="selectOneById" resultType="qtx.cloud.model.vo.auth.RoleVO">
+        select r.id, role_name, is_super_user, remark, ifnull(su.user_name, r.create_by) as create_by, r.create_on
+        from sys_role r
+                 left join sys_user su on r.delete_flag = su.delete_flag and r.create_by = su.user_code
+        where r.delete_flag = false
+          and r.id = #{id}
+    </select>
 </mapper>

@@ -147,10 +147,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public SysUserVO getOneOnline() {
     String user = commonMethod.getUser();
-    SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, user));
-    SysUserVO vo = new SysUserVO();
-    BeanUtils.copyProperties(one, vo);
-    return vo;
+    return baseMapper.selectUserByUserCode(user);
   }
 
   @Override
@@ -237,7 +234,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
   @Override
   public boolean logout() {
-    return deleteRedisUserInfo(commonMethod.getUser());
+    return removeRedisUserOnline(commonMethod.getUser());
   }
 
   @Override
@@ -279,7 +276,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   public boolean changeStatus(String userCode, Boolean status) {
     if (!status) {
       removeUserOnRedis(userCode);
-      deleteRedisUserInfo(userCode);
+      removeRedisUserOnline(userCode);
     }
     return update(
         Wrappers.lambdaUpdate(SysUser.class)
@@ -289,7 +286,15 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
   @Override
   public boolean removeByIdNew(Long id) {
-    removeRole(getById(id).getUserCode());
+    SysUser user = getById(id);
+    if (user == null) {
+      throw new DataException(DataEnums.USER_REMOVE_FAIL);
+    }
+    String userCode = user.getUserCode();
+    removeRole(userCode);
+    removeUserInfo(userCode);
+    removeUserOnRedis(userCode);
+    removeRedisUserOnline(userCode);
     return removeById(id);
   }
 
@@ -321,6 +326,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, userCode));
   }
 
+  private void removeUserInfo(String userCode) {
+    sysUserInfoService.remove(
+        Wrappers.lambdaQuery(SysUserInfo.class).eq(SysUserInfo::getUserCode, userCode));
+  }
+
   private String getRedisAuthCodeKey(String userCode) {
     return StaticConstant.REDIS_LOGIN_AUTH_CODE + userCode + StaticConstant.REDIS_CODE;
   }
@@ -334,7 +344,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   }
 
   private LoginVO getLoginVO(String userCode, String secret, String name) {
-    deleteRedisUserInfo(userCode);
+    removeRedisUserOnline(userCode);
     // 角色
     String role = sysUserRoleService.getRoleByUser(userCode);
     String accessToken = jwtUtils.generateToken(String.valueOf(userCode), tokenTime, secret);
@@ -370,8 +380,17 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
    *
    * @param userCode 用户工号
    */
-  public boolean deleteRedisUserInfo(String userCode) {
+  public boolean removeRedisUserOnline(String userCode) {
     return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
+  }
+
+  /**
+   * 实时移除redis用户
+   *
+   * @param userCode 工号
+   */
+  public void removeUserOnRedis(String userCode) {
+    redisUtils.deleteByKey(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
   }
 
   /**
@@ -390,14 +409,5 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     redisUtils.setHashMsgAll(
         StaticConstant.SYS_USER + sysUser.getUserCode() + StaticConstant.REDIS_INFO,
         JSONObject.parseObject(JSON.toJSONString(userBO), Map.class));
-  }
-
-  /**
-   * 实时移除redis用户
-   *
-   * @param userCode 工号
-   */
-  public void removeUserOnRedis(String userCode) {
-    redisUtils.deleteByKey(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
   }
 }

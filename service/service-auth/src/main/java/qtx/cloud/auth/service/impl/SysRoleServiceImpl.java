@@ -6,7 +6,6 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.List;
 import java.util.Objects;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import qtx.cloud.auth.entity.SysRole;
@@ -21,7 +20,6 @@ import qtx.cloud.model.dto.auth.SysRoleMenuDTO;
 import qtx.cloud.model.vo.auth.RoleListVO;
 import qtx.cloud.model.vo.auth.RoleVO;
 import qtx.cloud.model.vo.auth.SysRoleMenuVo;
-import qtx.cloud.model.vo.auth.SysRoleVO;
 
 /**
  * 用户角色表 服务实现类
@@ -66,39 +64,30 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
                     entity.getRoleName())
                 .ne(entity.getId() != null, SysRole::getId, entity.getId()));
     if (Objects.isNull(one)) {
-      saveOrUpdate(entity);
-      return updateSuper(entity.getId(), entity.getSuperUser());
+      return saveOrUpdate(entity);
     } else {
       throw new DataException(DataEnums.DATA_INSERT_FAIL);
     }
   }
 
   @Override
-  public boolean updateSuper(Integer id, boolean flag) {
+  public boolean updateSuper(Integer id, Boolean flag) {
     return update(
         Wrappers.lambdaUpdate(SysRole.class)
-            .set(SysRole::getSuperUser, flag)
+            .set(SysRole::getSuperUser, flag == null ? Boolean.FALSE : flag)
             .eq(SysRole::getId, id));
   }
 
   @Override
-  public List<SysRoleVO> listAll() {
-    return baseMapper.listVo();
-  }
-
-  @Override
-  public List<RoleListVO> listRole(RoleDTO dto) {
+  public List<RoleListVO> listRole(String name) {
     return baseMapper.selectNew(
         Wrappers.lambdaQuery(SysRole.class)
-            .likeRight(StringUtils.isNotBlank(dto.getName()), SysRole::getRoleName, dto.getName()));
+            .likeRight(StringUtils.isNotBlank(name), SysRole::getRoleName, name));
   }
 
   @Override
-  public RoleVO getOneById(Integer id) {
-    SysRole byId = getById(id);
-    RoleVO vo = new RoleVO();
-    BeanUtils.copyProperties(byId, vo);
-    return vo;
+  public RoleVO getRoleById(Integer id) {
+    return baseMapper.selectOneById(id);
   }
 
   @Override
