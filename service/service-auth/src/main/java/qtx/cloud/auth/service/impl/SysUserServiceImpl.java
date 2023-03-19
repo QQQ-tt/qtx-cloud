@@ -389,7 +389,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
             .build();
     redisUtils.setHashMsgAll(
         StaticConstant.SYS_USER + sysUser.getUserCode() + StaticConstant.REDIS_INFO,
-        JSONObject.parseObject(com.alibaba.fastjson2.JSON.toJSONString(userBO), Map.class));
+        JSONObject.parseObject(JSON.toJSONString(userBO), Map.class));
   }
 
   /**

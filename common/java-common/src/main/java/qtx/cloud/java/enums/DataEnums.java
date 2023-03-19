@@ -79,6 +79,5 @@ public enum DataEnums {
 
   static {
     Stream.of(DataEnums.values()).forEach(v -> DATE_ENUMS.put(v.msg, v.code));
-    System.out.println(DATE_ENUMS);
   }
 }
