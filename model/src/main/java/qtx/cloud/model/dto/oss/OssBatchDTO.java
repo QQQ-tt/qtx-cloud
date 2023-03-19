@@ -13,6 +13,6 @@ public class OssBatchDTO {
   @ApiModelProperty(value = "文件对象", required = true)
   private String fileObject;
 
-  @ApiModelProperty("下载后的文件名称，需要文件后缀")
+  @ApiModelProperty(value = "下载后的文件名称，需要文件后缀", required = true)
   private String name;
 }

@@ -30,9 +30,10 @@ public class OssController {
 
   @ApiOperation("上传")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "file"),
     @ApiImplicitParam(name = "otherInfo", value = "其他信息关联字段", required = true),
-    @ApiImplicitParam(name = "business", value = "业务类型", required = true)
+    @ApiImplicitParam(name = "business", value = "业务类型", required = true),
+    @ApiImplicitParam(name = "version", value = "文件版本信息"),
+    @ApiImplicitParam(name = "fileUuid", value = "文件uuid")
   })
   @PostMapping("/upload")
   public Result<Boolean> upload(
@@ -46,9 +47,16 @@ public class OssController {
 
   @ApiOperation("批量上传")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "files", value = "文件集合", required = true, dataType = "file"),
+    @ApiImplicitParam(
+        name = "files",
+        value = "文件数组",
+        required = true,
+        dataType = "MultipartFile",
+        allowMultiple = true),
     @ApiImplicitParam(name = "otherInfo", value = "其他信息关联字段", required = true),
-    @ApiImplicitParam(name = "business", value = "业务类型", required = true)
+    @ApiImplicitParam(name = "business", value = "业务类型", required = true),
+    @ApiImplicitParam(name = "version", value = "文件版本信息"),
+    @ApiImplicitParam(name = "fileUuid", value = "文件uuid")
   })
   @PostMapping("/uploads")
   public Result<Boolean> upload(
@@ -62,7 +70,6 @@ public class OssController {
 
   @ApiOperation("上传到指定bucket")
   @ApiImplicitParams({
-    @ApiImplicitParam(name = "file", value = "文件集合", required = true, dataType = "file"),
     @ApiImplicitParam(name = "otherInfo", value = "其他信息关联字段", required = true),
     @ApiImplicitParam(name = "business", value = "业务类型", required = true),
     @ApiImplicitParam(name = "bucket", value = "存储桶", required = true)
@@ -80,7 +87,7 @@ public class OssController {
   }
 
   @ApiOperation("下载")
-  @ApiImplicitParam(name = "fileObject", value = "文件对象")
+  @ApiImplicitParam(name = "fileObject", value = "文件对象", required = true)
   @GetMapping("/download")
   public void download(@RequestParam String fileObject, HttpServletResponse response)
       throws IOException {
@@ -107,14 +114,14 @@ public class OssController {
   }
 
   @ApiOperation("删除文件")
-  @ApiImplicitParam(name = "fileObject", value = "文件对象")
+  @ApiImplicitParam(name = "fileObject", value = "文件对象", required = true)
   @DeleteMapping("/removeFile")
   public Result<Boolean> removeFile(@RequestParam String fileObject) {
     return Result.success(service.removeFile(fileObject));
   }
 
   @ApiOperation("修改文件为历史文件")
-  @ApiImplicitParam(name = "fileObject", value = "文件对象")
+  @ApiImplicitParam(name = "fileObject", value = "文件对象", required = true)
   @GetMapping("/updateToHis")
   public Result<Boolean> updateToHis(@RequestParam String fileObject) {
     return Result.success(service.updateToHis(fileObject));
@@ -132,7 +139,7 @@ public class OssController {
   }
 
   @ApiOperation("获取外链")
-  @ApiImplicitParam(name = "fileObject", value = "文件对象")
+  @ApiImplicitParam(name = "fileObject", value = "文件对象", required = true)
   @GetMapping("/getUrl")
   public Result<String> getUrl(@RequestParam String fileObject) {
     return Result.success(service.getObjectUrl(fileObject));

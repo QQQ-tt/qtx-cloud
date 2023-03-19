@@ -13,5 +13,3 @@ spring:
   config:
     import:
       - optional:nacos:service-oss.yaml  # 监听 DEFAULT_GROUP:test.yml
-knife4j:
-  enable: true

@@ -16,8 +16,3 @@ spring:
   config:
     import:
       - optional:nacos:service-auth.yaml  # 监听 DEFAULT_GROUP:test.yml
-knife4j:
-  enable: true
-time:
-  token: 10000
-  refresh: 20000
