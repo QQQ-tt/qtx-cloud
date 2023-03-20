@@ -11,7 +11,7 @@ import qtx.cloud.java.Result;
 import qtx.cloud.model.dto.activity.ActivityDTO;
 
 /**
- * 单一流程名称表 前端控制器
+ * 流程名称表 前端控制器
  *
  * @author qtx
  * @since 2023-03-15

@@ -5,7 +5,7 @@ import qtx.cloud.activity.entity.AcName;
 import qtx.cloud.model.dto.activity.ActivityDTO;
 
 /**
- * 单一流程名称表 服务类
+ * 流程名称表 服务类
  *
  * @author qtx
  * @since 2023-03-15

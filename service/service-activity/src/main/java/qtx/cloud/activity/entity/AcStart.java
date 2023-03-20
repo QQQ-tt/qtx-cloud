@@ -53,6 +53,14 @@ public class AcStart extends BaseEntity {
   @TableField("task_uuid")
   private String taskUuid;
 
+  @ApiModelProperty("流程任务节点uuid")
+  @TableField("task_node_uuid")
+  private String taskNodeUuid;
+
+  @ApiModelProperty("父流程任务节点uuid")
+  @TableField("parent_task_node_uuid")
+  private String parentTaskNodeUuid;
+
   @ApiModelProperty("提交日期")
   @TableField("submission_time")
   private LocalDateTime submissionTime;

@@ -45,4 +45,12 @@ public class AcNode extends BaseEntity {
   @ApiModelProperty("是否隐藏")
   @TableField("is_hidden")
   private Boolean hidden;
+
+  @ApiModelProperty("是否为基础节点")
+  @TableField("node_type")
+  private Boolean nodeType;
+
+  @ApiModelProperty("节点对应的流程uuid")
+  @TableField("ac_name_uuid")
+  private String acNameUuid;
 }

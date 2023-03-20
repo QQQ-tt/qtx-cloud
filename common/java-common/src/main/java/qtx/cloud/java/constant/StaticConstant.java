@@ -52,4 +52,6 @@ public class StaticConstant {
   public static final int STRING_MAX_SIZE = 255;
 
   public static final String STRING_SIZ_ERROR = "字符长度异常";
+  /** 流程父节点初始值 */
+  public static final String ACTIVITY_PARENT = "000000";
 }

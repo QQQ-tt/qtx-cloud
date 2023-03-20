@@ -3,6 +3,7 @@ package qtx.cloud.model.vo.activity;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Data;
 
 /**
@@ -11,6 +12,9 @@ import lombok.Data;
  */
 @Data
 public class TaskVO {
+
+  private String taskNodeUuid;
+  private String parentTaskNodeUuid;
 
   @ApiModelProperty("节点名称")
   private String nodeName;
@@ -37,4 +41,6 @@ public class TaskVO {
 
   @ApiModelProperty("状态详情")
   private String statusInfo;
+
+  private List<TaskVO> list;
 }

@@ -19,6 +19,10 @@ public class AcBO {
 
   private Integer nodePassNum;
 
+  private Boolean nodeType;
+
+  private String acNameUuid;
+
   private Boolean hidden;
 
   private String businessInfo;

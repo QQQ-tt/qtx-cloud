@@ -8,6 +8,8 @@
         ann.node_name,
         ann.node_group,
         ann.node_pass_num,
+        ann.ac_name_uuid,
+        ann.node_type,
         ann.is_hidden as hidden,
         ab.business_info
         from ac_name an
@@ -53,7 +55,9 @@
                              left join ac_business ab on ann.id = ab.ac_node_id and an.delete_flag = ab.delete_flag
                              left join sys_user su
                                        on an.delete_flag = su.delete_flag and ab.business_info = su.user_code)
-        select node_name,
+        select task_node_uuid,
+               parent_task_node_uuid,
+               node_name,
                node_group,
                user_name as business,
                business_info,

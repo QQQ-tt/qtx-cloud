@@ -1,5 +1,6 @@
 package qtx.cloud.activity.service.impl;
 
+import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import qtx.cloud.model.dto.activity.ActivityDTO;
 import qtx.cloud.service.utils.NumUtils;
 
 /**
- * 单一流程名称表 服务实现类
+ * 流程名称表 服务实现类
  *
  * @author qtx
  * @since 2023-03-15
@@ -63,7 +64,21 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
     dto.getList()
         .forEach(
             e -> {
-              if (e.getStringSet().size() < e.getNodePassNum()) {
+              boolean flag1 =
+                  e.getNodePassNum() == null
+                      && !e.getNodeType()
+                      && e.getStringSet().isEmpty()
+                      && StringUtils.isNotBlank(e.getAcNameUuid());
+              boolean flag2 =
+                  e.getNodePassNum() != null
+                      && e.getNodeType()
+                      && StringUtils.isBlank(e.getAcNameUuid())
+                      && !e.getStringSet().isEmpty();
+              boolean flag = !(flag1 || flag2);
+              if (flag) {
+                throw new DataException(DataEnums.DATA_IS_ABNORMAL);
+              }
+              if (e.getNodePassNum() != null && e.getStringSet().size() < e.getNodePassNum()) {
                 throw new DataException(DataEnums.DATA_IS_ABNORMAL);
               }
               AcNode acNode =
@@ -73,6 +88,8 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
                       .nodePassNum(e.getNodePassNum())
                       .nodeGroup(e.getNodeGroup())
                       .hidden(e.getHidden())
+                      .nodeType(e.getNodeType())
+                      .acNameUuid(e.getAcNameUuid())
                       .build();
               acNodeService.save(acNode);
               List<AcBusiness> acBusinesses = new ArrayList<>();
