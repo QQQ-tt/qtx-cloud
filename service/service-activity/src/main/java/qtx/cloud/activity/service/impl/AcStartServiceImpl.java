@@ -6,7 +6,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -101,6 +104,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
               .set(AcStart::getHis, Boolean.TRUE));
       startAc(acStart.getAcUuid());
     } else {
+      // 当前节点已满
       if (acStart.getThisNodePassNum().equals(acStart.getNodePassNum())) {
         acStart.setReviewProgress(new BigDecimal(1));
         AcName acName =
@@ -112,7 +116,9 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
               baseMapper.selectAc(acStart.getAcUuid(), Boolean.FALSE, acStart.getAcNodeGroup() + 1);
           if (parent != null) {
             parent.setAcBusiness(
-                list.stream().map(AcBO::getBusinessInfo).collect(Collectors.toList()).toString());
+                Arrays.toString(list.stream().map(AcBO::getBusinessInfo).distinct().toArray())
+                    .replace("[", "")
+                    .replace("]", ""));
           }
           if (!list.isEmpty()) {
             initNode(false, list, acStart.getTaskUuid(), acStart.getParentTaskNodeUuid());
@@ -124,11 +130,16 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
             new BigDecimal(acStart.getThisNodePassNum())
                 .divide(new BigDecimal(acStart.getNodePassNum()), 2, RoundingMode.HALF_DOWN));
       }
+      // 父节点操作
       if (parent != null) {
         parent.setReviewProgress(
             new BigDecimal(parent.getThisNodePassNum())
                 .divide(new BigDecimal(parent.getNodePassNum()), 2, RoundingMode.HALF_DOWN));
         parent.setId(null);
+        parent.setThisFlag(dto.getThisFlag());
+        if (acStart.getThisNodePassNum().equals(acStart.getNodePassNum())) {
+          parent.setFlag(Boolean.TRUE);
+        }
         save(parent);
       }
     }
@@ -144,17 +155,31 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
   public List<TaskVO> listTask(String taskUuid) {
     List<TaskVO> list = baseMapper.selectTask(taskUuid);
     return list.stream()
-        .filter(f -> StaticConstant.ACTIVITY_PARENT.equals(f.getParentTaskNodeUuid()))
-        .peek(p -> p.setList(child(list, p)))
+        .filter(TaskVO::getPFlag)
+        .peek(getAction(list))
+        .sorted(Comparator.comparing(TaskVO::getNodeGroup))
         .collect(Collectors.toList());
   }
 
   private List<TaskVO> child(List<TaskVO> list, TaskVO vo) {
     return list.stream()
-        .filter(f -> f.getParentTaskNodeUuid() != null)
-        .filter(f -> f.getParentTaskNodeUuid().equals(vo.getTaskNodeUuid()))
-        .peek(p -> p.setList(child(list, p)))
+        .filter(f -> f.getAcUuid().equals(vo.getAcNameUuid()))
+        .peek(getAction(list))
+        .sorted(Comparator.comparing(TaskVO::getNodeGroup))
         .collect(Collectors.toList());
+  }
+
+  private Consumer<TaskVO> getAction(List<TaskVO> list) {
+    return p -> {
+      List<TaskVO> child = child(list, p);
+      p.setList(child);
+      if (!child.isEmpty()) {
+        p.setBusiness(
+            Arrays.toString(child.stream().map(TaskVO::getBusiness).distinct().toArray())
+                .replace("[", "")
+                .replace("]", ""));
+      }
+    };
   }
 
   private void initNode(boolean start, List<AcBO> list, String taskUuid, String pNodeUuid) {
@@ -177,8 +202,13 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
             selectAc = baseMapper.selectAc(bo.getAcNameUuid(), start, null);
           }
           int num = 0;
+          String businessInfo = "";
           if (selectAc != null) {
             num = selectAc.stream().mapToInt(AcBO::getNodePassNum).sum();
+            businessInfo =
+                Arrays.toString(selectAc.stream().map(AcBO::getBusinessInfo).distinct().toArray())
+                    .replace("[", "")
+                    .replace("]", "");
           }
           acStarts.add(
               AcStart.builder()
@@ -189,7 +219,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
                   .acName(bo.getName())
                   .acNode(bo.getNodeName())
                   .acNodeGroup(bo.getNodeGroup())
-                  .acBusiness(bo.getBusinessInfo())
+                  .acBusiness(selectAc != null ? businessInfo : bo.getBusinessInfo())
                   .node(flag ? Boolean.TRUE : Boolean.FALSE)
                   .hidden(bo.getHidden())
                   .submissionTime(flag ? LocalDateTime.now() : null)

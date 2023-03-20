@@ -1,6 +1,7 @@
 package qtx.cloud.model.vo.activity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,9 +13,9 @@ import lombok.Data;
  */
 @Data
 public class TaskVO {
-
-  private String taskNodeUuid;
-  private String parentTaskNodeUuid;
+  @JsonIgnore private String acUuid;
+  @JsonIgnore private String acNameUuid;
+  @JsonIgnore private Boolean pFlag;
 
   @ApiModelProperty("节点名称")
   private String nodeName;
@@ -26,14 +27,17 @@ public class TaskVO {
   private String business;
 
   @ApiModelProperty("提交时间")
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private LocalDateTime submissionTime;
 
   @ApiModelProperty("通过时间")
-  @JsonFormat(pattern = "yyyy-MM-dd HH:mm", timezone = "GMT+8")
+  @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
   private LocalDateTime passTime;
 
   @ApiModelProperty("本节点结果")
+  private Boolean flag;
+
+  @ApiModelProperty("本次操作结果")
   private Boolean thisFlag;
 
   @ApiModelProperty("状态")

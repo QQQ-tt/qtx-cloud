@@ -38,30 +38,34 @@
         group by ac_uuid;
     </select>
     <select id="selectTask" resultType="qtx.cloud.model.vo.activity.TaskVO">
-        with info as (select ac_uuid, task_uuid
+        with info as (select ac_uuid, task_uuid, parent_task_node_uuid
                       from ac_start
-                      where task_uuid = #{taskUuid}
+                      where delete_flag = false
+                        and task_uuid = #{taskUuid}
                       group by ac_uuid, task_uuid),
              ac as (select an.ac_uuid,
                            ann.node_name,
                            ann.node_group,
+                           ann.ac_name_uuid,
                            su.user_name,
                            an.delete_flag,
                            ab.business_info,
-                           task_uuid
+                           task_uuid,
+                           if(info.parent_task_node_uuid = '000000', true, false) p_flag
                     from info
                              left join ac_name an on info.ac_uuid = an.ac_uuid
                              left join ac_node ann on an.id = ann.ac_name_id and an.delete_flag = ann.delete_flag
                              left join ac_business ab on ann.id = ab.ac_node_id and an.delete_flag = ab.delete_flag
                              left join sys_user su
                                        on an.delete_flag = su.delete_flag and ab.business_info = su.user_code)
-        select task_node_uuid,
-               parent_task_node_uuid,
-               node_name,
+        select node_name,
                node_group,
                user_name as business,
                business_info,
                submission_time,
+               ac.ac_uuid,
+               ac.p_flag,
+               ac_name_uuid,
                review_progress,
                pass_time,
                flag,
@@ -71,7 +75,6 @@
         from ac
                  left join ac_start ass
                            on ac.delete_flag = ass.delete_flag and ac.ac_uuid = ass.ac_uuid and
-                              ac.node_name = ass.ac_node and
-                              ass.ac_business = ac.business_info
+                              ac.node_name = ass.ac_node
     </select>
 </mapper>
