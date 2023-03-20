@@ -16,7 +16,7 @@ import qtx.cloud.model.dto.activity.ActivityDTO;
  * @author qtx
  * @since 2023-03-15
  */
-@Api(tags = "单一流程管理")
+@Api(tags = "流程管理")
 @RestController
 @RequestMapping("/acName")
 public class AcNameController {

@@ -62,6 +62,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
   @Transactional(rollbackFor = Exception.class)
   public boolean updateAc(AcStartUpdateDTO dto) {
     String user = commonMethod.getUser();
+    // 查询当前节点
     AcStart one =
         getOne(
             Wrappers.lambdaQuery(AcStart.class)
@@ -76,6 +77,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
       throw new DataException(DataEnums.DATA_AC_NULL);
     }
     AcStart parent = null;
+    // 判断此节点是否为根节点
     if (!StaticConstant.ACTIVITY_PARENT.equals(one.getParentTaskNodeUuid())) {
       parent =
           getOne(
@@ -172,7 +174,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
           String uuid = NumUtils.uuid();
           List<AcBO> selectAc = null;
           if (!bo.getNodeType()) {
-            selectAc = baseMapper.selectAc(bo.getAcNameUuid(), start, 1);
+            selectAc = baseMapper.selectAc(bo.getAcNameUuid(), start, null);
           }
           int num = 0;
           if (selectAc != null) {
@@ -194,7 +196,12 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
                   .nodePassNum(selectAc != null ? num : bo.getNodePassNum())
                   .build());
           if (selectAc != null) {
-            addNode(start, selectAc, taskUuid, uuid, acStarts);
+            addNode(
+                start,
+                selectAc.stream().filter(f -> f.getNodeGroup() == 1).collect(Collectors.toList()),
+                taskUuid,
+                uuid,
+                acStarts);
           }
         });
   }
@@ -207,6 +214,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
         .acNodeGroup(one.getAcNodeGroup())
         .acBusiness(one.getAcBusiness())
         .acUuid(one.getAcUuid())
+        .parentTaskNodeUuid(one.getParentTaskNodeUuid())
         .taskUuid(one.getTaskUuid())
         .submissionTime(one.getSubmissionTime())
         .passTime(dto.getThisFlag() ? LocalDateTime.now() : null)
