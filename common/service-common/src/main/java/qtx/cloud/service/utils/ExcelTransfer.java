@@ -3,6 +3,7 @@ package qtx.cloud.service.utils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
+import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.service.IService;
 import java.io.IOException;
@@ -165,7 +166,61 @@ public class ExcelTransfer<T> {
   }
 
   /**
-   * 下载excel，多实体，多sheet
+   * 下载excel，多表，单sheet
+   *
+   * @param response http
+   * @param name 文件名称
+   * @param sheet 表名
+   * @param list 实体:数据
+   */
+  public void exportExcel(
+      HttpServletResponse response, String name, String sheet, List<ExcelList> list)
+      throws IOException {
+    setResponse(response, name);
+    try (ExcelWriter excelWriter =
+        EasyExcel.write(response.getOutputStream())
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+            .build()) {
+      AtomicInteger i = new AtomicInteger(0);
+      WriteSheet writeSheet = EasyExcel.writerSheet(sheet).needHead(Boolean.FALSE).build();
+      list.forEach(
+          e -> {
+            WriteTable build = EasyExcel.writerTable(i.get()).head(e.getListsHead()).build();
+            i.getAndIncrement();
+            excelWriter.write(e.getListsData(), writeSheet, build);
+          });
+    }
+  }
+
+  /**
+   * 下载excel，多实体，单sheet
+   *
+   * @param response http
+   * @param name 文件名称
+   * @param sheet 表名
+   * @param map 实体:数据
+   */
+  public void exportExcel(
+      HttpServletResponse response, String name, String sheet, Map<Class<?>, ExcelClass> map)
+      throws IOException {
+    setResponse(response, name);
+    try (ExcelWriter excelWriter =
+        EasyExcel.write(response.getOutputStream())
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+            .build()) {
+      AtomicInteger i = new AtomicInteger(0);
+      WriteSheet writeSheet = EasyExcel.writerSheet(sheet).needHead(Boolean.FALSE).build();
+      map.forEach(
+          (k, v) -> {
+            WriteTable build = EasyExcel.writerTable(i.get()).head(k).build();
+            i.getAndIncrement();
+            excelWriter.write(v.getData(), writeSheet, build);
+          });
+    }
+  }
+
+  /**
+   * 下载excel，多表，多sheet
    *
    * @param response http
    * @param name 文件名称
