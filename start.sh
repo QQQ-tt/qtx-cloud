@@ -4,22 +4,22 @@ cd /cloud
 mvn clean package
 start1() {
   echo "starting gateway....."
-  nohup java -jar -Xmx128m /cloud/service-gateway/target/service-gateway-1.0.jar >gateway.log &
+  nohup java -jar -Xmx128m /cloud/service-gateway/target/service-gateway-1.0.jar >/gateway.log &
   sleep 10s
 }
 start2() {
   echo "starting auth....."
-  nohup java -jar -Xmx256m /cloud/service/service-auth/target/service-auth-1.0.jar >auth.log &
+  nohup java -jar -Xmx256m /cloud/service/service-auth/target/service-auth-1.0.jar >/auth.log &
   sleep 10s
 }
 start3() {
   echo "starting oss....."
-  nohup java -jar -Xmx128m /cloud/service/service-oss/target/service-oss-1.0.jar >oss.log &
+  nohup java -jar -Xmx128m /cloud/service/service-oss/target/service-oss-1.0.jar >/oss.log &
   sleep 10s
 }
 start4() {
   echo "starting activity....."
-  nohup java -jar -Xmx256m /cloud/service/service-activity/target/service-activity-1.0.jar >activity.log &
+  nohup java -jar -Xmx256m /cloud/service/service-activity/target/service-activity-1.0.jar >/activity.log &
   sleep 10s
 }
 #定义一个方法pid_health_check $1是这个方法的参数,其他地方调用此方法传入进来
