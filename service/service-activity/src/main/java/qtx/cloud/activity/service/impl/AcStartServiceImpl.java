@@ -100,7 +100,7 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
       // 初始化当前流程
       update(
           Wrappers.lambdaUpdate(AcStart.class)
-              .eq(AcStart::getTaskUuid, dto.getTaskUuid())
+              .eq(AcStart::getAcUuid, acStart.getAcUuid())
               .set(AcStart::getHis, Boolean.TRUE));
       startAc(acStart.getAcUuid());
     } else {

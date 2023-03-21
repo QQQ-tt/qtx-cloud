@@ -4,8 +4,10 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.io.IOException;
+import java.time.LocalDate;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import qtx.cloud.auth.service.SysUserService;
 import qtx.cloud.java.Result;
@@ -48,6 +50,13 @@ public class SysUserController {
   @PostMapping("/createUser")
   public Result<CreateVO> createUser(@RequestBody @Valid CreateUserDTO dto) {
     return Result.success(service.createUser(dto));
+  }
+
+  @GetMapping("/listDataTime")
+  public void listDataTime(
+      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE, pattern = "yyyy-MM-dd")
+          LocalDate date) {
+    System.out.println(date);
   }
 
   @ApiOperation("添加或修改用户")

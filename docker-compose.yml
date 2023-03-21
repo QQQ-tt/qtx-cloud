@@ -1,0 +1,15 @@
+version: '3'
+
+networks:
+  docker-ubuntu-net:
+    external: true
+
+services:
+  web:
+    build: .
+    container_name: cloud-container
+    restart: always
+    networks:
+      - docker-ubuntu-net
+    ports:
+      - "3000:3000"
