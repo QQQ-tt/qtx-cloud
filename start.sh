@@ -1,26 +1,36 @@
 #!/bin/bash
+# shellcheck disable=SC2164
+cd /cloud
+mvn clean package
 start1() {
   echo "starting gateway....."
-  nohup java -jar -Xmx128m /gateway.jar >gateway.log &
-  sleep 30s
+  nohup java -jar -Xmx128m /cloud/service-gateway/target/service-gateway-1.0.jar >gateway.log &
+  sleep 10s
 }
 start2() {
   echo "starting auth....."
-  nohup java -jar -Xmx256m /auth.jar >auth.log &
-  sleep 30s
+  nohup java -jar -Xmx256m /cloud/service/service-auth/target/service-auth-1.0.jar >auth.log &
+  sleep 10s
 }
 start3() {
   echo "starting oss....."
-  nohup java -jar -Xmx256m /oss.jar >oss.log &
-  sleep 30s
+  nohup java -jar -Xmx128m /cloud/service/service-oss/target/service-oss-1.0.jar >oss.log &
+  sleep 10s
+}
+start4() {
+  echo "starting activity....."
+  nohup java -jar -Xmx256m /cloud/service/service-activity/target/service-activity-1.0.jar >activity.log &
+  sleep 10s
 }
 #定义一个方法pid_health_check $1是这个方法的参数,其他地方调用此方法传入进来
 pid_health_check() {
   #定义一个linux的命令字符串 $1是这个方法的参数类似于(ps -ef|grep tomcat 的命令),其他地方调用此方法传入进来
   #这个命令解释: 搜索linux中的进程 并且过滤掉-带grep的那条
-  process_cnt=$(ps -ef | grep $1 | grep -v grep | wc -l)
+  # shellcheck disable=SC2009
+  # shellcheck disable=SC2126
+  process_cnt=$(ps -ef | grep "$1" | grep -v grep | wc -l)
   #表示执行上面定义的process_cnt命令
-  echo $process_cnt
+  echo "$process_cnt"
   #返回值-上面命令查询出来的日志的条数
   return $?
 }
@@ -30,6 +40,7 @@ pid_health_check() {
 start1
 start2
 start3
+start4
 
 while [[ 1 -gt 0 ]]; do
   echo "check healthy of gateway...."
@@ -52,6 +63,6 @@ while [[ 1 -gt 0 ]]; do
     echo "start3"
     start3
   fi
-  ##睡眠1分钟
-  sleep 1m
+  ##睡眠5分钟
+  sleep 5m
 done

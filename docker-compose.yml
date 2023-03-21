@@ -1,8 +1,11 @@
-version: '3'
+version: '3.8'
 
 networks:
   docker-ubuntu-net:
     external: true
+volumes:
+  maven:
+    name: maven
 
 services:
   web:
@@ -13,3 +16,5 @@ services:
       - docker-ubuntu-net
     ports:
       - "3000:3000"
+    volumes:
+      - maven:/root/.m2/repository
