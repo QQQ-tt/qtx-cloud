@@ -63,6 +63,13 @@ while [[ 1 -gt 0 ]]; do
     echo "start3"
     start3
   fi
+  echo "check healthy of activity...."
+  process_cnt=$(pid_health_check activity)
+  if [[ $process_cnt -lt 1 ]]; then
+    echo "start4"
+    start4
+  fi
+  echo "-----------------------------"
   ##睡眠5分钟
   sleep 5m
 done
