@@ -1,11 +1,12 @@
 package qtx.cloud.model.dto.activity;
 
 import io.swagger.annotations.ApiModelProperty;
-import java.util.List;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.NotNull;
 import lombok.Data;
 import qtx.cloud.java.constant.StaticConstant;
+
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * @author qtx
@@ -17,7 +18,7 @@ public class ActivityDTO {
   private Integer id;
 
   @NotNull
-  @Max(value = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
+  @Size(max = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
   @ApiModelProperty(value = "审批流名称", required = true)
   private String name;
 
@@ -25,12 +26,12 @@ public class ActivityDTO {
   private Boolean initType;
 
   @NotNull
-  @Max(value = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
+  @Size(max = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
   @ApiModelProperty(value = "实际业务含义", required = true)
   private String businessMean;
 
   @NotNull
-  @Max(value = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
+  @Size(max = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
   @ApiModelProperty("实际业务表名称")
   private String tableName;
 

@@ -11,7 +11,7 @@ import lombok.Setter;
 import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.model.base.BaseEntity;
 
-import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 /**
  * <p>
@@ -27,19 +27,19 @@ import javax.validation.constraints.Max;
 @ApiModel(value = "SysRole对象", description = "角色管理")
 public class SysRole extends BaseEntity {
 
-    @TableId(value = "id", type = IdType.AUTO)
-    private Integer id;
+  @TableId(value = "id", type = IdType.AUTO)
+  private Integer id;
 
-    @ApiModelProperty("角色名称")
-    @TableField("role_name")
-    private String roleName;
+  @ApiModelProperty("角色名称")
+  @TableField("role_name")
+  private String roleName;
 
-    @Max(value = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
-    @ApiModelProperty("备注")
-    @TableField("remark")
-    private String remark;
+  @Size(max = StaticConstant.STRING_MAX_SIZE, message = StaticConstant.STRING_SIZ_ERROR)
+  @ApiModelProperty("备注")
+  @TableField("remark")
+  private String remark;
 
-    @ApiModelProperty("是否超级用户")
-    @TableField("is_super_user")
-    private Boolean superUser;
+  @ApiModelProperty("是否超级用户")
+  @TableField("is_super_user")
+  private Boolean superUser;
 }
