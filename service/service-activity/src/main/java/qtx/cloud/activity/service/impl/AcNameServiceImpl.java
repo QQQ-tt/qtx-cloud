@@ -38,7 +38,7 @@ public class AcNameServiceImpl extends ServiceImpl<AcNameMapper, AcName> impleme
 
   @Override
   @Transactional(rollbackFor = Exception.class)
-  public String saveOrUpdateCa(ActivityDTO dto) {
+  public String saveOrUpdateAc(ActivityDTO dto) {
     // 流程主表创建
     String uuid;
     if (dto.getId() != null) {
