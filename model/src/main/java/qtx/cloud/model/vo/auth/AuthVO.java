@@ -8,16 +8,16 @@ import qtx.cloud.java.enums.DataEnums;
  */
 public class AuthVO {
 
-  private String userCode;
+  private String userCard;
 
   private DataEnums dataEnums;
 
-  public String getUserCode() {
-    return userCode;
+  public String getUserCard() {
+    return userCard;
   }
 
-  public void setUserCode(String userCode) {
-    this.userCode = userCode;
+  public void setUserCard(String userCard) {
+    this.userCard = userCard;
   }
 
   public void setDataEnums(DataEnums dataEnums) {
@@ -26,6 +26,6 @@ public class AuthVO {
 
   @Override
   public String toString() {
-    return "AuthVO{" + "userCode='" + userCode + '\'' + ", dataEnums='" + dataEnums + '\'' + '}';
+    return "AuthVO{" + "userCard='" + userCard + '\'' + ", dataEnums='" + dataEnums + '\'' + '}';
   }
 }

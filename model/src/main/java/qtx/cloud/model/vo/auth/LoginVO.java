@@ -16,5 +16,5 @@ public class LoginVO {
 
   private String refreshToken;
 
-  private String userCode;
+  private String userCard;
 }

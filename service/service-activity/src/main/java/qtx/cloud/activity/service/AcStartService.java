@@ -35,10 +35,10 @@ public interface AcStartService extends IService<AcStart> {
    * 用户待办
    *
    * @param acUuid 流程uuid
-   * @param userCode 用户账户
+   * @param userCard 用户账户
    * @return 待办集合
    */
-  List<AcToDoVO> toDo(String acUuid, String userCode);
+  List<AcToDoVO> toDo(String acUuid, String userCard);
 
   /**
    * 流程查询

@@ -90,11 +90,11 @@ public interface SysUserService extends IService<SysUser> {
   /**
    * 修改状态
    *
-   * @param userCode 账户
+   * @param userCard 账户
    * @param status   状态码
    * @return
    */
-  boolean changeStatus(String userCode, Boolean status);
+  boolean changeStatus(String userCard, Boolean status);
 
   /**
    * 通过id删除
@@ -124,8 +124,8 @@ public interface SysUserService extends IService<SysUser> {
    * 刷新token
    *
    * @param refreshToken
-   * @param userCode
+   * @param userCard
    * @return
    */
-  LoginVO refreshToken(String refreshToken, String userCode);
+  LoginVO refreshToken(String refreshToken, String userCard);
 }

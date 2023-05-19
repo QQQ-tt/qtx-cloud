@@ -33,7 +33,7 @@ public class StartUserRun {
     list.forEach(
         e ->
             redisUtils.setHashMsgAll(
-                StaticConstant.SYS_USER + e.getUserCode() + StaticConstant.REDIS_INFO,
+                StaticConstant.SYS_USER + e.getUserCard() + StaticConstant.REDIS_INFO,
                 JSONObject.parseObject(JSON.toJSONString(e), Map.class)));
   }
 }

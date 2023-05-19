@@ -23,16 +23,16 @@ public interface SysUserRoleService extends IService<SysUserRole> {
   /**
    * 通过用户账户获取角色
    *
-   * @param userCode 账户
+   * @param userCard 账户
    * @return 角色字符
    */
-  String getRoleByUser(String userCode);
+  String getRoleByUser(String userCard);
 
   /**
    * 通过用户账户获取角色id集合
    *
-   * @param userCode 账户
+   * @param userCard 账户
    * @return 角色集合
    */
-  List<SysUserRole> listRoleByUser(String userCode);
+  List<SysUserRole> listRoleByUser(String userCard);
 }

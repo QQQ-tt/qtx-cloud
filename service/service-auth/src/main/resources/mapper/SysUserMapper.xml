@@ -39,7 +39,7 @@
         where status = true
           and delete_flag = false
     </select>
-    <select id="selectUserByUserCode" resultType="qtx.cloud.model.vo.auth.SysUserVO">
+    <select id="selectUserByUserCard" resultType="qtx.cloud.model.vo.auth.SysUserVO">
         select u.user_card, user_name, sr.role_name, sd.department_name
         from sys_user u
                  left join sys_user_info sui on u.delete_flag = sui.delete_flag and u.user_card = sui.user_card
@@ -47,6 +47,6 @@
                  left join sys_user_role sur on sui.delete_flag = sur.delete_flag and u.user_card = sur.user_card
                  left join sys_role sr on sui.delete_flag = sr.delete_flag and sur.role_id = sur.id
         where u.delete_flag = false
-          and u.user_card = #{userCode}
+          and u.user_card = #{userCard}
     </select>
 </mapper>

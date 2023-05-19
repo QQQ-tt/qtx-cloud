@@ -12,7 +12,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class UserRolesDTO {
 
-  private String userCode;
+  private String userCard;
 
   private List<Integer> roleIds;
 }

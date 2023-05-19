@@ -28,7 +28,7 @@
     <select id="selectToDo" resultType="qtx.cloud.model.vo.activity.AcToDoVO">
         select ac_name, count(*) as num
         from ac_start
-        where ac_business = #{userCode}
+        where ac_business = #{userCard}
         and is_node = true
         and is_his = false
         and this_flag is null

@@ -29,9 +29,9 @@ public class AuthUserServiceImpl implements AuthUserService {
   }
 
   @Override
-  public AuthVO authToken(String token, String ip, String userCode, String url) {
+  public AuthVO authToken(String token, String ip, String userCard, String url) {
     Map<Object, Object> s =
-        redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
+        redisUtils.getHashMsg(StaticConstant.LOGIN_USER + userCard + StaticConstant.REDIS_INFO);
     AuthVO vo = new AuthVO();
     // 验证token
     if (Objects.isNull(s)) {
@@ -44,11 +44,11 @@ public class AuthUserServiceImpl implements AuthUserService {
     log.info("user code :{}", userCardToken);
     if (StringUtils.isBlank(userCardToken)) {
       log.info("token info error {}", DataEnums.USER_LOGIN_EXPIRED);
-      log.info("token info error user code {}", userCode);
+      log.info("token info error user code {}", userCard);
       vo.setDataEnums(DataEnums.USER_LOGIN_EXPIRED);
       return vo;
     }
-    // userCode合法性
+    // userCard合法性
     if (!userCardToken.equals(s.get(StaticConstant.USER_CARD))) {
       log.info("token info error user code {}", DataEnums.USER_IS_FAIL);
       vo.setDataEnums(DataEnums.USER_IS_FAIL);
@@ -67,7 +67,7 @@ public class AuthUserServiceImpl implements AuthUserService {
       vo.setDataEnums(DataEnums.USER_LOGIN_EXPIRED);
       return vo;
     }
-    vo.setUserCode(userCardToken);
+    vo.setUserCard(userCardToken);
     return vo;
   }
 }

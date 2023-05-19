@@ -10,7 +10,7 @@ import qtx.cloud.java.enums.DataEnums;
 @Data
 public class AuthVO {
 
-  private String userCode;
+  private String userCard;
 
   private DataEnums dataEnums;
 

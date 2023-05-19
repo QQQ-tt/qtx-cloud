@@ -23,17 +23,17 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
   @Override
   public void addRoleWithUser(UserRolesDTO dto) {
     remove(
-        Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, dto.getUserCode()));
+        Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, dto.getUserCard()));
     List<SysUserRole> list = new ArrayList<>();
     dto.getRoleIds()
         .forEach(
-            e -> list.add(SysUserRole.builder().userCard(dto.getUserCode()).roleId(e).build()));
+            e -> list.add(SysUserRole.builder().userCard(dto.getUserCard()).roleId(e).build()));
     saveOrUpdateBatch(list);
   }
 
   @Override
-  public String getRoleByUser(String card) {
-    List<String> strings = baseMapper.selectRoleByUserCard(card);
+  public String getRoleByUser(String userCard) {
+    List<String> strings = baseMapper.selectRoleByUserCard(userCard);
     StringBuilder builder = new StringBuilder();
     if (strings.size() == 0) {
       return "";
@@ -48,7 +48,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
   }
 
   @Override
-  public List<SysUserRole> listRoleByUser(String card) {
-    return list(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserCard, card));
+  public List<SysUserRole> listRoleByUser(String userCard) {
+    return list(Wrappers.lambdaQuery(SysUserRole.class).eq(SysUserRole::getUserCard, userCard));
   }
 }

@@ -71,7 +71,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     }
     if (StringUtils.isBlank(userCard)) {
       try {
-        return Method.failed(exchange, "userCode为空");
+        return Method.failed(exchange, "userCard为空");
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
@@ -92,7 +92,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
               "http://"
                   + serviceName
                   + ":2008/auth/user/token"
-                  + "?token={token}&ip={ip}&userCode={userCard}&url={url}",
+                  + "?token={token}&ip={ip}&userCard={userCard}&url={url}",
               HttpMethod.GET,
               requestEntity,
               AuthVO.class,
@@ -106,7 +106,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
           throw new RuntimeException(e);
         }
       }
-      String user = authVO.getUserCode();
+      String user = authVO.getUserCard();
       mutate.header(StaticConstant.USER, user);
     } catch (Exception e) {
       try {

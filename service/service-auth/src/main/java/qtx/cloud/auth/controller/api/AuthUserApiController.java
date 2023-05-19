@@ -25,8 +25,8 @@ public class AuthUserApiController {
   public AuthVO authToken(
       @RequestParam("token") String token,
       @RequestParam("ip") String ip,
-      @RequestParam("userCode") String userCode,
+      @RequestParam("userCard") String userCard,
       @RequestParam("url") String url) {
-    return authUserService.authToken(token, ip, userCode, url);
+    return authUserService.authToken(token, ip, userCard, url);
   }
 }

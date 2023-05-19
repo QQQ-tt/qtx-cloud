@@ -36,7 +36,7 @@ public class AuthFilter extends OncePerRequestFilter {
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String uri = request.getRequestURI();
-        String userCode = request.getHeader(StaticConstant.USER);
+        String userCard = request.getHeader(StaticConstant.USER);
         AntPathMatcher matcher = new AntPathMatcher();
         RequestWrapper requestWrapper = null;
         if (!matcher.match(StaticConstant.OSS_URL, uri)) {
@@ -50,7 +50,7 @@ public class AuthFilter extends OncePerRequestFilter {
                     JSON.toJSONString(request.getParameterMap()));
         }
         String ip = request.getHeader(StaticConstant.IP);
-        commonMethod.setUserCode(userCode);
+        commonMethod.setUserCard(userCard);
         commonMethod.setIp(ip);
         String auth = request.getHeader(StaticConstant.AUTH);
         if (StringUtils.isBlank(auth)) {

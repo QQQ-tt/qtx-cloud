@@ -18,7 +18,7 @@ import qtx.cloud.java.enums.DataEnums;
 @Component
 public class CommonMethod {
 
-  private String userCode;
+  private String userCard;
 
   private String ip;
 
@@ -42,12 +42,12 @@ public class CommonMethod {
   }
 
   /**
-   * 获取当前登录人userCode
+   * 获取当前登录人userCard
    *
-   * @return userCode
+   * @return userCard
    */
   public String getUser() {
-    return userCode;
+    return userCard;
   }
 
   /**

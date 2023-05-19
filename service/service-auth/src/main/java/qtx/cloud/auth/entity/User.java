@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class User {
 
-  private String userCode;
+  private String userCard;
 
   private String userName;
 

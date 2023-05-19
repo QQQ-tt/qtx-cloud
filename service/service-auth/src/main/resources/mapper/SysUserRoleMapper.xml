@@ -8,6 +8,6 @@
                  left join sys_role sr on sys_user_role.delete_flag = sr.delete_flag
             and sys_user_role.role_id = sr.id
         where sys_user_role.delete_flag = false
-          and sys_user_role.user_card = #{card}
+          and sys_user_role.user_card = #{userCard}
     </select>
 </mapper>

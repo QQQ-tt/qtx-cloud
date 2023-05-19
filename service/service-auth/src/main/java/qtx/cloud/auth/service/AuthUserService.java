@@ -13,9 +13,9 @@ public interface AuthUserService {
    *
    * @param token 用户token
    * @param ip 用户ip
-   * @param userCode 账户
+   * @param userCard 账户
    * @param url 请求地址
    * @return 用户账户
    */
-  AuthVO authToken(String token, String ip, String userCode, String url);
+  AuthVO authToken(String token, String ip, String userCard, String url);
 }

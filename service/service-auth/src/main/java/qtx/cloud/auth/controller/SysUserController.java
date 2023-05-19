@@ -71,7 +71,7 @@ public class SysUserController {
     return Result.success(service.listUserPage(dto));
   }
 
-  @ApiOperation("修改密码,userCode为空修改等钱登录人密码，否则修改对应账户用户的密码")
+  @ApiOperation("修改密码,userCard为空修改等钱登录人密码，否则修改对应账户用户的密码")
   @PostMapping("/changePassword")
   public Result<Boolean> changePassword(@RequestBody SysUserPasswordDTO dto) {
     return Result.success(service.changePassword(dto));
@@ -79,8 +79,8 @@ public class SysUserController {
 
   @ApiOperation("修改状态")
   @GetMapping("/changeStatus")
-  public Result<Boolean> changeStatus(@RequestParam String userCode, @RequestParam Boolean status) {
-    return Result.success(service.changeStatus(userCode, status));
+  public Result<Boolean> changeStatus(@RequestParam String userCard, @RequestParam Boolean status) {
+    return Result.success(service.changeStatus(userCard, status));
   }
 
   @ApiOperation("登出")
@@ -98,7 +98,7 @@ public class SysUserController {
   @ApiOperation("刷新token")
   @GetMapping("/token")
   public Result<LoginVO> refreshToken(
-      @RequestParam String refreshToken, @RequestParam String userCode) {
-    return Result.success(service.refreshToken(refreshToken, userCode));
+      @RequestParam String refreshToken, @RequestParam String userCard) {
+    return Result.success(service.refreshToken(refreshToken, userCard));
   }
 }

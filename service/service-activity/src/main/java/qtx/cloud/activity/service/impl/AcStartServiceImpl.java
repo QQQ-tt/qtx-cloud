@@ -147,8 +147,8 @@ public class AcStartServiceImpl extends ServiceImpl<AcStartMapper, AcStart>
   }
 
   @Override
-  public List<AcToDoVO> toDo(String acUuid, String userCode) {
-    return baseMapper.selectToDo(acUuid, userCode != null ? userCode : commonMethod.getUser());
+  public List<AcToDoVO> toDo(String acUuid, String userCard) {
+    return baseMapper.selectToDo(acUuid, userCard != null ? userCard : commonMethod.getUser());
   }
 
   @Override

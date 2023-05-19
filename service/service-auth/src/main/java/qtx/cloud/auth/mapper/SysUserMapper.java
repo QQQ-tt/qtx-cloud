@@ -51,8 +51,8 @@ public interface SysUserMapper extends BaseMapper<SysUser> {
   /**
    * 获取用户全部信息
    *
-   * @param userCode 用户账户
+   * @param userCard 用户账户
    * @return 用户信息
    */
-  SysUserVO selectUserByUserCode(String userCode);
+  SysUserVO selectUserByUserCard(String userCard);
 }

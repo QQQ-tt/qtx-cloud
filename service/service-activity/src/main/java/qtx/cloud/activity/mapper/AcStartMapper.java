@@ -33,10 +33,10 @@ public interface AcStartMapper extends BaseMapper<AcStart> {
    * 查询待办
    *
    * @param acUuid 流程uuid
-   * @param userCode 用户账户
+   * @param userCard 用户账户
    * @return 待办集合
    */
-  List<AcToDoVO> selectToDo(@Param("acUuid") String acUuid, @Param("userCode") String userCode);
+  List<AcToDoVO> selectToDo(@Param("acUuid") String acUuid, @Param("userCard") String userCard);
 
   /**
    * 查询流程详情

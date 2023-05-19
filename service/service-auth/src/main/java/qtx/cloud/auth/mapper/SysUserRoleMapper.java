@@ -16,8 +16,8 @@ public interface SysUserRoleMapper extends BaseMapper<SysUserRole> {
   /**
    * 通过用户card获取角色
    *
-   * @param userCode 用户账户
+   * @param userCard 用户账户
    * @return 角色名称集合
    */
-  List<String> selectRoleByUserCard(String userCode);
+  List<String> selectRoleByUserCard(String userCard);
 }

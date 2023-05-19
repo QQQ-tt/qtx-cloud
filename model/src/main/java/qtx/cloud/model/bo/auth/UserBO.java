@@ -19,7 +19,7 @@ public class UserBO {
   private Integer id;
 
   @ApiModelProperty("账户")
-  private String userCode;
+  private String userCard;
 
   @ApiModelProperty("用户名称")
   private String userName;
