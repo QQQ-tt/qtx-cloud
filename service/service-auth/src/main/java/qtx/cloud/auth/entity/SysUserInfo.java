@@ -27,9 +27,9 @@ public class SysUserInfo extends BaseEntity {
   @TableId(value = "id", type = IdType.AUTO)
   private Integer id;
 
-  @ApiModelProperty("用户工号")
-  @TableField("user_code")
-  private String userCode;
+  @ApiModelProperty("用户账户")
+  @TableField("user_card")
+  private String userCard;
 
   @ApiModelProperty("科室id")
   @TableField("department_id")

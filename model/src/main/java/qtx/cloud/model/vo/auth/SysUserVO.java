@@ -16,7 +16,7 @@ public class SysUserVO implements Serializable {
   @ApiModelProperty("id")
   private Long id;
 
-  @ApiModelProperty("工号")
+  @ApiModelProperty("账户")
   private String userCode;
 
   @ApiModelProperty("用户名称")

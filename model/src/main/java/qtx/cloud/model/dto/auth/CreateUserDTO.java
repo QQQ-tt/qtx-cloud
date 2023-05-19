@@ -20,6 +20,6 @@ public class CreateUserDTO {
   @ApiModelProperty("密码")
   private String password;
 
-  /** 用户工号 */
-  @JsonIgnore private String userCode;
+  /** 用户账户 */
+  @JsonIgnore private String userCard;
 }

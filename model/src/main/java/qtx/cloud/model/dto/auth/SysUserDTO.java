@@ -15,7 +15,7 @@ public class SysUserDTO extends PageDTO {
 
   private String userName;
 
-  private String userCode;
+  private String userCard;
 
   @ApiModelProperty("角色")
   private String roleId;

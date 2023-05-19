@@ -88,7 +88,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
   @Override
   public LoginVO login(LoginDTO user) throws DataException {
-    String userCode = user.getUserCode();
+    String userCode = user.getUserCard();
     // 登录试错
     Integer loginNumRedis = (Integer) redisUtils.getMsg(getRedisLoginErrorNumKey(userCode));
     int loginNum = Optional.ofNullable(loginNumRedis).orElse(0);
@@ -120,7 +120,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
       SysUser one =
           baseMapper.selectOne(
               Wrappers.lambdaQuery(SysUser.class)
-                  .eq(SysUser::getUserCode, userCode)
+                  .eq(SysUser::getUserCard, userCode)
                   .eq(SysUser::getStatus, true));
       if (one != null) {
         password = one.getPassword();
@@ -180,26 +180,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     if (StringUtils.isBlank(user.getUserName()) && StringUtils.isBlank(password)) {
       throw new DataException(DataEnums.DATA_IS_ABNORMAL);
     }
-    Set<String> set = list().stream().map(SysUser::getUserCode).collect(Collectors.toSet());
+    Set<String> set = list().stream().map(SysUser::getUserCard).collect(Collectors.toSet());
     boolean flag;
     do {
       String s = String.valueOf(NumUtils.numUserCard());
       flag = set.contains(s);
       if (!flag) {
-        user.setUserCode(s);
+        user.setUserCard(s);
       }
     } while (flag);
     user.setPassword(passwordEncoder.encode(password));
     SysUser sysUser =
         SysUser.builder()
-            .userCode(user.getUserCode())
+            .userCard(user.getUserCard())
             .userName(user.getUserName())
             .password(user.getPassword())
             .build();
     if (save(sysUser)) {
-      sysUserInfoService.save(SysUserInfo.builder().userCode(user.getUserCode()).build());
+      sysUserInfoService.save(SysUserInfo.builder().userCard(user.getUserCard()).build());
       addUserToRedis(sysUser);
-      return new CreateVO(user.getUserName(), user.getUserCode(), password);
+      return new CreateVO(user.getUserName(), user.getUserCard(), password);
     } else {
       throw new DataException(DataEnums.DATA_INSERT_FAIL);
     }
@@ -208,9 +208,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public boolean saveOrUpdateNew(CreateSysUserDTO user) throws DataException {
     List<Integer> roleId = user.getRoleId();
-    removeRole(user.getUserCode());
+    removeRole(user.getUserCard());
     sysUserRoleService.addRoleWithUser(
-        new UserRolesDTO().setUserCode(user.getUserCode()).setRoleIds(roleId));
+        new UserRolesDTO().setUserCode(user.getUserCard()).setRoleIds(roleId));
     SysUser sysUser = new SysUser();
     SysUserInfo sysUserInfo = new SysUserInfo();
     BeanUtils.copyProperties(user, sysUser);
@@ -224,7 +224,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         sysUserInfoService.update(
             sysUserInfo,
             Wrappers.lambdaUpdate(SysUserInfo.class)
-                .eq(SysUserInfo::getUserCode, sysUser.getUserCode()));
+                .eq(SysUserInfo::getUserCard, sysUser.getUserCard()));
       }
       return saveOrUpdate(sysUser);
     } catch (Exception e) {
@@ -244,7 +244,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         Wrappers.lambdaQuery(SysUser.class)
             .eq(BaseEntity::getDeleteFlag, false)
             .like(
-                StringUtils.isNotBlank(dto.getUserCode()), SysUser::getUserCode, dto.getUserCode())
+                StringUtils.isNotBlank(dto.getUserCard()), SysUser::getUserCard, dto.getUserCard())
             .like(
                 StringUtils.isNotBlank(dto.getUserName()), SysUser::getUserName, dto.getUserName())
             .eq(StringUtils.isNotBlank(dto.getStatus()), SysUser::getStatus, dto.getStatus())
@@ -254,10 +254,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   @Override
   public boolean changePassword(SysUserPasswordDTO user) throws DataException {
     String userCard =
-        StringUtils.isBlank(user.getUserCode()) ? commonMethod.getUser() : user.getUserCode();
+        StringUtils.isBlank(user.getUserCard()) ? commonMethod.getUser() : user.getUserCard();
     SysUser sysUser =
         Optional.ofNullable(
-                getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, userCard)))
+                getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCard, userCard)))
             .orElse(new SysUser());
     if (passwordEncoder.matches(user.getOldPassword(), sysUser.getPassword())) {
       String encode = passwordEncoder.encode(user.getNewPassword());
@@ -266,7 +266,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
       return update(
           Wrappers.lambdaUpdate(SysUser.class)
               .set(SysUser::getPassword, encode)
-              .eq(SysUser::getUserCode, userCard));
+              .eq(SysUser::getUserCard, userCard));
     } else {
       throw new DataException(DataEnums.WRONG_PASSWORD);
     }
@@ -281,7 +281,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     return update(
         Wrappers.lambdaUpdate(SysUser.class)
             .set(SysUser::getStatus, status)
-            .eq(SysUser::getUserCode, userCode));
+            .eq(SysUser::getUserCard, userCode));
   }
 
   @Override
@@ -290,7 +290,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     if (user == null) {
       throw new DataException(DataEnums.USER_REMOVE_FAIL);
     }
-    String userCode = user.getUserCode();
+    String userCode = user.getUserCard();
     removeRole(userCode);
     removeUserInfo(userCode);
     removeUserOnRedis(userCode);
@@ -299,8 +299,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   }
 
   @Override
-  public SysUserVO getUserByCode(String code) {
-    SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCode, code));
+  public SysUserVO getUserByCard(String card) {
+    SysUser one = getOne(Wrappers.lambdaQuery(SysUser.class).eq(SysUser::getUserCard, card));
     SysUserVO vo = new SysUserVO();
     BeanUtils.copyProperties(one, vo);
     return vo;
@@ -326,9 +326,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         Wrappers.lambdaUpdate(SysUserRole.class).eq(SysUserRole::getUserCard, userCode));
   }
 
-  private void removeUserInfo(String userCode) {
+  private void removeUserInfo(String userCard) {
     sysUserInfoService.remove(
-        Wrappers.lambdaQuery(SysUserInfo.class).eq(SysUserInfo::getUserCode, userCode));
+        Wrappers.lambdaQuery(SysUserInfo.class).eq(SysUserInfo::getUserCard, userCard));
   }
 
   private String getRedisAuthCodeKey(String userCode) {
@@ -378,7 +378,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   /**
    * 清空但前用户在redis登录信息
    *
-   * @param userCode 用户工号
+   * @param userCode 用户账户
    */
   public boolean removeRedisUserOnline(String userCode) {
     return redisUtils.deleteByKey(StaticConstant.LOGIN_USER + userCode + StaticConstant.REDIS_INFO);
@@ -387,7 +387,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
   /**
    * 实时移除redis用户
    *
-   * @param userCode 工号
+   * @param userCode 账户
    */
   public void removeUserOnRedis(String userCode) {
     redisUtils.deleteByKey(StaticConstant.SYS_USER + userCode + StaticConstant.REDIS_INFO);
@@ -403,11 +403,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         UserBO.builder()
             .id(sysUser.getId())
             .userName(sysUser.getUserName())
-            .userCode(sysUser.getUserCode())
+            .userCode(sysUser.getUserCard())
             .password(sysUser.getPassword())
             .build();
     redisUtils.setHashMsgAll(
-        StaticConstant.SYS_USER + sysUser.getUserCode() + StaticConstant.REDIS_INFO,
+        StaticConstant.SYS_USER + sysUser.getUserCard() + StaticConstant.REDIS_INFO,
         JSONObject.parseObject(JSON.toJSONString(userBO), Map.class));
   }
 }

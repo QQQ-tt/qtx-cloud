@@ -27,9 +27,9 @@ public class SysUser extends BaseEntity {
   @TableId(value = "id", type = IdType.AUTO)
   private Integer id;
 
-  @ApiModelProperty("工号")
-  @TableField("user_code")
-  private String userCode;
+  @ApiModelProperty("账户")
+  @TableField("user_card")
+  private String userCard;
 
   @ApiModelProperty("用户名称")
   @TableField("user_name")

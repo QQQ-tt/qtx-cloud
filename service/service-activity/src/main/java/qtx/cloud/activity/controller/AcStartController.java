@@ -54,7 +54,7 @@ public class AcStartController {
   @ApiImplicitParams(
       value = {
         @ApiImplicitParam(name = "acUuid", value = "流程uuid"),
-        @ApiImplicitParam(name = "userCode", value = "用户工号")
+        @ApiImplicitParam(name = "userCode", value = "用户账户")
       })
   @GetMapping("/toDo")
   public Result<List<AcToDoVO>> toDo(String acUuid, String userCode) {

@@ -61,7 +61,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
       return chain.filter(exchange);
     }
     String token = request.getHeaders().getFirst(StaticConstant.TOKEN);
-    String userCode = request.getHeaders().getFirst(StaticConstant.USER_CODE);
+    String userCard = request.getHeaders().getFirst(StaticConstant.USER_CARD);
     if (StringUtils.isBlank(token)) {
       try {
         return Method.failed(exchange, "token为空");
@@ -69,7 +69,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
         throw new RuntimeException(e);
       }
     }
-    if (StringUtils.isBlank(userCode)) {
+    if (StringUtils.isBlank(userCard)) {
       try {
         return Method.failed(exchange, "userCode为空");
       } catch (IOException e) {
@@ -83,7 +83,7 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
     HashMap<String, String> param = new HashMap<>(10);
     param.put(StaticConstant.TOKEN, token);
     param.put(StaticConstant.IP, address.toString());
-    param.put(StaticConstant.USER_CODE, userCode);
+    param.put(StaticConstant.USER_CARD, userCard);
     param.put(StaticConstant.URL, path.toString());
     HttpEntity<HashMap<String, String>> requestEntity = new HttpEntity<>(requestHeaders);
     try {
@@ -91,8 +91,8 @@ public class CustomGlobalFilter implements GlobalFilter, Ordered {
           restTemplate.exchange(
               "http://"
                   + serviceName
-                  + ":3008/auth/user/token"
-                  + "?token={token}&ip={ip}&userCode={userCode}&url={url}",
+                  + ":2008/auth/user/token"
+                  + "?token={token}&ip={ip}&userCode={userCard}&url={url}",
               HttpMethod.GET,
               requestEntity,
               AuthVO.class,

@@ -21,17 +21,17 @@ public interface SysUserRoleService extends IService<SysUserRole> {
   void addRoleWithUser(UserRolesDTO dto);
 
   /**
-   * 通过用户工号获取角色
+   * 通过用户账户获取角色
    *
-   * @param userCode 工号
+   * @param userCode 账户
    * @return 角色字符
    */
   String getRoleByUser(String userCode);
 
   /**
-   * 通过用户工号获取角色id集合
+   * 通过用户账户获取角色id集合
    *
-   * @param userCode 工号
+   * @param userCode 账户
    * @return 角色集合
    */
   List<SysUserRole> listRoleByUser(String userCode);

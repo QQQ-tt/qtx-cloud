@@ -71,7 +71,7 @@ public class SysUserController {
     return Result.success(service.listUserPage(dto));
   }
 
-  @ApiOperation("修改密码,userCode为空修改等钱登录人密码，否则修改对应工号用户的密码")
+  @ApiOperation("修改密码,userCode为空修改等钱登录人密码，否则修改对应账户用户的密码")
   @PostMapping("/changePassword")
   public Result<Boolean> changePassword(@RequestBody SysUserPasswordDTO dto) {
     return Result.success(service.changePassword(dto));

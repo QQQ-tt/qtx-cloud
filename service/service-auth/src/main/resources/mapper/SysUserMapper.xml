@@ -4,7 +4,7 @@
 
     <select id="selectPageNew" resultType="qtx.cloud.model.vo.auth.SysUserVO">
         with r as (select s.id,
-                          s.user_code,
+                          s.user_card,
                           s.user_name,
                           s.status,
                           s.create_on,
@@ -12,9 +12,9 @@
                           s.delete_flag
                    from sys_user s
                             left join sys_user u
-                                      on s.create_by = u.user_code)
+                                      on s.create_by = u.user_card)
         select id,
-               user_code,
+               user_card,
                user_name,
                status,
                create_on,
@@ -24,29 +24,29 @@
     </select>
     <select id="selectPageByDepartment" resultType="qtx.cloud.model.vo.auth.SysUserVO">
         select sys_user.id,
-               sys_user.user_code,
+               sys_user.user_card,
                user_name,
                status
         from sys_user
                  left join sys_user_info sur on sys_user.delete_flag = sur.delete_flag
-            and sys_user.user_code = sur.user_code
+            and sys_user.user_card = sur.user_card
                  left join sys_department sd on sur.delete_flag = sd.delete_flag and sur.department_id = sd.id
         order by department_code = #{dto.departmentCode} desc, id desc
     </select>
     <select id="selectAll" resultType="qtx.cloud.model.bo.auth.UserBO">
-        select id, user_code, user_name, password
+        select id, user_card, user_name, password
         from sys_user
         where status = true
           and delete_flag = false
     </select>
     <select id="selectUserByUserCode" resultType="qtx.cloud.model.vo.auth.SysUserVO">
-        select u.user_code, user_name, sr.role_name, sd.department_name
+        select u.user_card, user_name, sr.role_name, sd.department_name
         from sys_user u
-                 left join sys_user_info sui on u.delete_flag = sui.delete_flag and u.user_code = sui.user_code
+                 left join sys_user_info sui on u.delete_flag = sui.delete_flag and u.user_card = sui.user_card
                  left join sys_department sd on sui.delete_flag = sd.delete_flag and sui.department_id = sd.id
-                 left join sys_user_role sur on sui.delete_flag = sur.delete_flag and u.user_code = sur.user_code
+                 left join sys_user_role sur on sui.delete_flag = sur.delete_flag and u.user_card = sur.user_card
                  left join sys_role sr on sui.delete_flag = sr.delete_flag and sur.role_id = sur.id
         where u.delete_flag = false
-          and u.user_code = #{userCode}
+          and u.user_card = #{userCode}
     </select>
 </mapper>

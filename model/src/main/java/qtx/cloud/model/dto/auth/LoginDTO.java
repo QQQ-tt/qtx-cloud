@@ -12,8 +12,8 @@ import lombok.Data;
 public class LoginDTO {
 
   @NotNull
-  @ApiModelProperty("工号")
-  private String userCode;
+  @ApiModelProperty("账户")
+  private String userCard;
 
   @NotNull
   @ApiModelProperty("密码")

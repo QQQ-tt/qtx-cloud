@@ -1,7 +1,7 @@
 CREATE TABLE `sys_user`
 (
     `id`          int                                                          NOT NULL AUTO_INCREMENT,
-    `user_code`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '工号',
+    `user_card`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '账户',
     `user_name`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名称',
     `password`    varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci         DEFAULT NULL COMMENT '密码',
     `status`      bit(1)                                                                DEFAULT b'1' COMMENT '启用状态',

@@ -10,7 +10,7 @@ public class StaticConstant {
   /** 用户唯一信息 */
   public static final String USER = "user";
 
-  public static final String USER_CODE = "userCode";
+  public static final String USER_CARD = "user_card";
   public static final String ACCESS_TOKEN = "accessToken";
 
   public static final String IP = "ip";

@@ -16,7 +16,7 @@ public class CreateSysUserDTO {
   private String userName;
 
   @ApiModelProperty("用户code")
-  private String userCode;
+  private String userCard;
 
   @ApiModelProperty("是否启用，1是，0否")
   private Integer status;

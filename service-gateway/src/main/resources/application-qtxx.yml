@@ -1,0 +1,22 @@
+# application.yml (不能是bootstrap.yml)
+spring:
+  application:
+    name: service-gateway
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  cloud:
+    nacos:
+      config:
+        server-addr: 192.168.77.130:8848
+        namespace: f5b2bb31-650a-4d32-8ae1-66b11500243d
+      discovery:
+        server-addr: 192.168.77.130:8848
+        namespace: f5b2bb31-650a-4d32-8ae1-66b11500243d
+  config:
+    import:
+      - optional:nacos:service-gateway.yaml  # 监听 DEFAULT_GROUP:test.yml
+service-name: 127.0.0.1
+
+
+

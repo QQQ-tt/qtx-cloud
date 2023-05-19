@@ -18,7 +18,7 @@ public class UserBO {
 
   private Integer id;
 
-  @ApiModelProperty("工号")
+  @ApiModelProperty("账户")
   private String userCode;
 
   @ApiModelProperty("用户名称")

@@ -3,9 +3,6 @@ package qtx.cloud.auth.config.swagger;
 import com.github.xiaoymin.knife4j.spring.annotations.EnableKnife4j;
 import com.github.xiaoymin.knife4j.spring.extension.OpenApiExtensionResolver;
 import io.swagger.annotations.ApiOperation;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import lombok.Data;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.CorsEndpointProperties;
 import org.springframework.boot.actuate.autoconfigure.endpoint.web.WebEndpointProperties;
@@ -29,6 +26,10 @@ import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author qtx

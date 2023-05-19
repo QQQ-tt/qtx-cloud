@@ -1,7 +1,7 @@
 CREATE TABLE `sys_user_role`
 (
     `id`          int                                                          NOT NULL AUTO_INCREMENT,
-    `user_code`   int                                                                   DEFAULT NULL COMMENT '用户账号',
+    `user_card`   int                                                                   DEFAULT NULL COMMENT '用户账号',
     `role_id`     varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci          DEFAULT NULL COMMENT '角色id',
     `delete_flag` bit(1)                                                       NOT NULL DEFAULT b'0' COMMENT '是否删除 0:否 1:是',
     `create_by`   varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '创建人',

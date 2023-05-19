@@ -40,16 +40,16 @@ public class AuthUserServiceImpl implements AuthUserService {
       return vo;
     }
     String secret = (String) s.get("secret");
-    String userCodeToken = jwtUtils.getInfoFromToken(token, secret);
-    log.info("user code :{}", userCodeToken);
-    if (StringUtils.isBlank(userCodeToken)) {
+    String userCardToken = jwtUtils.getInfoFromToken(token, secret);
+    log.info("user code :{}", userCardToken);
+    if (StringUtils.isBlank(userCardToken)) {
       log.info("token info error {}", DataEnums.USER_LOGIN_EXPIRED);
       log.info("token info error user code {}", userCode);
       vo.setDataEnums(DataEnums.USER_LOGIN_EXPIRED);
       return vo;
     }
     // userCode合法性
-    if (!userCodeToken.equals(s.get(StaticConstant.USER_CODE))) {
+    if (!userCardToken.equals(s.get(StaticConstant.USER_CARD))) {
       log.info("token info error user code {}", DataEnums.USER_IS_FAIL);
       vo.setDataEnums(DataEnums.USER_IS_FAIL);
       return vo;
@@ -62,12 +62,12 @@ public class AuthUserServiceImpl implements AuthUserService {
     }
     // 判断是否过期
     if (jwtUtils.isTokenExpired((String) s.get(StaticConstant.ACCESS_TOKEN), secret)) {
-      redisUtils.deleteByKey(userCodeToken);
+      redisUtils.deleteByKey(userCardToken);
       log.info("token info error time {}", DataEnums.USER_LOGIN_EXPIRED);
       vo.setDataEnums(DataEnums.USER_LOGIN_EXPIRED);
       return vo;
     }
-    vo.setUserCode(userCodeToken);
+    vo.setUserCode(userCardToken);
     return vo;
   }
 }

@@ -2,8 +2,10 @@ package qtx.cloud.auth.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
+
 import qtx.cloud.auth.entity.SysUser;
 import qtx.cloud.java.exception.DataException;
 import qtx.cloud.model.dto.auth.*;
@@ -39,7 +41,7 @@ public interface SysUserService extends IService<SysUser> {
    * 获取验证码
    *
    * @param response 响应
-   * @param session 请求uuid
+   * @param session  请求uuid
    */
   void getAuthCode(HttpServletResponse response, String session) throws IOException;
 
@@ -88,8 +90,8 @@ public interface SysUserService extends IService<SysUser> {
   /**
    * 修改状态
    *
-   * @param userCode
-   * @param status 状态码
+   * @param userCode 账户
+   * @param status   状态码
    * @return
    */
   boolean changeStatus(String userCode, Boolean status);
@@ -103,12 +105,12 @@ public interface SysUserService extends IService<SysUser> {
   boolean removeByIdNew(Long id);
 
   /**
-   * 通过code获取用户信息
+   * 获取用户信息
    *
-   * @param code
-   * @return
+   * @param card 账户
+   * @return 用户信息
    */
-  SysUserVO getUserByCode(String code);
+  SysUserVO getUserByCard(String card);
 
   /**
    * 通过科室

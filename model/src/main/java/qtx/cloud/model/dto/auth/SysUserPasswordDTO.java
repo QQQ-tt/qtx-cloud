@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 public class SysUserPasswordDTO {
-  private String userCode;
+  private String userCard;
 
   @NotNull private String newPassword;
 
