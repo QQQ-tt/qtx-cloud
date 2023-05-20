@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="qtx.cloud.auth.mapper.TestLeftMapper">
+
+    <sql id="select">
+        select id,
+               user_code1,
+               user_code2,
+               user_code3
+        from test_left
+    </sql>
+
+    <resultMap id="codeToName" type="qtx.cloud.auth.entity.TestLeft">
+        <id property="id" column="id"/>
+        <result property="userCode1" column="user_code1" typeHandler="org.apache.ibatis.type.StringTypeHandler"/>
+        <result property="name1" column="user_code1" typeHandler="qtx.cloud.auth.config.handler.CodeToNameTypeHandler"/>
+        <result property="userCode2" column="user_code2" typeHandler="org.apache.ibatis.type.StringTypeHandler"/>
+        <result property="name2" column="user_code2" typeHandler="qtx.cloud.auth.config.handler.CodeToNameTypeHandler"/>
+        <result property="userCode3" column="user_code3" typeHandler="org.apache.ibatis.type.StringTypeHandler"/>
+        <result property="name3" column="user_code3" typeHandler="qtx.cloud.auth.config.handler.CodeToNameTypeHandler"/>
+    </resultMap>
+    
+    <select id="selectListNew" resultMap="codeToName">
+        <include refid="select"/>
+    </select>
+    <select id="selectListNew2" resultType="qtx.cloud.auth.entity.TestLeft">
+        select test_left.*, su.user_name as name1, su1.user_name as name2, su2.user_name as name3
+        from test_left
+                 left join sys_user su on test_left.delete_flag = su.delete_flag and test_left.user_code1 = su.user_card
+                 left join sys_user su1
+                           on test_left.delete_flag = su1.delete_flag and test_left.user_code2 = su1.user_card
+                 left join sys_user su2
+                           on test_left.delete_flag = su2.delete_flag and test_left.user_code3 = su2.user_card
+    </select>
+    <select id="selectListNew3" resultType="qtx.cloud.auth.entity.TestLeft">
+        <include refid="select"/>
+    </select>
+</mapper>

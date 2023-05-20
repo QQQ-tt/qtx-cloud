@@ -3,11 +3,12 @@ package qtx.cloud.auth;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
+import org.apache.ibatis.annotations.Mapper;
+import qtx.cloud.model.base.BaseEntity;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import org.apache.ibatis.annotations.Mapper;
-import qtx.cloud.model.base.BaseEntity;
 
 /**
  * 代码生成器
@@ -19,7 +20,7 @@ public class Generator {
 
   private static final DataSourceConfig.Builder DATA_SOURCE_CONFIG =
       new DataSourceConfig.Builder(
-          "jdbc:mysql://172.16.6.77:3306/qtx_cloud", "root", "OvHtCUNp8Bbnrfk");
+          "jdbc:mysql://172.16.6.77:3306/qtx_cloud", "root", "123456qaz");
 
   public static void main(String[] args) {
     String path = "/service/service-auth";

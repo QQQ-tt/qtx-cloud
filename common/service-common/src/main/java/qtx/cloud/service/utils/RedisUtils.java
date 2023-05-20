@@ -1,10 +1,11 @@
 package qtx.cloud.service.utils;
 
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
 
 /**
  * redis工具类
@@ -108,6 +109,12 @@ public class RedisUtils {
     return redisTemplate.opsForHash().entries(key);
   }
 
+  /**
+   * 获取hash 指定hash_key—value
+   * @param key redis key
+   * @param hashKey hash key
+   * @return 当前hash key的值
+   */
   public Object getHashMsg(String key, String hashKey) {
     return redisTemplate.opsForHash().get(key, hashKey);
   }

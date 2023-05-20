@@ -6,13 +6,6 @@ import com.alibaba.excel.write.metadata.WriteSheet;
 import com.alibaba.excel.write.metadata.WriteTable;
 import com.alibaba.excel.write.style.column.LongestMatchColumnWidthStyleStrategy;
 import com.baomidou.mybatisplus.extension.service.IService;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import javax.servlet.http.HttpServletResponse;
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +16,14 @@ import qtx.cloud.java.enums.DataEnums;
 import qtx.cloud.java.exception.DataException;
 import qtx.cloud.service.excel.ConvertList;
 import qtx.cloud.service.excel.DataListener;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * 下载对应实体类不允许使用链式调用注解
@@ -338,7 +339,7 @@ public class ExcelTransfer<T> {
   static class ExcelList {
     private String sheet;
     private List<List<String>> listsHead;
-    private List<List<Object>> listsData;
+    private List<List<?>> listsData;
   }
 
   @Data
