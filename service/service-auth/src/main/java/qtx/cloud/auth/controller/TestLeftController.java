@@ -36,10 +36,22 @@ public class TestLeftController {
     return Result.success(service.listNew());
   }
 
+  @ApiOperation("测试分页")
+  @GetMapping("/listNewPage")
+  public Result<List<TestLeft>> listNewPage() {
+    return Result.success(service.listNewPage());
+  }
+
   @ApiOperation("测试2")
   @GetMapping("/testList2")
   public Result<List<TestLeft>> testList2() {
     return Result.success(service.listNew2());
+  }
+
+  @ApiOperation("测试2分页")
+  @GetMapping("/listNew2Page")
+  public Result<List<TestLeft>> listNew2Page() {
+    return Result.success(service.listNew2Page());
   }
 
   @ApiOperation("测试3")

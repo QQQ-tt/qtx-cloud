@@ -16,7 +16,9 @@ import java.util.List;
 public interface TestLeftService extends IService<TestLeft> {
 
   List<TestLeft> listNew();
+  List<TestLeft> listNewPage();
   List<TestLeft> listNew2();
+  List<TestLeft> listNew2Page();
   List<TestLeft> listNew3();
 
 }

@@ -1,5 +1,6 @@
 package qtx.cloud.auth.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import qtx.cloud.auth.entity.TestLeft;
@@ -25,8 +26,18 @@ public class TestLeftServiceImpl extends ServiceImpl<TestLeftMapper, TestLeft> i
   }
 
   @Override
+  public List<TestLeft> listNewPage() {
+    return baseMapper.selectListNewPage(new Page<>(1, 10));
+  }
+
+  @Override
   public List<TestLeft> listNew2() {
     return baseMapper.selectListNew2();
+  }
+
+  @Override
+  public List<TestLeft> listNew2Page() {
+    return baseMapper.selectListNew2Page(new Page<>(1, 10));
   }
 
   @Override
