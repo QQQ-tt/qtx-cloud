@@ -1,5 +1,6 @@
 package qtx.cloud.auth.config.handler;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.springframework.stereotype.Component;
@@ -10,15 +11,20 @@ import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author qtx
  * @since 2023/5/20 19:44
  */
+@Slf4j
 @Component
 public class CodeToNameTypeHandler extends BaseTypeHandler<String> {
 
   private final RedisUtils redisUtils;
+
+  public Map<Object, Object> codeToName;
 
   public CodeToNameTypeHandler(RedisUtils redisUtils) {
     this.redisUtils = redisUtils;
@@ -48,6 +54,9 @@ public class CodeToNameTypeHandler extends BaseTypeHandler<String> {
   }
 
   private String convertCodeToName(String string) {
-    return string == null ? null : (String) redisUtils.getHashMsg(StaticConstant.SYS_USER + string + StaticConstant.REDIS_INFO, "userName");
+    if (codeToName == null){
+      codeToName = redisUtils.getHashMsg(StaticConstant.SYS_USER + StaticConstant.REDIS_INFO_1);
+    }
+    return string == null ? null : (String) Optional.ofNullable(codeToName.get(string)).orElse(" ");
   }
 }

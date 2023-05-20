@@ -24,6 +24,8 @@ public class StaticConstant {
 
   public static final String REDIS_INFO = ":info";
 
+  public static final String REDIS_INFO_1 = "info";
+
   /** 用户登录验证码前缀 */
   public static final String REDIS_LOGIN_AUTH_CODE = "login:auth:";
 

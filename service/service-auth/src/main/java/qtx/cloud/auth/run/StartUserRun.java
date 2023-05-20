@@ -2,14 +2,16 @@ package qtx.cloud.auth.run;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import qtx.cloud.auth.mapper.SysUserMapper;
 import qtx.cloud.java.constant.StaticConstant;
 import qtx.cloud.model.bo.auth.UserBO;
 import qtx.cloud.service.utils.RedisUtils;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author qtx
@@ -30,6 +32,8 @@ public class StartUserRun {
   @PostConstruct
   public void initializeUserInfo() {
     List<UserBO> list = userMapper.selectAll();
+    Map<String, String> map = list.stream().collect(Collectors.toMap(UserBO::getUserCard, UserBO::getUserName));
+    redisUtils.setHashMsgAll(StaticConstant.SYS_USER + StaticConstant.REDIS_INFO_1, map);
     list.forEach(
         e ->
             redisUtils.setHashMsgAll(
